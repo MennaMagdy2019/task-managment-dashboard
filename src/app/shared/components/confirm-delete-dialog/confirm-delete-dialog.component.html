@@ -1,8 +1,10 @@
-<h2 mat-dialog-title>Delete this task?</h2>
+<h2 mat-dialog-title>{{ 'confirmDelete.title' | translate }}</h2>
 <mat-dialog-content>
-  “{{ data.taskTitle }}” will be permanently removed from your task board.
+  {{ 'confirmDelete.body' | translate: { title: data.taskTitle } }}
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button type="button" mat-dialog-close>Cancel</button>
-  <button mat-flat-button type="button" color="warn" (click)="confirm()">Delete task</button>
+  <button mat-button type="button" mat-dialog-close>{{ 'common.cancel' | translate }}</button>
+  <button mat-flat-button type="button" color="warn" (click)="confirm()">
+    {{ 'confirmDelete.confirm' | translate }}
+  </button>
 </mat-dialog-actions>

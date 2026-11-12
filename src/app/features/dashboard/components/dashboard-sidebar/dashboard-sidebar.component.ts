@@ -4,13 +4,14 @@ import { MatListModule } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { APP_ROUTE_PATHS } from '../../../../shared/constants/app.constants';
 import { ALL_TASK_FILTER } from '../../../../shared/constants/task.constants';
+import { TranslatePipe } from '../../../../shared/i18n/translate.pipe';
 import type { Assignee } from '../../../../shared/models/task.model';
 import type { DashboardNavigationAction, DashboardView } from '../../models/dashboard.model';
 
 @Component({
   selector: 'app-dashboard-sidebar',
   standalone: true,
-  imports: [MatButtonModule, MatListModule, RouterLink, RouterLinkActive],
+  imports: [MatButtonModule, MatListModule, RouterLink, RouterLinkActive, TranslatePipe],
   templateUrl: './dashboard-sidebar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

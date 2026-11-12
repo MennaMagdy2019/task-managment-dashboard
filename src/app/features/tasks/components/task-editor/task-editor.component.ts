@@ -12,7 +12,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { TitleCasePipe } from '@angular/common';
 import type { TaskDraft, TaskPriority, TaskStatus } from '../../../../shared/models/task.model';
 import {
   MAX_TASK_TAGS,
@@ -20,10 +19,23 @@ import {
   TASK_FIELD_LIMITS,
   TASK_STATUS,
   TASK_PRIORITY_OPTIONS,
-  TASK_STATUS_LABELS,
   TASK_STATUS_OPTIONS,
 } from '../../../../shared/constants/task.constants';
 import type { TaskEditorDialogData } from '../../models/task-editor.model';
+import { I18nService } from '../../../../shared/i18n/i18n.service';
+import type { TranslationKey } from '../../../../shared/i18n/i18n.defines';
+import { TranslatePipe } from '../../../../shared/i18n/translate.pipe';
+
+const STATUS_TRANSLATION_KEYS: Record<TaskStatus, TranslationKey> = {
+  todo: 'status.todo',
+  in_progress: 'status.inProgress',
+  done: 'status.done',
+};
+const PRIORITY_TRANSLATION_KEYS: Record<TaskPriority, TranslationKey> = {
+  high: 'priority.high',
+  medium: 'priority.medium',
+  low: 'priority.low',
+};
 
 /** Rejects string values that contain only whitespace. */
 const nonWhitespace: ValidatorFn = (control) =>
@@ -40,13 +52,14 @@ const nonWhitespace: ValidatorFn = (control) =>
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    TitleCasePipe,
+    TranslatePipe,
   ],
   templateUrl: './task-editor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskEditorComponent {
   readonly data = inject<TaskEditorDialogData>(MAT_DIALOG_DATA);
+  private readonly i18n = inject(I18nService);
   private readonly dialogRef = inject(MatDialogRef<TaskEditorComponent, TaskDraft>);
   readonly task = this.data.task;
   readonly users = this.data.users;
@@ -145,6 +158,15 @@ export class TaskEditorComponent {
 
   /** Returns the display label for a task status. */
   statusLabel(status: TaskStatus): string {
-    return TASK_STATUS_LABELS[status];
+    return this.i18n.translate(this.statusTranslationKey(status));
+  }
+
+  /** Returns the localized display label for a task priority. */
+  priorityLabel(priority: TaskPriority): string {
+    return this.i18n.translate(PRIORITY_TRANSLATION_KEYS[priority]);
+  }
+
+  private statusTranslationKey(status: TaskStatus): TranslationKey {
+    return STATUS_TRANSLATION_KEYS[status];
   }
 }

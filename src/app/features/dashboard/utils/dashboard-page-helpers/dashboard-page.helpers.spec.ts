@@ -97,6 +97,9 @@ describe('dashboard page helpers', () => {
     expect(taskErrorMessage(new HttpErrorResponse({ status: 503 }), fallback)).toContain(
       'temporarily unavailable',
     );
+    expect(
+      taskErrorMessage(new HttpErrorResponse({ status: 0 }), fallback, (key) => `DE ${key}`),
+    ).toBe(`${fallback} DE connection`);
     expect(taskErrorMessage(new HttpErrorResponse({ status: 403 }), fallback)).toBe(fallback);
     expect(taskErrorMessage(new Error('unexpected'), fallback)).toBe(fallback);
   });

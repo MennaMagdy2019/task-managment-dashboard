@@ -21,10 +21,10 @@ import { DashboardInsightsComponent } from '../../components/dashboard-insights/
 import { DashboardSidebarComponent } from '../../components/dashboard-sidebar/dashboard-sidebar.component';
 import { DashboardSummaryComponent } from '../../components/dashboard-summary/dashboard-summary.component';
 import { TaskBoardComponent } from '../../components/task-board/task-board.component';
-import type { Task, TaskDraft } from '../../../../shared/models/task.model';
+import type { Task, TaskDraft, TaskStatus } from '../../../../shared/models/task.model';
 import { CURRENT_USER, TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
 import { ALL_TASK_FILTER } from '../../../../shared/constants/task.constants';
-import { APP_ROUTE_PATHS, UI_ACTION_LABELS } from '../../../../shared/constants/app.constants';
+import { APP_ROUTE_PATHS } from '../../../../shared/constants/app.constants';
 import type {
   BoardPriorityFilter,
   BoardStatusFilter,
@@ -49,6 +49,8 @@ import {
   teamMemberUrl,
 } from '../../utils/dashboard-page-helpers/dashboard-page.helpers';
 import { DashboardPageActionsService } from './dashboard-page-actions.service';
+import { I18nService } from '../../../../shared/i18n/i18n.service';
+import { TranslatePipe } from '../../../../shared/i18n/translate.pipe';
 
 /**
  * Coordinates dashboard view state, navigation, and responsive layout.
@@ -69,6 +71,7 @@ import { DashboardPageActionsService } from './dashboard-page-actions.service';
     MatSnackBarModule,
     MatSidenavModule,
     TaskBoardComponent,
+    TranslatePipe,
   ],
   templateUrl: './dashboard-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -81,9 +84,15 @@ export class DashboardPageComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly actions = inject(DashboardPageActionsService);
+  private readonly i18n = inject(I18nService);
   readonly users = TEAM_MEMBERS;
   readonly currentUser = CURRENT_USER;
   readonly columns = DASHBOARD_COLUMNS;
+  readonly loadingSkeletons: Record<TaskStatus, readonly number[]> = {
+    todo: [1, 2, 3, 4, 5],
+    in_progress: [1, 2, 3, 4],
+    done: [1, 2, 3],
+  };
   readonly dropListIds = DASHBOARD_COLUMNS.map((column) => `list-${column.status}`);
   readonly taskOrder = this.actions.taskOrder;
   readonly activities = this.actions.activities;
@@ -190,7 +199,11 @@ export class DashboardPageComponent {
     } else {
       this.teamExpanded.set(false);
       this.sidebarOpen.set(false);
-      this.snackBar.open('Settings are coming soon.', UI_ACTION_LABELS.dismiss, { duration: 3000 });
+      this.snackBar.open(
+        this.i18n.translate('notice.settings'),
+        this.i18n.translate('common.dismiss'),
+        { duration: 3000 },
+      );
     }
   }
 

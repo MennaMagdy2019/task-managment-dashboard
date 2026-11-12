@@ -10,6 +10,14 @@ import {
 import { CURRENT_USER, TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
 import type { ApiErrorResponse } from '../../../../shared/models/api-error.model';
 import type { Task, TaskActivity, TaskStatus } from '../../../../shared/models/task.model';
+import type { TaskErrorSuffix } from '../../../../shared/i18n/i18n.defines';
+
+const ENGLISH_ERROR_SUFFIXES: Record<TaskErrorSuffix, string> = {
+  connection: 'Check your connection and try again.',
+  invalidTask: 'Check the task details and try again.',
+  missingTask: 'The task was not found.',
+  unavailable: 'The service is temporarily unavailable.',
+};
 
 /** Dashboard board columns in their display order. */
 export const DASHBOARD_COLUMNS: TaskBoardColumn[] = [
@@ -140,16 +148,20 @@ export function createTaskActivity(
  * @param fallback The fallback message.
  * @returns The user-facing message.
  */
-export function taskErrorMessage(error: unknown, fallback: string): string {
+export function taskErrorMessage(
+  error: unknown,
+  fallback: string,
+  translateSuffix: (key: TaskErrorSuffix) => string = (key) => ENGLISH_ERROR_SUFFIXES[key],
+): string {
   if (error instanceof HttpErrorResponse) {
     const status = error.status;
     const body = error.error as ApiErrorResponse | null;
     if (body && typeof body.message === 'string') return `${fallback} ${body.message}`;
-    if (status === 0) return `${fallback} Check your connection and try again.`;
-    if (status === 400) return `${fallback} Check the task details and try again.`;
-    if (status === 404) return `${fallback} The task was not found.`;
+    if (status === 0) return `${fallback} ${translateSuffix('connection')}`;
+    if (status === 400) return `${fallback} ${translateSuffix('invalidTask')}`;
+    if (status === 404) return `${fallback} ${translateSuffix('missingTask')}`;
     if (typeof status === 'number' && status >= 500)
-      return `${fallback} The service is temporarily unavailable.`;
+      return `${fallback} ${translateSuffix('unavailable')}`;
   }
   return fallback;
 }

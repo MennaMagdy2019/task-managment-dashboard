@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import type { Task } from '../../../../shared/models/task.model';
+import { I18nService } from '../../../../shared/i18n/i18n.service';
 import { TaskCardComponent } from './task-card.component';
 
 const baseTask: Task = {
@@ -30,6 +31,8 @@ describe('TaskCardComponent', () => {
   });
 
   afterEach(() => {
+    TestBed.inject(I18nService).setLanguage('en');
+    localStorage.removeItem('taskflow.language');
     jasmine.clock().uninstall();
   });
 
@@ -85,6 +88,17 @@ describe('TaskCardComponent', () => {
     );
     expect(yesterdayFixture.nativeElement.querySelector('.due-date-icon')?.textContent.trim()).toBe(
       'check_circle',
+    );
+  });
+
+  it('updates due labels when the application language changes', () => {
+    const fixture = createFixture();
+
+    TestBed.inject(I18nService).setLanguage('de');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.due-date')?.textContent).toContain(
+      'In 2 Tagen fällig',
     );
   });
 });

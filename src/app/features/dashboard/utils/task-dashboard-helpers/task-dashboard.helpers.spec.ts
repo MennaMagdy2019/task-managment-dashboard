@@ -120,4 +120,13 @@ describe('task dashboard helpers', () => {
       formatRelativeTime('2026-11-11T00:59:00.000Z', Date.parse('2026-11-11T01:00:00.000Z')),
     ).toBe('1m ago');
   });
+
+  it('formats recent activity timestamps in German', () => {
+    expect(
+      formatRelativeTime('2026-11-11T00:59:00.000Z', Date.parse('2026-11-11T01:00:00.000Z'), 'de'),
+    ).toBe('vor 1 Min.');
+    expect(
+      formatRelativeTime('2026-11-10T01:00:00.000Z', Date.parse('2026-11-11T01:00:00.000Z'), 'de'),
+    ).toBe('Gestern');
+  });
 });

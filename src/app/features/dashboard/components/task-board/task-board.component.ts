@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,18 +8,29 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
-import { TitleCasePipe } from '@angular/common';
 import {
   ALL_TASK_FILTER,
   TASK_PRIORITY_CHART_ORDER,
-  TASK_PRIORITY_LABELS,
-  TASK_STATUS_LABELS,
   TASK_STATUS_OPTIONS,
 } from '../../../../shared/constants/task.constants';
-import type { Task, TaskStatus } from '../../../../shared/models/task.model';
+import type { Task, TaskPriority, TaskStatus } from '../../../../shared/models/task.model';
 import type { BoardPriorityFilter, BoardStatusFilter } from '../../models/dashboard.model';
 import type { TaskBoardColumn, TaskDropEvent } from '../../models/task-board.model';
 import { TaskCardComponent } from '../../../tasks/components/task-card/task-card.component';
+import { I18nService } from '../../../../shared/i18n/i18n.service';
+import type { TranslationKey } from '../../../../shared/i18n/i18n.defines';
+import { TranslatePipe } from '../../../../shared/i18n/translate.pipe';
+
+const STATUS_TRANSLATION_KEYS: Record<TaskStatus, TranslationKey> = {
+  todo: 'status.todo',
+  in_progress: 'status.inProgress',
+  done: 'status.done',
+};
+const PRIORITY_TRANSLATION_KEYS: Record<TaskPriority, TranslationKey> = {
+  high: 'priority.high',
+  medium: 'priority.medium',
+  low: 'priority.low',
+};
 
 export type { BoardPriorityFilter, BoardStatusFilter } from '../../models/dashboard.model';
 export type { TaskBoardColumn, TaskDropEvent } from '../../models/task-board.model';
@@ -36,18 +47,22 @@ export type { TaskBoardColumn, TaskDropEvent } from '../../models/task-board.mod
     MatInputModule,
     MatProgressBarModule,
     MatSelectModule,
-    TitleCasePipe,
     TaskCardComponent,
+    TranslatePipe,
   ],
   templateUrl: './task-board.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskBoardComponent {
+  private readonly i18n = inject(I18nService);
   readonly allFilterValue = ALL_TASK_FILTER;
   readonly statusOptions = TASK_STATUS_OPTIONS;
-  readonly statusLabels = TASK_STATUS_LABELS;
   readonly priorityOptions = TASK_PRIORITY_CHART_ORDER;
-  readonly priorityLabels = TASK_PRIORITY_LABELS;
+  readonly loadingSkeletons: Record<TaskStatus, readonly number[]> = {
+    todo: [1, 2, 3, 4, 5],
+    in_progress: [1, 2, 3, 4],
+    done: [1, 2, 3],
+  };
   readonly columns = input<TaskBoardColumn[]>([]);
   readonly tasks = input<Task[]>([]);
   readonly loading = input(false);
@@ -61,6 +76,16 @@ export class TaskBoardComponent {
   readonly editTask = output<Task>();
   readonly removeTask = output<Task>();
   readonly taskDropped = output<TaskDropEvent>();
+
+  /** Returns a localized task status label. */
+  statusLabel(status: TaskStatus): string {
+    return this.i18n.translate(STATUS_TRANSLATION_KEYS[status]);
+  }
+
+  /** Returns a localized task priority label. */
+  priorityLabel(priority: TaskPriority): string {
+    return this.i18n.translate(PRIORITY_TRANSLATION_KEYS[priority]);
+  }
 
   /** Returns the visible tasks belonging to the requested status column. */
   tasksFor(status: TaskStatus): Task[] {

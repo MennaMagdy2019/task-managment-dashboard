@@ -1,7 +1,7 @@
 <nav
   class="primary-nav grid content-start gap-1"
   [class.team-menu-open]="teamExpanded()"
-  aria-label="Main menu"
+  [attr.aria-label]="'navigation.menu' | translate"
 >
   <a
     class="group flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] px-1.5 text-left text-[10px] no-underline transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 max-md:focus-visible:outline-2"
@@ -18,7 +18,7 @@
       "
       aria-hidden="true"
       >dashboard</span
-    ><span class="nav-label">Dashboard</span>
+    ><span class="nav-label">{{ 'navigation.dashboard' | translate }}</span>
   </a>
   <a
     class="group flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] px-1.5 text-left text-[10px] no-underline transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2"
@@ -35,7 +35,7 @@
       "
       aria-hidden="true"
       >task_alt</span
-    ><span class="nav-label">Tasks</span>
+    ><span class="nav-label">{{ 'navigation.tasks' | translate }}</span>
   </a>
   <a
     class="group flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] px-1.5 text-left text-[10px] no-underline transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2"
@@ -52,7 +52,7 @@
       "
       aria-hidden="true"
       >analytics</span
-    ><span class="nav-label">Analytics</span>
+    ><span class="nav-label">{{ 'navigation.analytics' | translate }}</span>
   </a>
   <button
     type="button"
@@ -72,7 +72,7 @@
       "
       aria-hidden="true"
       >groups</span
-    ><span class="flex-1">Team</span>
+    ><span class="flex-1">{{ 'navigation.team' | translate }}</span>
     <span
       [class]="
         teamExpanded() ? 'pb-[5px] text-[15px] text-white' : 'pb-[5px] text-[15px] text-[#8d98a9]'
@@ -82,7 +82,11 @@
     >
   </button>
   @if (teamExpanded()) {
-    <div class="team-subnav grid gap-[3px] py-[3px] pb-[5px]" aria-label="Filter tasks by assignee">
+    <div
+      class="team-subnav grid gap-[3px] py-[3px] pb-[5px]"
+      role="group"
+      [attr.aria-label]="'navigation.assigneeFilter' | translate"
+    >
       @for (user of users(); track user.id) {
         <button
           type="button"
@@ -116,7 +120,7 @@
       class="material-icons mr-[5px] grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#7b8490]"
       aria-hidden="true"
       >settings</span
-    ><span class="flex-1">Settings</span>
+    ><span class="flex-1">{{ 'navigation.settings' | translate }}</span>
   </button>
 </nav>
 <div class="sidebar-bottom mt-2.5 grid">
@@ -124,9 +128,9 @@
     mat-flat-button
     type="button"
     class="sidebar-new-task min-h-[30px] w-full rounded-[4px] text-[11px] font-semibold shadow-[0_3px_8px_rgb(25_118_210_/_16%)] transition-[background-color,box-shadow] duration-[140ms] hover:bg-[#1769c2] hover:shadow-[0_4px_10px_rgb(25_118_210_/_26%)] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 motion-reduce:transition-none"
-    aria-label="Create a new task"
+    [attr.aria-label]="'navigation.createTask' | translate"
     (click)="createTask.emit()"
   >
-    <span aria-hidden="true">＋</span> New Task
+    <span aria-hidden="true">＋</span> {{ 'navigation.newTask' | translate }}
   </button>
 </div>

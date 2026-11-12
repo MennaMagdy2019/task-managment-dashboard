@@ -5,6 +5,7 @@ import {
   TASK_STATUS_LABELS,
 } from '../../../../shared/constants/task.constants';
 import type { DashboardStatistics, TaskFilterOptions } from '../../models/dashboard.model';
+import type { AppLanguage } from '../../../../shared/i18n/i18n.defines';
 
 /**
  * Filters tasks by search text, priority, status, assignee, and dashboard view.
@@ -165,12 +166,17 @@ export function taskStatusLabel(status: TaskStatus): string {
  * @returns The formatted relative-time label.
  */
 
-export function formatRelativeTime(value: string, now = Date.now()): string {
+export function formatRelativeTime(
+  value: string,
+  now = Date.now(),
+  language: AppLanguage = 'en',
+): string {
   const minutes = Math.max(0, Math.floor((now - new Date(value).getTime()) / 60_000));
-  if (minutes < 1) return 'Just now';
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 1) return language === 'de' ? 'Gerade eben' : 'Just now';
+  if (minutes < 60) return language === 'de' ? `vor ${minutes} Min.` : `${minutes}m ago`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return language === 'de' ? `vor ${hours} Std.` : `${hours}h ago`;
   const days = Math.floor(hours / 24);
-  return days === 1 ? 'Yesterday' : `${days} days ago`;
+  if (days === 1) return language === 'de' ? 'Gestern' : 'Yesterday';
+  return language === 'de' ? `vor ${days} Tagen` : `${days} days ago`;
 }

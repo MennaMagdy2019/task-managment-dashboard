@@ -7,11 +7,7 @@ import type { DashboardNoticeKind } from '../../models/dashboard.model';
 import { TaskService } from '../../../tasks/data-access/task-service/task.service';
 import type { TaskEditorDialogData } from '../../../tasks/models/task-editor.model';
 import type { ConfirmDeleteDialogData } from '../../../../shared/models/confirm-delete-dialog.model';
-import { UI_ACTION_LABELS } from '../../../../shared/constants/app.constants';
-import {
-  TASK_ACTIVITY_MESSAGES,
-  TASK_STATUS_LABELS,
-} from '../../../../shared/constants/task.constants';
+import { TASK_ACTIVITY_MESSAGES } from '../../../../shared/constants/task.constants';
 import { TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
 import type { Task, TaskActivity, TaskDraft } from '../../../../shared/models/task.model';
 import {
@@ -25,6 +21,15 @@ import {
   taskErrorMessage,
   taskMoveActivity,
 } from '../../utils/dashboard-page-helpers/dashboard-page.helpers';
+import { I18nService } from '../../../../shared/i18n/i18n.service';
+import type { TaskErrorSuffix, TranslationKey } from '../../../../shared/i18n/i18n.defines';
+
+const ERROR_TRANSLATION_KEYS: Record<TaskErrorSuffix, TranslationKey> = {
+  connection: 'error.connection',
+  invalidTask: 'error.invalidTask',
+  missingTask: 'error.missingTask',
+  unavailable: 'error.unavailable',
+};
 
 /** Coordinates dashboard task actions, dialogs, ordering, and action feedback. */
 @Injectable()
@@ -32,6 +37,7 @@ export class DashboardPageActionsService {
   private readonly store = inject(TaskService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly i18n = inject(I18nService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly taskOrder = signal<string[]>([]);
@@ -65,10 +71,12 @@ export class DashboardPageActionsService {
           task ? TASK_ACTIVITY_MESSAGES.updated : TASK_ACTIVITY_MESSAGES.created,
           saved.title,
         );
-        this.setNotice(task ? 'Task changes saved.' : 'Task created successfully.', 'success');
+        this.setNotice(
+          this.i18n.translate(task ? 'notice.taskUpdated' : 'notice.taskCreated'),
+          'success',
+        );
       },
-      error: (error: unknown) =>
-        this.setNotice(taskErrorMessage(error, 'Could not save this task.'), 'error'),
+      error: (error: unknown) => this.setNotice(this.taskError(error, 'error.save'), 'error'),
     });
   }
 
@@ -90,7 +98,7 @@ export class DashboardPageActionsService {
           });
       })
       .catch((error: unknown) => {
-        this.setNotice(taskErrorMessage(error, 'Could not open delete confirmation.'), 'error');
+        this.setNotice(this.taskError(error, 'error.openDeleteConfirmation'), 'error');
       });
   }
 
@@ -112,10 +120,16 @@ export class DashboardPageActionsService {
         next: (updated) => {
           const activity = taskMoveActivity(status);
           this.recordActivity(activity.kind, activity.message, updated.title);
-          this.setNotice(`Task moved to ${TASK_STATUS_LABELS[status]}.`, 'success');
+          this.setNotice(
+            this.i18n.translate('notice.taskMoved', {
+              status: this.i18n.translate(
+                status === 'in_progress' ? 'status.inProgress' : `status.${status}`,
+              ),
+            }),
+            'success',
+          );
         },
-        error: (error: unknown) =>
-          this.setNotice(taskErrorMessage(error, 'Could not move this task.'), 'error'),
+        error: (error: unknown) => this.setNotice(this.taskError(error, 'error.move'), 'error'),
       });
   }
 
@@ -142,7 +156,7 @@ export class DashboardPageActionsService {
           if (draft) this.saveTask(draft, task);
         });
     } catch (error: unknown) {
-      this.setNotice(taskErrorMessage(error, 'Could not open the task editor.'), 'error');
+      this.setNotice(this.taskError(error, 'error.openEditor'), 'error');
     }
   }
 
@@ -154,11 +168,16 @@ export class DashboardPageActionsService {
       .subscribe({
         next: () => {
           this.recordActivity('deleted', TASK_ACTIVITY_MESSAGES.deleted, task.title);
-          this.setNotice('Task deleted.', 'success');
+          this.setNotice(this.i18n.translate('notice.taskDeleted'), 'success');
         },
-        error: (error: unknown) =>
-          this.setNotice(taskErrorMessage(error, 'Could not delete this task.'), 'error'),
+        error: (error: unknown) => this.setNotice(this.taskError(error, 'error.delete'), 'error'),
       });
+  }
+
+  private taskError(error: unknown, fallback: TranslationKey): string {
+    return taskErrorMessage(error, this.i18n.translate(fallback), (key) =>
+      this.i18n.translate(ERROR_TRANSLATION_KEYS[key]),
+    );
   }
 
   /** Converts the visible task IDs into their new local order after a same-column drop. */
@@ -179,7 +198,7 @@ export class DashboardPageActionsService {
 
   /** Shows a success or error snack-bar notification. */
   private setNotice(text: string, kind: DashboardNoticeKind): void {
-    this.snackBar.open(text, UI_ACTION_LABELS.dismiss, {
+    this.snackBar.open(text, this.i18n.translate('common.dismiss'), {
       duration: kind === 'error' ? 6000 : 3500,
     });
   }

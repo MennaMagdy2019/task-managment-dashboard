@@ -1,20 +1,20 @@
-<section class="board-section block" aria-label="Task board">
+<section class="board-section block" [attr.aria-label]="'board.aria' | translate">
   <div
     class="board-toolbar mb-3 flex min-h-9 items-center justify-between gap-2.5 rounded-md border border-[#e5e8ed] bg-white px-2 py-[3px] max-md:items-stretch max-md:flex-col max-md:gap-1 max-md:p-1.5"
   >
     <div class="status-filter-bar flex min-w-0 items-center max-md:overflow-x-auto">
       <mat-button-toggle-group
         class="h-7 border-0 max-md:flex-[0_0_auto]"
-        aria-label="Filter tasks by status"
+        [attr.aria-label]="'board.filterStatus' | translate"
         [value]="statusFilter()"
         (change)="statusFilterChange.emit($event.value)"
       >
-        <mat-button-toggle class="h-7 border-0 text-[10px]" [value]="allFilterValue"
-          >All</mat-button-toggle
-        >
+        <mat-button-toggle class="h-7 border-0 text-[10px]" [value]="allFilterValue">{{
+          'board.all' | translate
+        }}</mat-button-toggle>
         @for (status of statusOptions; track status) {
           <mat-button-toggle class="h-7 border-0 text-[10px]" [value]="status">{{
-            statusLabels[status] | titlecase
+            statusLabel(status)
           }}</mat-button-toggle>
         }
       </mat-button-toggle-group>
@@ -24,14 +24,14 @@
         appearance="outline"
         class="filter-control priority-control h-7 w-[135px] text-[9px]"
       >
-        <mat-label>Priority</mat-label>
+        <mat-label>{{ 'board.filterPriority' | translate }}</mat-label>
         <mat-select
           [value]="priorityFilter()"
           (selectionChange)="priorityFilterChange.emit($event.value)"
         >
-          <mat-option [value]="allFilterValue">Priority</mat-option>
+          <mat-option [value]="allFilterValue">{{ 'board.filterPriority' | translate }}</mat-option>
           @for (priority of priorityOptions; track priority) {
-            <mat-option [value]="priority">{{ priorityLabels[priority] }}</mat-option>
+            <mat-option [value]="priority">{{ priorityLabel(priority) }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -41,7 +41,7 @@
         class="filter-new-task min-h-7 rounded-[4px] text-[9px] transition-[background-color,box-shadow] duration-[140ms] hover:bg-[#1769c2] hover:shadow-[0_3px_8px_rgb(25_118_210_/_22%)] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 motion-reduce:transition-none"
         (click)="createTask.emit()"
       >
-        ＋ New Task
+        {{ 'board.createTask' | translate }}
       </button>
     </div>
   </div>
@@ -49,7 +49,7 @@
   <div
     class="board-columns grid min-h-[470px] grid-cols-3 items-start gap-3 max-lg:grid-cols-2 max-md:min-h-0 max-md:grid-cols-1"
     cdkDropListGroup
-    aria-label="Task board columns"
+    [attr.aria-label]="'board.columns' | translate"
   >
     @for (column of columns(); track column.status) {
       <mat-card
@@ -62,7 +62,7 @@
           <mat-card-title
             class="m-0 flex items-center gap-1.5 text-[11px] font-semibold uppercase text-[#29313d]"
             ><span [attr.aria-hidden]="true">{{ column.icon }}</span>
-            {{ column.label }}</mat-card-title
+            {{ statusLabel(column.status) }}</mat-card-title
           >
           <span class="column-count">{{ tasksFor(column.status).length }}</span>
         </mat-card-header>
@@ -73,17 +73,19 @@
             [id]="'list-' + column.status"
             [cdkDropListData]="tasksFor(column.status)"
             [cdkDropListConnectedTo]="dropListIds()"
-            [attr.aria-label]="column.label + ' tasks'"
+            [attr.aria-label]="
+              'board.columnTasks' | translate: { status: statusLabel(column.status) }
+            "
             (cdkDropListDropped)="onDrop($event, column.status)"
           >
             @if (loading()) {
-              @for (skeleton of [1, 2, 3]; track skeleton) {
+              @for (skeleton of loadingSkeletons[column.status]; track skeleton) {
                 <mat-card
                   appearance="outlined"
-                  class="w-full min-w-0 box-border"
-                  aria-label="Loading task"
+                  class="min-h-[164px] w-full min-w-0 box-border"
+                  [attr.aria-label]="'board.loadingTask' | translate"
                 >
-                  <mat-card-content
+                  <mat-card-content class="flex min-h-[150px] items-center"
                     ><mat-progress-bar mode="indeterminate"></mat-progress-bar
                   ></mat-card-content>
                 </mat-card>
@@ -105,18 +107,20 @@
               } @empty {
                 <mat-card appearance="outlined" class="w-full min-w-0 box-border">
                   <mat-card-content>{{
-                    hasMatchingTasks() ? 'Nothing here yet' : 'No tasks match these filters'
+                    hasMatchingTasks()
+                      ? ('board.nothing' | translate)
+                      : ('board.noMatch' | translate)
                   }}</mat-card-content>
                 </mat-card>
               }
             }
           </div>
           <button class="hidden" mat-button type="button" (click)="createTask.emit()">
-            ＋ Add task
+            {{ 'board.addTask' | translate }}
           </button>
         </mat-card-content>
       </mat-card>
     }
   </div>
-  <p class="hidden">Drag a card to reorder it or move it to another status.</p>
+  <p class="sr-only">{{ 'board.dragHelp' | translate }}</p>
 </section>

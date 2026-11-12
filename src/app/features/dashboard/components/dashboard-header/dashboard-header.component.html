@@ -1,11 +1,13 @@
 <mat-toolbar
-  class="topbar relative z-[3] grid h-11 min-h-11 grid-cols-[180px_minmax(0,1fr)_120px] gap-3 border-b border-[#e6e9ee] bg-white px-4 max-md:h-[50px] max-md:min-h-[50px] max-md:grid-cols-[36px_minmax(0,1fr)_72px] max-md:gap-1 max-md:pl-2 max-md:pr-4"
+  class="topbar relative z-[3] grid h-11 min-h-11 grid-cols-[180px_minmax(0,1fr)_150px] gap-3 border-b border-[#e6e9ee] bg-white px-4 max-md:h-[50px] max-md:min-h-[50px] max-md:grid-cols-[36px_minmax(0,1fr)_72px] max-md:gap-1 max-md:pl-2 max-md:pr-4"
 >
   <button
     mat-icon-button
     type="button"
     class="mobile-menu hidden focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 max-md:col-start-1 max-md:inline-flex"
-    aria-label="Open navigation"
+    [attr.aria-label]="
+      (sidebarOpen() ? 'header.closeNavigation' : 'header.openNavigation') | translate
+    "
     [attr.aria-expanded]="sidebarOpen()"
     (click)="menuToggle.emit()"
   >
@@ -19,7 +21,7 @@
       class="brand-mark grid h-5 w-5 flex-[0_0_20px] place-items-center rounded-[5px] bg-[#1769d2] text-[12px] leading-none text-white transition-colors duration-[140ms] group-hover:bg-[#125bad] motion-reduce:transition-none"
       aria-hidden="true"
       >✓</span
-    ><span>Task Manager</span>
+    ><span>{{ 'header.brand' | translate }}</span>
   </a>
   <mat-form-field
     appearance="outline"
@@ -38,9 +40,9 @@
     <input
       matInput
       type="search"
-      class="!text-[10px] placeholder:!text-[#98a2b3]"
-      placeholder="Search tasks..."
-      aria-label="Search tasks"
+      class="!text-[10px] placeholder:!text-[#667085]"
+      [placeholder]="'header.searchPlaceholder' | translate"
+      [attr.aria-label]="'header.searchTasks' | translate"
       [value]="query()"
       (input)="onSearchInput($event)"
     />
@@ -50,16 +52,26 @@
       mat-icon-button
       type="button"
       class="notification-button relative focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 hover:bg-[#f1f1f1] max-md:hidden"
-      aria-label="Notifications"
+      [attr.aria-label]="'header.notifications' | translate"
     >
       <span aria-hidden="true">♧</span
       ><i class="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[#e3a321]"></i>
     </button>
     <button
+      type="button"
+      class="language-switch h-7 min-w-8 rounded px-1 text-[9px] font-semibold text-[#475467] transition-colors hover:bg-[#f1f1f1] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 max-md:h-7 max-md:min-w-8"
+      [attr.aria-label]="
+        (i18n.language() === 'en' ? 'header.switchToGerman' : 'header.switchToEnglish') | translate
+      "
+      (click)="i18n.toggleLanguage()"
+    >
+      {{ i18n.language().toUpperCase() }}
+    </button>
+    <button
       mat-icon-button
       type="button"
       class="profile-avatar h-[30px] w-[30px] rounded-full bg-[#1976d2] text-[10px] font-semibold text-white transition-[background-color,box-shadow] duration-[140ms] hover:bg-[#125bad] hover:shadow-[0_2px_6px_rgb(23_105_210_/_24%)] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 motion-reduce:transition-none"
-      aria-label="Current user profile"
+      [attr.aria-label]="'header.profile' | translate: { initials: userInitials() }"
     >
       <span class="grid h-full w-full place-items-center leading-none" aria-hidden="true">{{
         userInitials()

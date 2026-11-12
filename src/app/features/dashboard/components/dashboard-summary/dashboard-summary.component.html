@@ -1,6 +1,6 @@
 <section
   class="summary-grid mb-2 block h-[112px] -mx-[3px] max-lg:h-auto"
-  aria-label="Task summary"
+  [attr.aria-label]="'summary.aria' | translate"
 >
   @if (isLoading()) {
     <div
@@ -10,7 +10,7 @@
         <mat-card
           appearance="outlined"
           class="h-[calc(100%_-_8px)] rounded-[6px] border-[#e3e7ed] bg-white max-lg:min-h-[92px]"
-          aria-label="Loading task summary"
+          [attr.aria-label]="'summary.loading' | translate"
         >
           <mat-card-content class="flex h-full items-center p-3"
             ><mat-progress-bar mode="indeterminate"></mat-progress-bar
@@ -33,13 +33,17 @@
             aria-hidden="true"
             >assignment</span
           >
-          <p class="m-0 text-[9px] text-[#7e8793] max-md:text-[8px]">Total Tasks</p>
+          <p class="m-0 text-[9px] text-[#5f6b7a] max-md:text-[8px]">
+            {{ 'summary.total' | translate }}
+          </p>
           <h2
             class="my-[4px] mb-[2px] text-[19px] font-semibold leading-none text-[#202734] max-md:text-[17px]"
           >
             {{ stats().total }}
           </h2>
-          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#89929e]">+12 this week</p>
+          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#5f6b7a]">
+            {{ 'summary.totalChange' | translate }}
+          </p>
         </mat-card-content></mat-card
       >
       <mat-card
@@ -53,13 +57,17 @@
             aria-hidden="true"
             >check_box</span
           >
-          <p class="m-0 text-[9px] text-[#7e8793] max-md:text-[8px]">Completed</p>
+          <p class="m-0 text-[9px] text-[#5f6b7a] max-md:text-[8px]">
+            {{ 'summary.completed' | translate }}
+          </p>
           <h2
             class="my-[4px] mb-[2px] text-[19px] font-semibold leading-none text-[#202734] max-md:text-[17px]"
           >
             {{ stats().done }}
           </h2>
-          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#89929e]">+8 today</p>
+          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#5f6b7a]">
+            {{ 'summary.completedChange' | translate }}
+          </p>
         </mat-card-content></mat-card
       >
       <mat-card
@@ -73,13 +81,17 @@
             aria-hidden="true"
             >schedule</span
           >
-          <p class="m-0 text-[9px] text-[#7e8793] max-md:text-[8px]">In Progress</p>
+          <p class="m-0 text-[9px] text-[#5f6b7a] max-md:text-[8px]">
+            {{ 'summary.inProgress' | translate }}
+          </p>
           <h2
             class="my-[4px] mb-[2px] text-[19px] font-semibold leading-none text-[#202734] max-md:text-[17px]"
           >
             {{ stats().inProgress }}
           </h2>
-          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#89929e]">Same as yesterday</p>
+          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#5f6b7a]">
+            {{ 'summary.unchanged' | translate }}
+          </p>
         </mat-card-content></mat-card
       >
       <mat-card
@@ -93,13 +105,17 @@
             aria-hidden="true"
             >warning</span
           >
-          <p class="m-0 text-[9px] text-[#7e8793] max-md:text-[8px]">Overdue</p>
+          <p class="m-0 text-[9px] text-[#5f6b7a] max-md:text-[8px]">
+            {{ 'summary.overdue' | translate }}
+          </p>
           <h2
             class="my-[4px] mb-[2px] text-[19px] font-semibold leading-none text-[#202734] max-md:text-[17px]"
           >
             {{ stats().overdue }}
           </h2>
-          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#89929e]">+3 today</p>
+          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#5f6b7a]">
+            {{ 'summary.overdueChange' | translate }}
+          </p>
         </mat-card-content></mat-card
       >
     </div>

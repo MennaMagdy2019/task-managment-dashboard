@@ -12,24 +12,24 @@
 >
   <mat-card-content class="!p-0">
     <div class="task-card-toolbar mb-[5px] flex min-h-6 items-center justify-between">
-      <div role="group" aria-label="Task priority">
+      <div role="group" [attr.aria-label]="'task.priorityGroup' | translate">
         <span
           [class]="
             task().priority === 'high'
-              ? 'inline-flex min-h-4 items-center rounded-[3px] bg-[#ffe9e8] px-1.5 text-[8px] font-semibold uppercase leading-none text-[#d64e49]'
+              ? 'inline-flex min-h-4 items-center rounded-[3px] bg-[#ffe9e8] px-1.5 text-[8px] font-semibold uppercase leading-none text-[#a12f2c]'
               : task().priority === 'medium'
-                ? 'inline-flex min-h-4 items-center rounded-[3px] bg-[#fff2dc] px-1.5 text-[8px] font-semibold uppercase leading-none text-[#bf7c17]'
-                : 'inline-flex min-h-4 items-center rounded-[3px] bg-[#e7f5eb] px-1.5 text-[8px] font-semibold uppercase leading-none text-[#28834a]'
+                ? 'inline-flex min-h-4 items-center rounded-[3px] bg-[#fff2dc] px-1.5 text-[8px] font-semibold uppercase leading-none text-[#805300]'
+                : 'inline-flex min-h-4 items-center rounded-[3px] bg-[#e7f5eb] px-1.5 text-[8px] font-semibold uppercase leading-none text-[#1f6b38]'
           "
         >
-          {{ task().priority }}
+          {{ i18n.translate(priorityKeys[task().priority]) }}
         </span>
       </div>
       <button
         mat-icon-button
         type="button"
         class="!mr-[-6px] !mt-[-3px] !mb-[-3px] !h-[30px] !w-[30px] cursor-pointer rounded-full !text-[#7d8795] transition-[background-color,color] duration-[140ms] hover:bg-[#e8edf5] hover:text-[#283548] focus-visible:outline-2 focus-visible:outline-[#2778d0] focus-visible:outline-offset-2 motion-reduce:transition-none"
-        aria-label="Task actions"
+        [attr.aria-label]="'task.actions' | translate"
         [matMenuTriggerFor]="taskActions"
       >
         <span
@@ -39,31 +39,35 @@
         >
       </button>
       <mat-menu #taskActions="matMenu">
-        <button mat-menu-item type="button" (click)="edit.emit(task())">Edit task</button>
-        <button mat-menu-item type="button" (click)="remove.emit(task())">Delete task</button>
+        <button mat-menu-item type="button" (click)="edit.emit(task())">
+          {{ 'task.edit' | translate }}
+        </button>
+        <button mat-menu-item type="button" (click)="remove.emit(task())">
+          {{ 'task.delete' | translate }}
+        </button>
       </mat-menu>
     </div>
     <mat-card-title class="mb-[3px] block text-[12px] font-semibold leading-[1.4] text-[#29313e]">{{
       task().title
     }}</mat-card-title>
-    <p class="m-0 text-[10px] leading-[1.5] text-[#788291]">{{ task().description }}</p>
+    <p class="m-0 text-[10px] leading-[1.5] text-[#5f6b7a]">{{ task().description }}</p>
     <div class="task-meta mt-[7px] grid gap-1">
       <span
         [class]="
           overdue
-            ? 'due-date overdue flex items-center gap-1 whitespace-nowrap text-[9px] text-[#d34f4b]'
-            : 'due-date flex items-center gap-1 whitespace-nowrap text-[9px] text-[#818a97]'
+            ? 'due-date overdue flex items-center gap-1 whitespace-nowrap text-[9px] text-[#a12f2c]'
+            : 'due-date flex items-center gap-1 whitespace-nowrap text-[9px] text-[#5f6b7a]'
         "
       >
         <span
           [class]="
             overdue
-              ? 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#d34f4b]'
+              ? 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#a12f2c]'
               : task().status === 'in_progress'
                 ? 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#2778d0]'
                 : task().status === 'done'
-                  ? 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#28834a]'
-                  : 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#818a97]'
+                  ? 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#1f6b38]'
+                  : 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#5f6b7a]'
           "
           aria-hidden="true"
           >{{ dateStatusIcon }}</span
@@ -72,9 +76,9 @@
       </span>
       @if (task().tags.length) {
         <div
-          class="task-labels grid gap-[3px] pl-2.5 text-[9px] text-[#818a97]"
+          class="task-labels grid gap-[3px] pl-2.5 text-[9px] text-[#5f6b7a]"
           role="group"
-          aria-label="Task labels"
+          [attr.aria-label]="'task.labels' | translate"
         >
           @for (tag of task().tags; track tag) {
             <span>{{ tag }}</span>
@@ -88,7 +92,7 @@
   >
     <span
       class="inline-flex min-h-[18px] items-center gap-[5px] box-border whitespace-nowrap text-[9px] leading-none text-[#626d7c]"
-      [attr.aria-label]="'Assigned to ' + task().assignee.name"
+      [attr.aria-label]="'task.assignedTo' | translate: { name: task().assignee.name }"
     >
       <span
         class="inline-grid h-4 w-4 flex-[0_0_16px] box-border place-items-center rounded-full bg-[#1976d2] text-[7px] font-semibold leading-none text-white"

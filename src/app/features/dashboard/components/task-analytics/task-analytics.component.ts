@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   computed,
+  effect,
   inject,
   OnChanges,
   OnDestroy,
@@ -28,24 +29,23 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import {
   TASK_PRIORITY_CHART_ORDER,
-  TASK_PRIORITY_LABELS,
-  TASK_STATUS_LABELS,
   TASK_STATUS_OPTIONS,
 } from '../../../../shared/constants/task.constants';
+import { I18nService } from '../../../../shared/i18n/i18n.service';
+import { TranslatePipe } from '../../../../shared/i18n/translate.pipe';
 
 let chartsRegistered = false;
 
 @Component({
   selector: 'app-task-analytics',
   standalone: true,
-  imports: [MatCardModule, MatChipsModule],
+  imports: [MatCardModule, MatChipsModule, TranslatePipe],
   templateUrl: './task-analytics.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestroy {
   readonly tasks = input.required<Task[]>();
-  readonly priorityLabels = TASK_PRIORITY_LABELS;
-  readonly statusLabels = TASK_STATUS_LABELS;
+  private readonly i18n = inject(I18nService);
   @ViewChild('priorityCanvas') private priorityCanvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('statusCanvas') private statusCanvas?: ElementRef<HTMLCanvasElement>;
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -53,6 +53,13 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
 
   private priorityChart?: Chart<'doughnut', number[], string>;
   private statusChart?: Chart<'bar', number[], string>;
+
+  constructor() {
+    effect(() => {
+      this.i18n.language();
+      this.updateCharts();
+    });
+  }
 
   /** Returns task counts in the priority chart's High, Medium, Low order. */
   readonly priorityCounts = computed(() => {
@@ -117,14 +124,16 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
 
   /** Creates the priority and status charts with dashboard-specific styling. */
   private createCharts(): void {
-    const textColor = '#778397';
+    const textColor = '#5f6b7a';
     const gridColor = '#eef1f5';
 
     if (this.priorityCanvas) {
       this.priorityChart = new Chart(this.priorityCanvas.nativeElement, {
         type: 'doughnut',
         data: {
-          labels: TASK_PRIORITY_CHART_ORDER.map((priority) => TASK_PRIORITY_LABELS[priority]),
+          labels: TASK_PRIORITY_CHART_ORDER.map((priority) =>
+            this.i18n.translate(`priority.${priority}`),
+          ),
           datasets: [
             {
               data: [0, 0, 0],
@@ -150,7 +159,11 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
       this.statusChart = new Chart(this.statusCanvas.nativeElement, {
         type: 'bar',
         data: {
-          labels: TASK_STATUS_OPTIONS.map((status) => TASK_STATUS_LABELS[status]),
+          labels: TASK_STATUS_OPTIONS.map((status) =>
+            this.i18n.translate(
+              status === 'in_progress' ? 'status.inProgress' : `status.${status}`,
+            ),
+          ),
           datasets: [
             {
               data: [0, 0, 0],
@@ -205,10 +218,16 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
   /** Pushes the latest task counts into the existing chart instances. */
   private updateCharts(): void {
     if (this.priorityChart) {
+      this.priorityChart.data.labels = TASK_PRIORITY_CHART_ORDER.map((priority) =>
+        this.i18n.translate(`priority.${priority}`),
+      );
       this.priorityChart.data.datasets[0].data = this.priorityCounts();
       this.priorityChart.update();
     }
     if (this.statusChart) {
+      this.statusChart.data.labels = TASK_STATUS_OPTIONS.map((status) =>
+        this.i18n.translate(status === 'in_progress' ? 'status.inProgress' : `status.${status}`),
+      );
       this.statusChart.data.datasets[0].data = this.statusCounts();
       this.statusChart.update();
     }

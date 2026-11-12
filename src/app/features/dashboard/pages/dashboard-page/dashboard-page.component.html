@@ -19,7 +19,7 @@
       [mode]="isMobile() ? 'over' : 'side'"
       [opened]="!isMobile() || sidebarOpen()"
       (closedStart)="sidebarOpen.set(false)"
-      aria-label="Main navigation"
+      [attr.aria-label]="'navigation.main' | translate"
     >
       <app-dashboard-sidebar
         class="block h-full"
@@ -41,8 +41,10 @@
         @if (store.error()) {
           <mat-card role="alert">
             <mat-card-content>
-              <p>We couldn’t load your tasks. Please try again.</p>
-              <button mat-button type="button" (click)="store.resource.reload()">Retry</button>
+              <p>{{ 'page.loadError' | translate }}</p>
+              <button mat-button type="button" (click)="store.resource.reload()">
+                {{ 'common.retry' | translate }}
+              </button>
             </mat-card-content>
           </mat-card>
         }
@@ -63,23 +65,51 @@
           >
           </app-dashboard-summary>
 
-          <app-task-board
-            class="block"
-            [columns]="columns"
-            [tasks]="filteredTasks()"
-            [loading]="store.isLoading()"
-            [hasMatchingTasks]="filteredTasks().length > 0"
-            [statusFilter]="statusFilter()"
-            [priorityFilter]="priorityFilter()"
-            [dropListIds]="dropListIds"
-            (statusFilterChange)="statusFilter.set($event)"
-            (priorityFilterChange)="priorityFilter.set($event)"
-            (createTask)="openCreate()"
-            (editTask)="openEdit($event)"
-            (removeTask)="askDelete($event)"
-            (taskDropped)="onDrop($event)"
-          >
-          </app-task-board>
+          @defer (on idle) {
+            <app-task-board
+              class="block"
+              [columns]="columns"
+              [tasks]="filteredTasks()"
+              [loading]="store.isLoading()"
+              [hasMatchingTasks]="filteredTasks().length > 0"
+              [statusFilter]="statusFilter()"
+              [priorityFilter]="priorityFilter()"
+              [dropListIds]="dropListIds"
+              (statusFilterChange)="statusFilter.set($event)"
+              (priorityFilterChange)="priorityFilter.set($event)"
+              (createTask)="openCreate()"
+              (editTask)="openEdit($event)"
+              (removeTask)="askDelete($event)"
+              (taskDropped)="onDrop($event)"
+            >
+            </app-task-board>
+          } @placeholder {
+            <section
+              class="board-section block"
+              [attr.aria-label]="'board.aria' | translate"
+              aria-busy="true"
+            >
+              <div
+                class="mb-3 min-h-9 rounded-md border border-[#e5e8ed] bg-white"
+                aria-hidden="true"
+              ></div>
+              <div
+                class="grid min-h-[470px] grid-cols-3 items-start gap-3 max-lg:grid-cols-2 max-md:min-h-0 max-md:grid-cols-1"
+                aria-hidden="true"
+              >
+                @for (column of columns; track column.status) {
+                  <div class="min-w-0 rounded-md border border-[#e6e9ee] bg-white">
+                    <div class="h-8 border-b border-[#e8ebef]"></div>
+                    <div class="grid content-start gap-2 p-[7px]">
+                      @for (skeleton of loadingSkeletons[column.status]; track skeleton) {
+                        <div class="h-[164px] rounded border border-[#e6e9ee] bg-white"></div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </section>
+          }
         }
       </main>
     </mat-sidenav-content>
