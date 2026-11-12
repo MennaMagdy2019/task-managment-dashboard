@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { I18nService } from '../../i18n/i18n.service';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
 
 describe('ConfirmDeleteDialogComponent', () => {
@@ -16,6 +17,7 @@ describe('ConfirmDeleteDialogComponent', () => {
       ],
     }).compileComponents();
 
+    TestBed.inject(I18nService).setLanguage('en');
     fixture = TestBed.createComponent(ConfirmDeleteDialogComponent);
     fixture.detectChanges();
   });

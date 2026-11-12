@@ -19,6 +19,10 @@ describe('DashboardHeaderComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    i18n.setLanguage('en');
+  });
+
   it('shows a localized hover tooltip for the language switch', () => {
     const languageSwitch = fixture.nativeElement.querySelector(
       '.language-switch',
@@ -29,6 +33,6 @@ describe('DashboardHeaderComponent', () => {
     languageSwitch.click();
     fixture.detectChanges();
 
-    expect(languageSwitch.title).toBe('DE. Switch to English');
+    expect(languageSwitch.title).toBe('DE. Zu Englisch wechseln');
   });
 });
