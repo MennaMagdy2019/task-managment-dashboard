@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,23 +48,23 @@ export class TaskBoardComponent {
   readonly statusLabels = TASK_STATUS_LABELS;
   readonly priorityOptions = TASK_PRIORITY_CHART_ORDER;
   readonly priorityLabels = TASK_PRIORITY_LABELS;
-  @Input() columns: TaskBoardColumn[] = [];
-  @Input() tasks: Task[] = [];
-  @Input() loading = false;
-  @Input() hasMatchingTasks = false;
-  @Input() statusFilter: BoardStatusFilter = ALL_TASK_FILTER;
-  @Input() priorityFilter: BoardPriorityFilter = ALL_TASK_FILTER;
-  @Input() dropListIds: string[] = [];
-  @Output() readonly statusFilterChange = new EventEmitter<BoardStatusFilter>();
-  @Output() readonly priorityFilterChange = new EventEmitter<BoardPriorityFilter>();
-  @Output() readonly createTask = new EventEmitter<void>();
-  @Output() readonly editTask = new EventEmitter<Task>();
-  @Output() readonly removeTask = new EventEmitter<Task>();
-  @Output() readonly taskDropped = new EventEmitter<TaskDropEvent>();
+  readonly columns = input<TaskBoardColumn[]>([]);
+  readonly tasks = input<Task[]>([]);
+  readonly loading = input(false);
+  readonly hasMatchingTasks = input(false);
+  readonly statusFilter = input<BoardStatusFilter>(ALL_TASK_FILTER);
+  readonly priorityFilter = input<BoardPriorityFilter>(ALL_TASK_FILTER);
+  readonly dropListIds = input<string[]>([]);
+  readonly statusFilterChange = output<BoardStatusFilter>();
+  readonly priorityFilterChange = output<BoardPriorityFilter>();
+  readonly createTask = output<void>();
+  readonly editTask = output<Task>();
+  readonly removeTask = output<Task>();
+  readonly taskDropped = output<TaskDropEvent>();
 
   /** Returns the visible tasks belonging to the requested status column. */
   tasksFor(status: TaskStatus): Task[] {
-    return this.tasks.filter((task) => task.status === status);
+    return this.tasks().filter((task) => task.status === status);
   }
 
   /** Emits a drag/drop event with the destination status for the page controller. */

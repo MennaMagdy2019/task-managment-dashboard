@@ -1,6 +1,7 @@
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { resetApiCache } from '../api-cache-interceptor/api-cache.interceptor';
 import { mockApiInterceptor } from '../mock-api-interceptor/mock-api.interceptor';
 import { taskApiInterceptor } from './task-api.interceptor';
 
@@ -9,6 +10,7 @@ describe('taskApiInterceptor', () => {
   let testing: HttpTestingController;
 
   beforeEach(() => {
+    resetApiCache();
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(withInterceptors([taskApiInterceptor, mockApiInterceptor])),
@@ -19,7 +21,19 @@ describe('taskApiInterceptor', () => {
     testing = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => testing.verify());
+  afterEach(() => {
+    testing.verify();
+    resetApiCache();
+  });
+
+  it('passes requests outside the task API through unchanged', () => {
+    const response = jasmine.createSpy('response');
+    http.get('/assets/tasks').subscribe(response);
+
+    testing.expectOne('/assets/tasks').flush({ tasks: [] });
+
+    expect(response).toHaveBeenCalledOnceWith({ tasks: [] });
+  });
 
   it('retries transient GET failures with bounded backoff', fakeAsync(() => {
     const response = jasmine.createSpy('response');
@@ -57,4 +71,20 @@ describe('taskApiInterceptor', () => {
     expect(Array.isArray(response)).toBeTrue();
     testing.expectNone('/api/tasks');
   }));
+
+  it('invalidates cached task reads after a successful write', () => {
+    const url = '/api/tasks/cache-invalidation-test';
+    let firstResponse: unknown;
+    http.get(url).subscribe((value) => (firstResponse = value));
+    testing.expectOne(url).flush([{ id: 'before' }]);
+    expect(firstResponse).toEqual([{ id: 'before' }]);
+
+    http.put(url, { title: 'Updated title' }).subscribe();
+    testing.expectOne({ method: 'PUT', url }).flush({ saved: true });
+
+    let refreshedResponse: unknown;
+    http.get(url).subscribe((value) => (refreshedResponse = value));
+    testing.expectOne(url).flush([{ id: 'after' }]);
+    expect(refreshedResponse).toEqual([{ id: 'after' }]);
+  });
 });

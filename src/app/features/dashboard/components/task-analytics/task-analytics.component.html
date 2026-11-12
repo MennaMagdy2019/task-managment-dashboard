@@ -18,7 +18,7 @@
         role="img"
         aria-label="Doughnut chart showing tasks by priority"
       ></canvas>
-      @if (!tasks.length) {
+      @if (!tasks().length) {
         <p
           class="chart-empty-state absolute inset-x-0 top-1/2 z-[2] m-0 -translate-y-1/2 text-center text-[12px] text-[#788396]"
           role="status"
@@ -29,19 +29,19 @@
       <div
         class="chart-center pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
       >
-        <strong class="text-[25px] leading-[1.15] text-[#243047]">{{ tasks.length }}</strong>
+        <strong class="text-[25px] leading-[1.15] text-[#243047]">{{ tasks().length }}</strong>
         <span class="text-[11px] text-[#8490a2]">tasks</span>
       </div>
     </div>
     <mat-chip-set class="legend mt-2.5 flex flex-wrap gap-1" aria-label="Task counts by priority">
       <mat-chip class="legend-high min-h-[27px] text-[11px]"
-        >{{ priorityLabels.high }} · {{ priorityCounts[0] }}</mat-chip
+        >{{ priorityLabels.high }} · {{ priorityCounts()[0] }}</mat-chip
       >
       <mat-chip class="legend-medium min-h-[27px] text-[11px]"
-        >{{ priorityLabels.medium }} · {{ priorityCounts[1] }}</mat-chip
+        >{{ priorityLabels.medium }} · {{ priorityCounts()[1] }}</mat-chip
       >
       <mat-chip class="legend-low min-h-[27px] text-[11px]"
-        >{{ priorityLabels.low }} · {{ priorityCounts[2] }}</mat-chip
+        >{{ priorityLabels.low }} · {{ priorityCounts()[2] }}</mat-chip
       >
     </mat-chip-set>
   </mat-card>
@@ -65,7 +65,7 @@
         role="img"
         aria-label="Bar chart showing tasks by status"
       ></canvas>
-      @if (!tasks.length) {
+      @if (!tasks().length) {
         <p
           class="chart-empty-state absolute inset-x-0 top-1/2 z-[2] m-0 -translate-y-1/2 text-center text-[12px] text-[#788396]"
           role="status"
@@ -79,13 +79,13 @@
       aria-label="Task counts by status"
     >
       <mat-chip class="status-todo min-h-[27px] text-[11px]"
-        >{{ statusLabels.todo }} · {{ statusCounts[0] }}</mat-chip
+        >{{ statusLabels.todo }} · {{ statusCounts()[0] }}</mat-chip
       >
       <mat-chip class="status-progress min-h-[27px] text-[11px]"
-        >{{ statusLabels.in_progress }} · {{ statusCounts[1] }}</mat-chip
+        >{{ statusLabels.in_progress }} · {{ statusCounts()[1] }}</mat-chip
       >
       <mat-chip class="status-done min-h-[27px] text-[11px]"
-        >{{ statusLabels.done }} · {{ statusCounts[2] }}</mat-chip
+        >{{ statusLabels.done }} · {{ statusCounts()[2] }}</mat-chip
       >
     </mat-chip-set>
   </mat-card>

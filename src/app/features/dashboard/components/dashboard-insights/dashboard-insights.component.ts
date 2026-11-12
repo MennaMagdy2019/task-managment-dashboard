@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { Task, TaskActivity } from '../../../../shared/models/task.model';
@@ -13,8 +13,8 @@ import { TaskAnalyticsComponent } from '../task-analytics/task-analytics.compone
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardInsightsComponent {
-  @Input() tasks: Task[] = [];
-  @Input() activities: TaskActivity[] = [];
+  readonly tasks = input<Task[]>([]);
+  readonly activities = input<TaskActivity[]>([]);
 
   /** Formats an ISO timestamp as a short relative time for the activity feed. */
   timeAgo(value: string): string {

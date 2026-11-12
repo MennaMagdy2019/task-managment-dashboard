@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
@@ -13,23 +13,22 @@ import { TASK_STATUS } from '../../../../shared/constants/task.constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskCardComponent {
-  @Input({ required: true }) task!: Task;
-  @Output() readonly edit = new EventEmitter<Task>();
-  @Output() readonly remove = new EventEmitter<Task>();
+  readonly task = input.required<Task>();
+  readonly edit = output<Task>();
+  readonly remove = output<Task>();
 
   /** Indicates whether an unfinished task has a due date before today. */
   get overdue(): boolean {
-    return (
-      this.task.status !== TASK_STATUS.done &&
-      this.task.dueDate < new Date().toISOString().slice(0, 10)
-    );
+    const task = this.task();
+    return task.status !== TASK_STATUS.done && task.dueDate < new Date().toISOString().slice(0, 10);
   }
 
   /** Returns the date-row icon for the task status, overriding overdue tasks with a warning. */
   get dateStatusIcon(): string {
     if (this.overdue) return 'warning';
-    if (this.task.status === TASK_STATUS.inProgress) return 'schedule';
-    if (this.task.status === TASK_STATUS.done) return 'check_circle';
+    const task = this.task();
+    if (task.status === TASK_STATUS.inProgress) return 'schedule';
+    if (task.status === TASK_STATUS.done) return 'check_circle';
     return 'calendar_today';
   }
 
@@ -37,8 +36,9 @@ export class TaskCardComponent {
   get dueLabel(): string {
     const today = new Date().toISOString().slice(0, 10);
 
-    if (this.task.status === TASK_STATUS.done) {
-      const completedDate = (this.task.completedAt ?? this.task.updatedAt).slice(0, 10);
+    const task = this.task();
+    if (task.status === TASK_STATUS.done) {
+      const completedDate = (task.completedAt ?? task.updatedAt).slice(0, 10);
       const daysSinceCompletion = Math.round(
         (Date.parse(`${today}T00:00:00Z`) - Date.parse(`${completedDate}T00:00:00Z`)) / 86_400_000,
       );
@@ -52,8 +52,7 @@ export class TaskCardComponent {
     }
 
     const daysUntilDue = Math.round(
-      (Date.parse(`${this.task.dueDate}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) /
-        86_400_000,
+      (Date.parse(`${task.dueDate}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 86_400_000,
     );
     if (daysUntilDue < 0) {
       const overdueDays = Math.abs(daysUntilDue);

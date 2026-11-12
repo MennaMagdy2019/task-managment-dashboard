@@ -92,7 +92,7 @@ describe('TaskCardComponent', () => {
 /** Creates the task card with the supplied task overrides. */
 function createFixture(overrides: Partial<Task> = {}): ComponentFixture<TaskCardComponent> {
   const fixture = TestBed.createComponent(TaskCardComponent);
-  fixture.componentInstance.task = { ...baseTask, ...overrides };
+  fixture.componentRef.setInput('task', { ...baseTask, ...overrides });
   fixture.detectChanges();
   return fixture;
 }

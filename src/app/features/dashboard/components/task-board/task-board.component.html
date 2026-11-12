@@ -6,7 +6,7 @@
       <mat-button-toggle-group
         class="h-7 border-0 max-md:flex-[0_0_auto]"
         aria-label="Filter tasks by status"
-        [value]="statusFilter"
+        [value]="statusFilter()"
         (change)="statusFilterChange.emit($event.value)"
       >
         <mat-button-toggle class="h-7 border-0 text-[10px]" [value]="allFilterValue"
@@ -26,7 +26,7 @@
       >
         <mat-label>Priority</mat-label>
         <mat-select
-          [value]="priorityFilter"
+          [value]="priorityFilter()"
           (selectionChange)="priorityFilterChange.emit($event.value)"
         >
           <mat-option [value]="allFilterValue">Priority</mat-option>
@@ -51,7 +51,7 @@
     cdkDropListGroup
     aria-label="Task board columns"
   >
-    @for (column of columns; track column.status) {
+    @for (column of columns(); track column.status) {
       <mat-card
         class="board-column min-w-0 rounded-md border-[#e6e9ee] bg-white shadow-[0_1px_3px_rgb(34_48_69_/_4%)]"
         appearance="outlined"
@@ -72,11 +72,11 @@
             cdkDropList
             [id]="'list-' + column.status"
             [cdkDropListData]="tasksFor(column.status)"
-            [cdkDropListConnectedTo]="dropListIds"
+            [cdkDropListConnectedTo]="dropListIds()"
             [attr.aria-label]="column.label + ' tasks'"
             (cdkDropListDropped)="onDrop($event, column.status)"
           >
-            @if (loading) {
+            @if (loading()) {
               @for (skeleton of [1, 2, 3]; track skeleton) {
                 <mat-card
                   appearance="outlined"
@@ -105,7 +105,7 @@
               } @empty {
                 <mat-card appearance="outlined" class="w-full min-w-0 box-border">
                   <mat-card-content>{{
-                    hasMatchingTasks ? 'Nothing here yet' : 'No tasks match these filters'
+                    hasMatchingTasks() ? 'Nothing here yet' : 'No tasks match these filters'
                   }}</mat-card-content>
                 </mat-card>
               }

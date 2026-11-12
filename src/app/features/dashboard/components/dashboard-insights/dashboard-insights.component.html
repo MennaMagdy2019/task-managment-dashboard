@@ -7,7 +7,7 @@
     class="insights-content grid grid-cols-[minmax(0,1.4fr)_minmax(280px,1fr)] gap-[14px] max-lg:grid-cols-1"
     aria-label="Team overview"
   >
-    <app-task-analytics class="block min-w-0" [tasks]="tasks"></app-task-analytics>
+    <app-task-analytics class="block min-w-0" [tasks]="tasks()"></app-task-analytics>
     <mat-card appearance="outlined">
       <mat-card-header>
         <mat-card-title>Recent activity</mat-card-title>
@@ -15,7 +15,7 @@
       </mat-card-header>
       <mat-card-content>
         <mat-list>
-          @for (activity of activities.slice(0, 4); track activity.id) {
+          @for (activity of activities().slice(0, 4); track activity.id) {
             <mat-list-item>
               <span
                 matListItemAvatar

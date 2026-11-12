@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -15,11 +15,11 @@ import { APP_ROUTE_PATHS } from '../../../../shared/constants/app.constants';
 })
 export class DashboardHeaderComponent {
   readonly routePaths = APP_ROUTE_PATHS;
-  @Input() query = '';
-  @Input() userInitials = '';
-  @Input() sidebarOpen = false;
-  @Output() readonly queryChange = new EventEmitter<string>();
-  @Output() readonly menuToggle = new EventEmitter<void>();
+  readonly query = input('');
+  readonly userInitials = input('');
+  readonly sidebarOpen = input(false);
+  readonly queryChange = output<string>();
+  readonly menuToggle = output<void>();
 
   /** Emits the current search text when the user types into the global search box. */
   onSearchInput(event: Event): void {

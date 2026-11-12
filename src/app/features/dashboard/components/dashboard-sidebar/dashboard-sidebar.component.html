@@ -1,6 +1,6 @@
 <nav
   class="primary-nav grid content-start gap-1"
-  [class.team-menu-open]="teamExpanded"
+  [class.team-menu-open]="teamExpanded()"
   aria-label="Main menu"
 >
   <a
@@ -12,7 +12,7 @@
   >
     <span
       [class]="
-        teamExpanded
+        teamExpanded()
           ? 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#4387c9]'
           : 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#4387c9] group-[.active]:text-white'
       "
@@ -29,7 +29,7 @@
   >
     <span
       [class]="
-        teamExpanded
+        teamExpanded()
           ? 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#2da45b]'
           : 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#2da45b] group-[.active]:text-white'
       "
@@ -46,7 +46,7 @@
   >
     <span
       [class]="
-        teamExpanded
+        teamExpanded()
           ? 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#9774bd]'
           : 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#9774bd] group-[.active]:text-white'
       "
@@ -57,16 +57,16 @@
   <button
     type="button"
     [class]="
-      teamExpanded
+      teamExpanded()
         ? 'active flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] border-0 px-1.5 text-left text-[10px] transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2'
         : 'flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] border-0 px-1.5 text-left text-[10px] transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2'
     "
-    [attr.aria-expanded]="teamExpanded"
+    [attr.aria-expanded]="teamExpanded()"
     (click)="toggleTeamMenu()"
   >
     <span
       [class]="
-        teamExpanded
+        teamExpanded()
           ? 'material-icons mr-[5px] grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-white'
           : 'material-icons mr-[5px] grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#4b83bd]'
       "
@@ -75,24 +75,24 @@
     ><span class="flex-1">Team</span>
     <span
       [class]="
-        teamExpanded ? 'pb-[5px] text-[15px] text-white' : 'pb-[5px] text-[15px] text-[#8d98a9]'
+        teamExpanded() ? 'pb-[5px] text-[15px] text-white' : 'pb-[5px] text-[15px] text-[#8d98a9]'
       "
       aria-hidden="true"
-      >{{ teamExpanded ? '⌄' : '›' }}</span
+      >{{ teamExpanded() ? '⌄' : '›' }}</span
     >
   </button>
-  @if (teamExpanded) {
+  @if (teamExpanded()) {
     <div class="team-subnav grid gap-[3px] py-[3px] pb-[5px]" aria-label="Filter tasks by assignee">
-      @for (user of users; track user.id) {
+      @for (user of users(); track user.id) {
         <button
           type="button"
           [class]="
-            assigneeFilter === user.id
+            assigneeFilter() === user.id
               ? 'flex min-h-[29px] w-full items-center justify-start gap-[6px] rounded-[4px] border-0 px-[5px] text-left text-[10px] leading-none focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2'
               : 'flex min-h-[29px] w-full items-center justify-start gap-[6px] rounded-[4px] border-0 px-[5px] text-left text-[10px] leading-none focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2'
           "
           (click)="assigneeSelected.emit(user.id)"
-          [attr.aria-pressed]="assigneeFilter === user.id"
+          [attr.aria-pressed]="assigneeFilter() === user.id"
         >
           <span
             class="grid h-5 w-5 flex-[0_0_20px] place-items-center rounded-full bg-[#eaf0fa] text-[8px] font-bold text-[#46638f]"
@@ -100,7 +100,7 @@
             class="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
             >{{ user.name }}</span
           >
-          @if (assigneeFilter === user.id) {
+          @if (assigneeFilter() === user.id) {
             <span class="text-[11px] text-[#1769d2]" aria-hidden="true">✓</span>
           }
         </button>

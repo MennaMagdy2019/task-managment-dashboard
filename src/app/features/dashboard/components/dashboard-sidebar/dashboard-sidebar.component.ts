@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -16,13 +16,13 @@ import type { DashboardNavigationAction, DashboardView } from '../../models/dash
 })
 export class DashboardSidebarComponent {
   readonly routePaths = APP_ROUTE_PATHS;
-  @Input() users: readonly Assignee[] = [];
-  @Input() assigneeFilter: string = ALL_TASK_FILTER;
-  @Input() teamExpanded = false;
-  @Output() readonly navigationSelected = new EventEmitter<DashboardNavigationAction>();
-  @Output() readonly routeSelected = new EventEmitter<DashboardView>();
-  @Output() readonly assigneeSelected = new EventEmitter<string>();
-  @Output() readonly createTask = new EventEmitter<void>();
+  readonly users = input<readonly Assignee[]>([]);
+  readonly assigneeFilter = input<string>(ALL_TASK_FILTER);
+  readonly teamExpanded = input(false);
+  readonly navigationSelected = output<DashboardNavigationAction>();
+  readonly routeSelected = output<DashboardView>();
+  readonly assigneeSelected = output<string>();
+  readonly createTask = output<void>();
 
   /** Toggles whether the assignee shortcuts are displayed. */
   toggleTeamMenu(): void {

@@ -4,12 +4,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  computed,
   inject,
-  Input,
   OnChanges,
   OnDestroy,
   PLATFORM_ID,
   ViewChild,
+  input,
 } from '@angular/core';
 import {
   ArcElement,
@@ -42,7 +43,7 @@ let chartsRegistered = false;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestroy {
-  @Input({ required: true }) tasks: Task[] = [];
+  readonly tasks = input.required<Task[]>();
   readonly priorityLabels = TASK_PRIORITY_LABELS;
   readonly statusLabels = TASK_STATUS_LABELS;
   @ViewChild('priorityCanvas') private priorityCanvas?: ElementRef<HTMLCanvasElement>;
@@ -54,18 +55,20 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
   private statusChart?: Chart<'bar', number[], string>;
 
   /** Returns task counts in the priority chart's High, Medium, Low order. */
-  get priorityCounts(): number[] {
+  readonly priorityCounts = computed(() => {
+    const tasks = this.tasks();
     return TASK_PRIORITY_CHART_ORDER.map(
-      (priority) => this.tasks.filter((task) => task.priority === priority).length,
+      (priority) => tasks.filter((task) => task.priority === priority).length,
     );
-  }
+  });
 
   /** Returns task counts in the status chart's To do, In progress, Done order. */
-  get statusCounts(): number[] {
+  readonly statusCounts = computed(() => {
+    const tasks = this.tasks();
     return TASK_STATUS_OPTIONS.map(
-      (status) => this.tasks.filter((task) => task.status === status).length,
+      (status) => tasks.filter((task) => task.status === status).length,
     );
-  }
+  });
 
   /** Creates the charts after their canvas elements are available. */
   ngAfterViewInit(): void {
@@ -95,13 +98,13 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
   private refreshCharts(): void {
     this.renderVersion++;
     this.destroyCharts();
-    if (!this.tasks.length) return;
+    if (!this.tasks().length) return;
     this.scheduleChartRender();
   }
 
   /** Renders the chart instances after Angular has attached conditional canvases. */
   private scheduleChartRender(): void {
-    if (!this.isBrowser || !this.tasks.length) return;
+    if (!this.isBrowser || !this.tasks().length) return;
     const renderVersion = ++this.renderVersion;
     requestAnimationFrame(() => {
       if (renderVersion !== this.renderVersion) return;
@@ -202,11 +205,11 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
   /** Pushes the latest task counts into the existing chart instances. */
   private updateCharts(): void {
     if (this.priorityChart) {
-      this.priorityChart.data.datasets[0].data = this.priorityCounts;
+      this.priorityChart.data.datasets[0].data = this.priorityCounts();
       this.priorityChart.update();
     }
     if (this.statusChart) {
-      this.statusChart.data.datasets[0].data = this.statusCounts;
+      this.statusChart.data.datasets[0].data = this.statusCounts();
       this.statusChart.update();
     }
   }

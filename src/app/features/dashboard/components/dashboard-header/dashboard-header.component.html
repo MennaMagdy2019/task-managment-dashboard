@@ -6,7 +6,7 @@
     type="button"
     class="mobile-menu hidden focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 max-md:col-start-1 max-md:inline-flex"
     aria-label="Open navigation"
-    [attr.aria-expanded]="sidebarOpen"
+    [attr.aria-expanded]="sidebarOpen()"
     (click)="menuToggle.emit()"
   >
     ☰
@@ -41,7 +41,7 @@
       class="!text-[10px] placeholder:!text-[#98a2b3]"
       placeholder="Search tasks..."
       aria-label="Search tasks"
-      [value]="query"
+      [value]="query()"
       (input)="onSearchInput($event)"
     />
   </mat-form-field>
@@ -62,7 +62,7 @@
       aria-label="Current user profile"
     >
       <span class="grid h-full w-full place-items-center leading-none" aria-hidden="true">{{
-        userInitials
+        userInitials()
       }}</span>
     </button>
   </div>

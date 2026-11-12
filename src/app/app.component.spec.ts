@@ -94,6 +94,8 @@ describe('AppComponent', () => {
     expect(fixture.nativeElement.querySelector('app-dashboard-insights')).toBeNull();
 
     await navigateToView('/analytics');
+    await fixture.whenStable();
+    fixture.detectChanges();
     const teamButton = Array.from(
       fixture.nativeElement.querySelectorAll(
         '.primary-nav > button',
@@ -102,10 +104,12 @@ describe('AppComponent', () => {
     teamButton?.click();
     await fixture.whenStable();
     fixture.detectChanges();
-    expect(router.url).toBe('/analytics');
-    expect(fixture.componentInstance.view()).toBe('analytics');
+    expect(router.url).toBe('/team/u1');
+    expect(fixture.componentInstance.view()).toBe('dashboard');
+    expect(fixture.componentInstance.assigneeFilter()).toBe('u1');
     expect(fixture.componentInstance.teamExpanded()).toBeTrue();
-    expect(fixture.nativeElement.querySelectorAll('.primary-nav a.active').length).toBe(1);
+    expect(fixture.nativeElement.querySelectorAll('.primary-nav a.active').length).toBe(0);
+    expect(fixture.nativeElement.querySelector('.primary-nav > button.active')).toBeTruthy();
 
     const navigateLegacyCalendar = router.navigateByUrl('/calendar');
     fixture.detectChanges();
