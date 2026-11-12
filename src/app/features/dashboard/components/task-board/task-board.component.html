@@ -1,0 +1,85 @@
+<section class="board-section" aria-label="Task board">
+  <div class="board-toolbar">
+    <div class="status-filter-bar">
+      <mat-button-toggle-group
+        aria-label="Filter tasks by status"
+        [value]="statusFilter"
+        (change)="statusFilterChange.emit($event.value)"
+      >
+        <mat-button-toggle value="all">All</mat-button-toggle>
+        <mat-button-toggle value="todo">To Do</mat-button-toggle>
+        <mat-button-toggle value="in_progress">In Progress</mat-button-toggle>
+        <mat-button-toggle value="done">Done</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    <div class="board-filters">
+      <mat-form-field appearance="outline" class="filter-control priority-control">
+        <mat-label>Priority</mat-label>
+        <mat-select
+          [value]="priorityFilter"
+          (selectionChange)="priorityFilterChange.emit($event.value)"
+        >
+          <mat-option value="all">Priority</mat-option>
+          <mat-option value="high">High</mat-option>
+          <mat-option value="medium">Medium</mat-option>
+          <mat-option value="low">Low</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button type="button" class="filter-new-task" (click)="createTask.emit()">
+        ＋ New Task
+      </button>
+    </div>
+  </div>
+
+  <div class="board-columns" cdkDropListGroup aria-label="Task board columns">
+    @for (column of columns; track column.status) {
+      <mat-card class="board-column" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title
+            ><span [attr.aria-hidden]="true">{{ column.icon }}</span>
+            {{ column.label }}</mat-card-title
+          >
+          <span class="column-count">{{ tasksFor(column.status).length }}</span>
+        </mat-card-header>
+        <mat-card-content>
+          <div
+            cdkDropList
+            [id]="'list-' + column.status"
+            [cdkDropListData]="tasksFor(column.status)"
+            [cdkDropListConnectedTo]="dropListIds"
+            [attr.aria-label]="column.label + ' tasks'"
+            (cdkDropListDropped)="onDrop($event, column.status)"
+          >
+            @if (loading) {
+              @for (skeleton of [1, 2, 3]; track skeleton) {
+                <mat-card appearance="outlined" aria-label="Loading task">
+                  <mat-card-content
+                    ><mat-progress-bar mode="indeterminate"></mat-progress-bar
+                  ></mat-card-content>
+                </mat-card>
+              }
+            } @else {
+              @for (task of tasksFor(column.status); track task.id) {
+                <div cdkDrag [cdkDragData]="task">
+                  <app-task-card
+                    [task]="task"
+                    (edit)="editTask.emit($event)"
+                    (remove)="removeTask.emit($event)"
+                  ></app-task-card>
+                </div>
+              } @empty {
+                <mat-card appearance="outlined">
+                  <mat-card-content>{{
+                    hasMatchingTasks ? 'Nothing here yet' : 'No tasks match these filters'
+                  }}</mat-card-content>
+                </mat-card>
+              }
+            }
+          </div>
+          <button mat-button type="button" (click)="createTask.emit()">＋ Add task</button>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+  <p>Drag a card to reorder it or move it to another status.</p>
+</section>

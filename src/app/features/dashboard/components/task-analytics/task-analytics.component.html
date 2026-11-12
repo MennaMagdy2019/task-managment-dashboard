@@ -1,0 +1,51 @@
+<section aria-label="Task analytics">
+  <mat-card appearance="outlined">
+    <div class="card-heading">
+      <div>
+        <h2>Tasks by priority</h2>
+        <p>Workload across the team</p>
+      </div>
+      <span class="chart-badge" aria-hidden="true">↗</span>
+    </div>
+    <div class="priority-chart">
+      <canvas
+        #priorityCanvas
+        role="img"
+        aria-label="Doughnut chart showing tasks by priority"
+      ></canvas>
+      @if (!tasks.length) {
+        <p class="chart-empty-state" role="status">No task data to chart yet.</p>
+      }
+      <div class="chart-center">
+        <strong>{{ tasks.length }}</strong>
+        <span>tasks</span>
+      </div>
+    </div>
+    <mat-chip-set class="legend" aria-label="Task counts by priority">
+      <mat-chip class="legend-high">High · {{ priorityCounts[0] }}</mat-chip>
+      <mat-chip class="legend-medium">Medium · {{ priorityCounts[1] }}</mat-chip>
+      <mat-chip class="legend-low">Low · {{ priorityCounts[2] }}</mat-chip>
+    </mat-chip-set>
+  </mat-card>
+
+  <mat-card appearance="outlined">
+    <div class="card-heading">
+      <div>
+        <h2>Task status</h2>
+        <p>Progress at a glance</p>
+      </div>
+      <span class="chart-badge" aria-hidden="true">⌁</span>
+    </div>
+    <div class="status-chart">
+      <canvas #statusCanvas role="img" aria-label="Bar chart showing tasks by status"></canvas>
+      @if (!tasks.length) {
+        <p class="chart-empty-state" role="status">No task data to chart yet.</p>
+      }
+    </div>
+    <mat-chip-set class="status-summary" aria-label="Task counts by status">
+      <mat-chip class="status-todo">To do · {{ statusCounts[0] }}</mat-chip>
+      <mat-chip class="status-progress">In progress · {{ statusCounts[1] }}</mat-chip>
+      <mat-chip class="status-done">Done · {{ statusCounts[2] }}</mat-chip>
+    </mat-chip-set>
+  </mat-card>
+</section>

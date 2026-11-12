@@ -1,1 +1,83 @@
-/* You can add global styles to this file, and also import other style files */
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.dashboard-layout
+  :is(.global-search, .filter-control)
+  :is(.mat-mdc-text-field-wrapper, .mat-mdc-form-field-flex) {
+  height: 32px;
+}
+
+.dashboard-layout :is(.global-search, .filter-control) .mat-mdc-form-field-infix {
+  min-height: 32px;
+  height: 32px;
+  padding: 6px 0;
+}
+
+.dashboard-layout :is(.global-search, .filter-control) .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.app-shell .status-filter-bar .mat-button-toggle-checked {
+  border-radius: 4px;
+  background: #2176cf;
+  color: #fff;
+}
+
+.app-shell .status-filter-bar .mat-button-toggle-checked .mat-button-toggle-label-content {
+  color: inherit;
+}
+
+.app-shell .status-filter-bar .mat-button-toggle-button {
+  display: flex;
+  height: 28px;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-shell .status-filter-bar .mat-button-toggle-label-content {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.app-shell .team-subnav .mat-mdc-button .mdc-button__label {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  line-height: 1;
+  text-align: left;
+}
+
+.app-shell .primary-nav button.active {
+  background: #2176cf;
+  color: #fff;
+}
+
+.app-shell .primary-nav button.active .nav-count {
+  color: #fff;
+}
+
+.app-shell .sidebar .mat-drawer-inner-container {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.app-shell .sidebar .mat-drawer-inner-container::-webkit-scrollbar {
+  display: none;
+}

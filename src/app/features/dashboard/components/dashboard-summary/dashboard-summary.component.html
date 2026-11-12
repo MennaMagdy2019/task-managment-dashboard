@@ -1,0 +1,48 @@
+<section class="summary-grid" aria-label="Task summary">
+  @if (isLoading) {
+    <div class="summary-loading">
+      @for (card of [1, 2, 3, 4]; track card) {
+        <mat-card appearance="outlined" aria-label="Loading task summary">
+          <mat-card-content
+            ><mat-progress-bar mode="indeterminate"></mat-progress-bar
+          ></mat-card-content>
+        </mat-card>
+      }
+    </div>
+  } @else {
+    <div class="summary-cards">
+      <mat-card appearance="outlined"
+        ><mat-card-content>
+          <span class="material-icons" aria-hidden="true">assignment</span>
+          <p>Total Tasks</p>
+          <h2>{{ stats.total }}</h2>
+          <p>+12 this week</p>
+        </mat-card-content></mat-card
+      >
+      <mat-card appearance="outlined"
+        ><mat-card-content>
+          <span class="material-icons" aria-hidden="true">check_box</span>
+          <p>Completed</p>
+          <h2>{{ stats.done }}</h2>
+          <p>+8 today</p>
+        </mat-card-content></mat-card
+      >
+      <mat-card appearance="outlined"
+        ><mat-card-content>
+          <span class="material-icons" aria-hidden="true">schedule</span>
+          <p>In Progress</p>
+          <h2>{{ stats.inProgress }}</h2>
+          <p>Same as yesterday</p>
+        </mat-card-content></mat-card
+      >
+      <mat-card appearance="outlined"
+        ><mat-card-content>
+          <span class="material-icons" aria-hidden="true">warning</span>
+          <p>Overdue</p>
+          <h2>{{ stats.overdue }}</h2>
+          <p>+3 today</p>
+        </mat-card-content></mat-card
+      >
+    </div>
+  }
+</section>

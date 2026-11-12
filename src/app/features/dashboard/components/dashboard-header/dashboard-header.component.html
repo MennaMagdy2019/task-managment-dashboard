@@ -1,0 +1,34 @@
+<mat-toolbar class="topbar">
+  <button
+    mat-icon-button
+    type="button"
+    class="mobile-menu"
+    aria-label="Open navigation"
+    [attr.aria-expanded]="sidebarOpen"
+    (click)="menuToggle.emit()"
+  >
+    ☰
+  </button>
+  <a class="topbar-brand" routerLink="/dashboard">
+    <span class="brand-mark" aria-hidden="true">✓</span><span>Task Manager</span>
+  </a>
+  <mat-form-field appearance="outline" class="global-search">
+    <span matTextPrefix aria-hidden="true">⌕</span>
+    <input
+      matInput
+      type="search"
+      placeholder="Search tasks..."
+      aria-label="Search tasks"
+      [value]="query"
+      (input)="onSearchInput($event)"
+    />
+  </mat-form-field>
+  <div class="topbar-actions">
+    <button mat-icon-button type="button" class="notification-button" aria-label="Notifications">
+      <span aria-hidden="true">♧</span><i></i>
+    </button>
+    <button mat-icon-button type="button" class="profile-avatar" aria-label="Current user profile">
+      {{ userInitials }}
+    </button>
+  </div>
+</mat-toolbar>

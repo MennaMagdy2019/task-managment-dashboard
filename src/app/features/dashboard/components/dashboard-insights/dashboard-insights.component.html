@@ -1,0 +1,30 @@
+<section class="insights-page" aria-labelledby="analytics-title">
+  <header class="insights-header">
+    <h1 id="analytics-title">Analytics</h1>
+    <p>Team workload and recent activity</p>
+  </header>
+  <section class="insights-content" aria-label="Team overview">
+    <app-task-analytics [tasks]="tasks"></app-task-analytics>
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Recent activity</mat-card-title>
+        <mat-card-subtitle>What your team has been up to</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          @for (activity of activities.slice(0, 4); track activity.id) {
+            <mat-list-item>
+              <span matListItemAvatar class="activity-avatar">{{ activity.actor.initials }}</span>
+              <span matListItemTitle>{{ activity.actor.name }} {{ activity.message }}</span>
+              <span matListItemLine
+                >{{ activity.taskTitle }} · {{ timeAgo(activity.occurredAt) }}</span
+              >
+            </mat-list-item>
+          } @empty {
+            <mat-list-item>Activity will show up here.</mat-list-item>
+          }
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </section>
+</section>

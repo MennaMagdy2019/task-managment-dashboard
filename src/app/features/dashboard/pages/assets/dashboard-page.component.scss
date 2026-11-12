@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #252b36;
+}
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  overflow-x: clip;
+  background: #f4f6f9;
+}
+.app-shell {
+  height: calc(100vh - 44px);
+  min-height: 420px;
+  overflow-x: hidden;
+  background: #f4f6f9;
+}
+.sidebar {
+  width: 152px;
+  padding: 4px 12px;
+  box-sizing: border-box;
+  border-right: 1px solid #e4e8ee;
+  background: #fff;
+}
+.main-shell {
+  min-width: 0;
+  overflow-x: hidden;
+  background: #f4f6f9;
+}
+.page-content {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 10px 16px 24px;
+}
+@media (max-width: 850px) {
+  .sidebar {
+    width: 152px;
+  }
+  .page-content {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+}
+@media (max-width: 700px) {
+  .app-shell {
+    height: calc(100vh - 50px);
+  }
+  .sidebar {
+    width: min(270px, 85vw);
+  }
+  .page-content {
+    padding: 8px 10px 20px;
+  }
+}

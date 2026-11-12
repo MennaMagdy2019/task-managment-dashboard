@@ -1,0 +1,75 @@
+<div class="dashboard-layout">
+  <app-dashboard-header
+    [query]="query()"
+    [userInitials]="currentUser.initials"
+    [sidebarOpen]="sidebarOpen()"
+    (queryChange)="query.set($event)"
+    (menuToggle)="toggleSidebar()"
+  >
+  </app-dashboard-header>
+
+  <mat-sidenav-container class="app-shell">
+    <mat-sidenav
+      class="sidebar"
+      [mode]="isMobile() ? 'over' : 'side'"
+      [opened]="!isMobile() || sidebarOpen()"
+      (closedStart)="sidebarOpen.set(false)"
+      aria-label="Main navigation"
+    >
+      <app-dashboard-sidebar
+        [users]="users"
+        [assigneeFilter]="assigneeFilter()"
+        [teamExpanded]="teamExpanded()"
+        (navigationSelected)="selectNavigationItem($event)"
+        (assigneeSelected)="setAssignee($event)"
+        (createTask)="openCreate()"
+      >
+      </app-dashboard-sidebar>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="main-shell">
+      <main class="page-content">
+        @if (store.error()) {
+          <mat-card role="alert">
+            <mat-card-content>
+              <p>We couldn’t load your tasks. Please try again.</p>
+              <button mat-button type="button" (click)="store.resource.reload()">Retry</button>
+            </mat-card-content>
+          </mat-card>
+        }
+
+        @if (view() === 'analytics') {
+          <app-dashboard-insights
+            [tasks]="tasks()"
+            [activities]="activities()"
+          ></app-dashboard-insights>
+        } @else {
+          <app-dashboard-summary
+            [stats]="stats()"
+            [completionRate]="completionRate()"
+            [isLoading]="store.isLoading()"
+            [columns]="statColumns()"
+          >
+          </app-dashboard-summary>
+
+          <app-task-board
+            [columns]="columns"
+            [tasks]="filteredTasks()"
+            [loading]="store.isLoading()"
+            [hasMatchingTasks]="filteredTasks().length > 0"
+            [statusFilter]="statusFilter()"
+            [priorityFilter]="priorityFilter()"
+            [dropListIds]="dropListIds"
+            (statusFilterChange)="statusFilter.set($event)"
+            (priorityFilterChange)="priorityFilter.set($event)"
+            (createTask)="openCreate()"
+            (editTask)="openEdit($event)"
+            (removeTask)="askDelete($event)"
+            (taskDropped)="onDrop($event)"
+          >
+          </app-task-board>
+        }
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

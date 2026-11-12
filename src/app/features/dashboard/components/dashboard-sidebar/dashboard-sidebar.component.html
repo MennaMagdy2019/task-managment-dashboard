@@ -1,0 +1,59 @@
+<nav class="primary-nav" aria-label="Main menu">
+  <a routerLink="/dashboard" routerLinkActive="active" ariaCurrentWhenActive="page">
+    <span class="material-icons nav-icon dashboard-icon" aria-hidden="true">dashboard</span
+    ><span class="nav-label">Dashboard</span>
+  </a>
+  <a routerLink="/tasks" routerLinkActive="active" ariaCurrentWhenActive="page">
+    <span class="material-icons nav-icon tasks-icon" aria-hidden="true">task_alt</span
+    ><span class="nav-label">Tasks</span>
+  </a>
+  <a routerLink="/analytics" routerLinkActive="active" ariaCurrentWhenActive="page">
+    <span class="material-icons nav-icon analytics-icon" aria-hidden="true">analytics</span
+    ><span class="nav-label">Analytics</span>
+  </a>
+  <button
+    type="button"
+    [class.team-expanded]="teamExpanded"
+    [attr.aria-expanded]="teamExpanded"
+    (click)="toggleTeamMenu()"
+  >
+    <span class="material-icons nav-icon team-icon" aria-hidden="true">groups</span
+    ><span class="nav-label">Team</span>
+    <span class="team-chevron" aria-hidden="true">{{ teamExpanded ? '⌄' : '›' }}</span>
+  </button>
+  @if (teamExpanded) {
+    <div class="team-subnav" aria-label="Filter tasks by assignee">
+      @for (user of users; track user.id) {
+        <button
+          mat-button
+          type="button"
+          [class.selected]="assigneeFilter === user.id"
+          (click)="assigneeSelected.emit(user.id)"
+          [attr.aria-pressed]="assigneeFilter === user.id"
+        >
+          <span class="team-avatar">{{ user.initials }}</span><span class="team-name">{{
+            user.name
+          }}</span>
+          @if (assigneeFilter === user.id) {
+            <span class="selected-indicator" aria-hidden="true">✓</span>
+          }
+        </button>
+      }
+    </div>
+  }
+  <button type="button" (click)="navigationSelected.emit('settings')">
+    <span class="material-icons nav-icon settings-icon" aria-hidden="true">settings</span
+    ><span class="nav-label">Settings</span>
+  </button>
+</nav>
+<div class="sidebar-bottom">
+  <button
+    mat-flat-button
+    type="button"
+    class="sidebar-new-task"
+    aria-label="Create a new task"
+    (click)="createTask.emit()"
+  >
+    <span aria-hidden="true">＋</span> New Task
+  </button>
+</div>

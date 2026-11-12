@@ -1,0 +1,130 @@
+:host {
+  display: block;
+}
+
+.summary-grid {
+  display: block;
+  margin: 0 -3px 8px;
+  height: 112px;
+}
+
+.summary-cards {
+  display: grid;
+  height: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.summary-cards > mat-card {
+  min-width: 0;
+  height: calc(100% - 8px);
+  border-color: #e3e7ed;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgb(34 48 69 / 8%);
+}
+.summary-loading {
+  display: grid;
+  height: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.summary-loading mat-card {
+  height: calc(100% - 8px);
+  border-color: #e3e7ed;
+  border-radius: 6px;
+  background: #fff;
+}
+.summary-loading mat-card-content {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+}
+
+mat-card-content {
+  display: grid;
+  height: 100%;
+  grid-template-columns: auto 1fr;
+  align-content: center;
+  align-items: center;
+  gap: 0 8px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+}
+
+mat-card-content > span {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  grid-row: span 2;
+  place-items: center;
+  border-radius: 4px;
+  background: #eff5ff;
+  color: #1769d2;
+  font-size: 13px;
+}
+
+.summary-cards > mat-card:nth-child(2) mat-card-content > span {
+  background: #e5f6e8;
+  color: #239c43;
+}
+.summary-cards > mat-card:nth-child(3) mat-card-content > span {
+  background: #edf3fa;
+  color: #3c658d;
+}
+.summary-cards > mat-card:nth-child(4) mat-card-content > span {
+  background: #fff0ef;
+  color: #e36a62;
+}
+mat-card-content > p:first-of-type {
+  margin: 0;
+  color: #7e8793;
+  font-size: 9px;
+}
+mat-card-content h2 {
+  margin: 4px 0 2px;
+  color: #202734;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1;
+}
+mat-card-content h2 + p {
+  grid-column: 2;
+  margin: 2px 0 0;
+  color: #89929e;
+  font-size: 8px;
+}
+
+@media (max-width: 700px) {
+  .summary-grid {
+    height: auto;
+    margin-bottom: 6px;
+  }
+  mat-card-content {
+    gap: 0 6px;
+    padding: 7px;
+  }
+  mat-card-content > span {
+    width: 18px;
+    height: 18px;
+  }
+  mat-card-content p {
+    font-size: 8px;
+  }
+  mat-card-content h2 {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 850px) {
+  .summary-cards,
+  .summary-loading {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .summary-grid,
+  .summary-cards {
+    height: auto;
+  }
+  .summary-cards > mat-card {
+    min-height: 92px;
+  }
+}

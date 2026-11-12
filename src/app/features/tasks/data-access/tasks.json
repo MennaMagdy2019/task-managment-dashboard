@@ -1,0 +1,227 @@
+{
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "Prepare Q3 campaign brief",
+      "description": "Pull together the messaging, goals and channel plan for the upcoming launch.",
+      "status": "todo",
+      "priority": "high",
+      "dueDate": "2026-11-08",
+      "isOverdue": true,
+      "assignee": {
+        "id": "u2",
+        "name": "Phoenix Baker",
+        "avatar": "PB",
+        "email": "phoenix@acme.com"
+      },
+      "tags": ["Marketing", "Launch"],
+      "createdAt": "2026-11-06T23:24:59.055Z",
+      "updatedAt": "2026-11-07T23:24:59.055Z"
+    },
+    {
+      "id": "t2",
+      "title": "Review homepage wireframes",
+      "description": "Share feedback on the latest homepage exploration with the product team.",
+      "status": "todo",
+      "priority": "medium",
+      "dueDate": "2026-11-13",
+      "isOverdue": false,
+      "assignee": {
+        "id": "u3",
+        "name": "Lana Steiner",
+        "avatar": "LS",
+        "email": "lana@acme.com"
+      },
+      "tags": ["Design"],
+      "createdAt": "2026-11-07T23:24:59.055Z",
+      "updatedAt": "2026-11-08T23:24:59.055Z"
+    },
+    {
+      "id": "t3",
+      "title": "Set up analytics events",
+      "description": "Define and document the events we need to track across onboarding.",
+      "status": "todo",
+      "priority": "low",
+      "dueDate": "2026-11-16",
+      "isOverdue": false,
+      "assignee": {
+        "id": "u1",
+        "name": "Olivia Rhye",
+        "avatar": "OR",
+        "email": "olivia@acme.com"
+      },
+      "tags": ["Product"],
+      "createdAt": "2026-11-08T23:24:59.055Z",
+      "updatedAt": "2026-11-09T23:24:59.055Z"
+    },
+    {
+      "id": "t4",
+      "title": "Draft customer interview guide",
+      "description": "Prepare a short discussion guide for next week’s customer calls.",
+      "status": "todo",
+      "priority": "low",
+      "dueDate": "2026-11-19",
+      "isOverdue": false,
+      "assignee": {
+        "id": "u4",
+        "name": "Demi Wilkinson",
+        "avatar": "DW",
+        "email": "demi@acme.com"
+      },
+      "tags": ["Research"],
+      "createdAt": "2026-11-09T23:24:59.055Z",
+      "updatedAt": "2026-11-10T23:24:59.055Z"
+    },
+    {
+      "id": "t5",
+      "title": "Audit accessibility contrast",
+      "description": "Check the core application flows against WCAG contrast guidelines.",
+      "status": "todo",
+      "priority": "high",
+      "dueDate": "2026-11-10",
+      "isOverdue": false,
+      "assignee": {
+        "id": "u5",
+        "name": "Candice Wu",
+        "avatar": "CW",
+        "email": "candice@acme.com"
+      },
+      "tags": ["Accessibility"],
+      "createdAt": "2026-11-05T23:24:59.055Z",
+      "updatedAt": "2026-11-06T23:24:59.055Z"
+    },
+    {
+      "id": "t6",
+      "title": "Polish onboarding flow",
+      "description": "Tighten the copy and final details across the new user onboarding screens.",
+      "status": "in_progress",
+      "priority": "high",
+      "dueDate": "2026-11-09",
+      "isOverdue": true,
+      "assignee": {
+        "id": "u1",
+        "name": "Olivia Rhye",
+        "avatar": "OR",
+        "email": "olivia@acme.com"
+      },
+      "tags": ["Product", "Onboarding"],
+      "createdAt": "2026-11-04T23:24:59.055Z",
+      "updatedAt": "2026-11-05T23:24:59.055Z"
+    },
+    {
+      "id": "t7",
+      "title": "Build the integrations page",
+      "description": "Create the first pass of the integrations directory and connection states.",
+      "status": "in_progress",
+      "priority": "medium",
+      "dueDate": "2026-11-12",
+      "isOverdue": false,
+      "assignee": {
+        "id": "u2",
+        "name": "Phoenix Baker",
+        "avatar": "PB",
+        "email": "phoenix@acme.com"
+      },
+      "tags": ["Engineering"],
+      "createdAt": "2026-11-05T23:24:59.055Z",
+      "updatedAt": "2026-11-06T23:24:59.055Z"
+    },
+    {
+      "id": "t8",
+      "title": "Organize customer feedback",
+      "description": "Group recent feedback into themes and add takeaways to the research doc.",
+      "status": "in_progress",
+      "priority": "low",
+      "dueDate": "2026-11-15",
+      "isOverdue": false,
+      "assignee": {
+        "id": "u4",
+        "name": "Demi Wilkinson",
+        "avatar": "DW",
+        "email": "demi@acme.com"
+      },
+      "tags": ["Research"],
+      "createdAt": "2026-11-06T23:24:59.055Z",
+      "updatedAt": "2026-11-07T23:24:59.055Z"
+    },
+    {
+      "id": "t9",
+      "title": "Update the design system",
+      "description": "Document the latest button and form field component updates.",
+      "status": "in_progress",
+      "priority": "medium",
+      "dueDate": "2026-11-17",
+      "isOverdue": false,
+      "assignee": {
+        "id": "u3",
+        "name": "Lana Steiner",
+        "avatar": "LS",
+        "email": "lana@acme.com"
+      },
+      "tags": ["Design"],
+      "createdAt": "2026-11-07T23:24:59.055Z",
+      "updatedAt": "2026-11-08T23:24:59.055Z"
+    },
+    {
+      "id": "t10",
+      "title": "Publish product release notes",
+      "description": "Write and publish release notes for this week’s product update.",
+      "status": "done",
+      "priority": "high",
+      "dueDate": "2026-11-07",
+      "isOverdue": false,
+      "assignee": {
+        "id": "u5",
+        "name": "Candice Wu",
+        "avatar": "CW",
+        "email": "candice@acme.com"
+      },
+      "tags": ["Product"],
+      "createdAt": "2026-11-02T23:24:59.055Z",
+      "updatedAt": "2026-11-03T23:24:59.055Z",
+      "completedAt": "2026-11-03T23:24:59.055Z"
+    },
+    {
+      "id": "t11",
+      "title": "Share sprint retrospective",
+      "description": "Collect the team’s notes and circulate the retrospective summary.",
+      "status": "done",
+      "priority": "low",
+      "dueDate": "2026-11-09",
+      "isOverdue": false,
+      "assignee": {
+        "id": "u1",
+        "name": "Olivia Rhye",
+        "avatar": "OR",
+        "email": "olivia@acme.com"
+      },
+      "tags": ["Team"],
+      "createdAt": "2026-11-03T23:24:59.055Z",
+      "updatedAt": "2026-11-04T23:24:59.055Z",
+      "completedAt": "2026-11-04T23:24:59.055Z"
+    },
+    {
+      "id": "t12",
+      "title": "Finalize brand guidelines",
+      "description": "Package the approved visual identity and usage examples for the team.",
+      "status": "done",
+      "priority": "medium",
+      "dueDate": "2026-11-05",
+      "isOverdue": false,
+      "assignee": {
+        "id": "u3",
+        "name": "Lana Steiner",
+        "avatar": "LS",
+        "email": "lana@acme.com"
+      },
+      "tags": ["Brand"],
+      "createdAt": "2026-10-31T23:24:59.055Z",
+      "updatedAt": "2026-11-01T23:24:59.055Z",
+      "completedAt": "2026-11-01T23:24:59.055Z"
+    }
+  ],
+  "meta": {
+    "totalCount": 12,
+    "lastUpdated": "2026-11-10T23:24:59.055Z"
+  }
+}
