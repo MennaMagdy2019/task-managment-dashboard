@@ -39,7 +39,6 @@ let chartsRegistered = false;
   standalone: true,
   imports: [MatCardModule, MatChipsModule],
   templateUrl: './task-analytics.component.html',
-  styleUrl: './task-analytics.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestroy {

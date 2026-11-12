@@ -10,7 +10,6 @@ import { TASK_STATUS } from '../../../../shared/constants/task.constants';
   standalone: true,
   imports: [MatButtonModule, MatCardModule, MatMenuModule],
   templateUrl: './task-card.component.html',
-  styleUrl: './task-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskCardComponent {

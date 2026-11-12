@@ -1,71 +1,129 @@
-<nav class="primary-nav" [class.team-menu-open]="teamExpanded" aria-label="Main menu">
+<nav
+  class="primary-nav grid content-start gap-1"
+  [class.team-menu-open]="teamExpanded"
+  aria-label="Main menu"
+>
   <a
+    class="group flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] px-1.5 text-left text-[10px] no-underline transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 max-md:focus-visible:outline-2"
     [routerLink]="routePaths.dashboard.url"
     routerLinkActive="active"
     ariaCurrentWhenActive="page"
     (click)="routeSelected.emit('dashboard')"
   >
-    <span class="material-icons nav-icon dashboard-icon" aria-hidden="true">dashboard</span
+    <span
+      [class]="
+        teamExpanded
+          ? 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#4387c9]'
+          : 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#4387c9] group-[.active]:text-white'
+      "
+      aria-hidden="true"
+      >dashboard</span
     ><span class="nav-label">Dashboard</span>
   </a>
   <a
+    class="group flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] px-1.5 text-left text-[10px] no-underline transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2"
     [routerLink]="routePaths.tasks.url"
     routerLinkActive="active"
     ariaCurrentWhenActive="page"
     (click)="routeSelected.emit('my-tasks')"
   >
-    <span class="material-icons nav-icon tasks-icon" aria-hidden="true">task_alt</span
+    <span
+      [class]="
+        teamExpanded
+          ? 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#2da45b]'
+          : 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#2da45b] group-[.active]:text-white'
+      "
+      aria-hidden="true"
+      >task_alt</span
     ><span class="nav-label">Tasks</span>
   </a>
   <a
+    class="group flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] px-1.5 text-left text-[10px] no-underline transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2"
     [routerLink]="routePaths.analytics.url"
     routerLinkActive="active"
     ariaCurrentWhenActive="page"
     (click)="routeSelected.emit('analytics')"
   >
-    <span class="material-icons nav-icon analytics-icon" aria-hidden="true">analytics</span
+    <span
+      [class]="
+        teamExpanded
+          ? 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#9774bd]'
+          : 'material-icons grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#9774bd] group-[.active]:text-white'
+      "
+      aria-hidden="true"
+      >analytics</span
     ><span class="nav-label">Analytics</span>
   </a>
   <button
     type="button"
-    [class.active]="teamExpanded"
+    [class]="
+      teamExpanded
+        ? 'active flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] border-0 px-1.5 text-left text-[10px] transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2'
+        : 'flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] border-0 px-1.5 text-left text-[10px] transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2'
+    "
     [attr.aria-expanded]="teamExpanded"
     (click)="toggleTeamMenu()"
   >
-    <span class="material-icons nav-icon team-icon" aria-hidden="true">groups</span
-    ><span class="nav-label">Team</span>
-    <span class="team-chevron" aria-hidden="true">{{ teamExpanded ? '⌄' : '›' }}</span>
+    <span
+      [class]="
+        teamExpanded
+          ? 'material-icons mr-[5px] grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-white'
+          : 'material-icons mr-[5px] grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#4b83bd]'
+      "
+      aria-hidden="true"
+      >groups</span
+    ><span class="flex-1">Team</span>
+    <span
+      [class]="
+        teamExpanded ? 'pb-[5px] text-[15px] text-white' : 'pb-[5px] text-[15px] text-[#8d98a9]'
+      "
+      aria-hidden="true"
+      >{{ teamExpanded ? '⌄' : '›' }}</span
+    >
   </button>
   @if (teamExpanded) {
-    <div class="team-subnav" aria-label="Filter tasks by assignee">
+    <div class="team-subnav grid gap-[3px] py-[3px] pb-[5px]" aria-label="Filter tasks by assignee">
       @for (user of users; track user.id) {
         <button
-          mat-button
           type="button"
-          [class.selected]="assigneeFilter === user.id"
+          [class]="
+            assigneeFilter === user.id
+              ? 'flex min-h-[29px] w-full items-center justify-start gap-[6px] rounded-[4px] border-0 px-[5px] text-left text-[10px] leading-none focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2'
+              : 'flex min-h-[29px] w-full items-center justify-start gap-[6px] rounded-[4px] border-0 px-[5px] text-left text-[10px] leading-none focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2'
+          "
           (click)="assigneeSelected.emit(user.id)"
           [attr.aria-pressed]="assigneeFilter === user.id"
         >
-          <span class="team-avatar">{{ user.initials }}</span><span class="team-name">{{
-            user.name
-          }}</span>
+          <span
+            class="grid h-5 w-5 flex-[0_0_20px] place-items-center rounded-full bg-[#eaf0fa] text-[8px] font-bold text-[#46638f]"
+            >{{ user.initials }}</span><span
+            class="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
+            >{{ user.name }}</span
+          >
           @if (assigneeFilter === user.id) {
-            <span class="selected-indicator" aria-hidden="true">✓</span>
+            <span class="text-[11px] text-[#1769d2]" aria-hidden="true">✓</span>
           }
         </button>
       }
     </div>
   }
-  <button type="button" (click)="navigationSelected.emit('settings')">
-    <span class="material-icons nav-icon settings-icon" aria-hidden="true">settings</span
-    ><span class="nav-label">Settings</span>
+  <button
+    type="button"
+    class="flex h-[29px] min-h-[29px] w-full box-border items-center rounded-[4px] border-0 px-1.5 text-left text-[10px] transition-colors duration-[140ms] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2"
+    (click)="navigationSelected.emit('settings')"
+  >
+    <span
+      class="material-icons mr-[5px] grid h-[18px] w-4 flex-[0_0_16px] place-items-center text-[13px] text-[#7b8490]"
+      aria-hidden="true"
+      >settings</span
+    ><span class="flex-1">Settings</span>
   </button>
 </nav>
-<div class="sidebar-bottom">
+<div class="sidebar-bottom mt-2.5 grid">
   <button
     mat-flat-button
     type="button"
-    class="sidebar-new-task"
+    class="sidebar-new-task min-h-[30px] w-full rounded-[4px] text-[11px] font-semibold shadow-[0_3px_8px_rgb(25_118_210_/_16%)] transition-[background-color,box-shadow] duration-[140ms] hover:bg-[#1769c2] hover:shadow-[0_4px_10px_rgb(25_118_210_/_26%)] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 motion-reduce:transition-none"
     aria-label="Create a new task"
     (click)="createTask.emit()"
   >

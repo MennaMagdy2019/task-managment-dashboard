@@ -8,7 +8,6 @@ import type { DashboardStatistics } from '../../models/dashboard.model';
   standalone: true,
   imports: [MatCardModule, MatProgressBarModule],
   templateUrl: './dashboard-summary.component.html',
-  styleUrl: './dashboard-summary.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardSummaryComponent {

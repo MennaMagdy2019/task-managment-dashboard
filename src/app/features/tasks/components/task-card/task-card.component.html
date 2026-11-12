@@ -1,19 +1,26 @@
 <mat-card
   appearance="outlined"
-  class="task-card"
-  [class.overdue]="overdue"
-  [class.status-todo]="task.status === 'todo'"
-  [class.status-in-progress]="task.status === 'in_progress'"
-  [class.status-done]="task.status === 'done'"
+  [class]="
+    overdue
+      ? 'task-card block rounded-[5px] border !border-[#f5c5ca] border-l-[3px] !border-l-[#ee3f4b] !bg-[#fff0f2] px-[10px] py-[9px] shadow-[0_1px_2px_rgb(26_39_61_/_4%)] transition-[border-color,box-shadow] duration-[140ms] hover:!border-[#ef3d49] hover:!shadow-[0_3px_10px_rgb(239_61_73_/_24%)] motion-reduce:transition-none'
+      : task.status === 'todo'
+        ? 'task-card block rounded-[5px] border border-[#e5e8ed] bg-white px-[10px] py-[9px] shadow-[0_1px_2px_rgb(26_39_61_/_4%)] transition-[border-color,box-shadow] duration-[140ms] hover:!border-[#2778d0] hover:!shadow-[0_3px_10px_rgb(39_120_208_/_22%)] motion-reduce:transition-none'
+        : task.status === 'in_progress'
+          ? 'task-card block rounded-[5px] border border-[#e5e8ed] bg-white px-[10px] py-[9px] shadow-[0_1px_2px_rgb(26_39_61_/_4%)] transition-[border-color,box-shadow] duration-[140ms] hover:!border-[#ee9b2b] hover:!shadow-[0_3px_10px_rgb(238_155_43_/_22%)] motion-reduce:transition-none'
+          : 'task-card block rounded-[5px] border border-[#e5e8ed] bg-white px-[10px] py-[9px] shadow-[0_1px_2px_rgb(26_39_61_/_4%)] transition-[border-color,box-shadow] duration-[140ms] hover:!border-[#31a55a] hover:!shadow-[0_3px_10px_rgb(49_165_90_/_22%)] motion-reduce:transition-none'
+  "
 >
-  <mat-card-content>
-    <div class="task-card-toolbar">
-      <div class="task-priority" role="group" aria-label="Task priority">
+  <mat-card-content class="!p-0">
+    <div class="task-card-toolbar mb-[5px] flex min-h-6 items-center justify-between">
+      <div role="group" aria-label="Task priority">
         <span
-          class="priority-chip"
-          [class.high]="task.priority === 'high'"
-          [class.medium]="task.priority === 'medium'"
-          [class.low]="task.priority === 'low'"
+          [class]="
+            task.priority === 'high'
+              ? 'inline-flex min-h-4 items-center rounded-[3px] bg-[#ffe9e8] px-1.5 text-[8px] font-semibold uppercase leading-none text-[#d64e49]'
+              : task.priority === 'medium'
+                ? 'inline-flex min-h-4 items-center rounded-[3px] bg-[#fff2dc] px-1.5 text-[8px] font-semibold uppercase leading-none text-[#bf7c17]'
+                : 'inline-flex min-h-4 items-center rounded-[3px] bg-[#e7f5eb] px-1.5 text-[8px] font-semibold uppercase leading-none text-[#28834a]'
+          "
         >
           {{ task.priority }}
         </span>
@@ -21,25 +28,54 @@
       <button
         mat-icon-button
         type="button"
+        class="!mr-[-6px] !mt-[-3px] !mb-[-3px] !h-[30px] !w-[30px] cursor-pointer rounded-full !text-[#7d8795] transition-[background-color,color] duration-[140ms] hover:bg-[#e8edf5] hover:text-[#283548] focus-visible:outline-2 focus-visible:outline-[#2778d0] focus-visible:outline-offset-2 motion-reduce:transition-none"
         aria-label="Task actions"
         [matMenuTriggerFor]="taskActions"
       >
-        <span aria-hidden="true">⋮</span>
+        <span
+          class="grid h-full w-full place-items-center text-[18px] leading-none"
+          aria-hidden="true"
+          >⋮</span
+        >
       </button>
       <mat-menu #taskActions="matMenu">
         <button mat-menu-item type="button" (click)="edit.emit(task)">Edit task</button>
         <button mat-menu-item type="button" (click)="remove.emit(task)">Delete task</button>
       </mat-menu>
     </div>
-    <mat-card-title>{{ task.title }}</mat-card-title>
-    <p>{{ task.description }}</p>
-    <div class="task-meta">
-      <span class="due-date" [class.overdue]="overdue">
-        <span class="material-icons due-date-icon" aria-hidden="true">{{ dateStatusIcon }}</span>
+    <mat-card-title class="mb-[3px] block text-[12px] font-semibold leading-[1.4] text-[#29313e]">{{
+      task.title
+    }}</mat-card-title>
+    <p class="m-0 text-[10px] leading-[1.5] text-[#788291]">{{ task.description }}</p>
+    <div class="task-meta mt-[7px] grid gap-1">
+      <span
+        [class]="
+          overdue
+            ? 'due-date overdue flex items-center gap-1 whitespace-nowrap text-[9px] text-[#d34f4b]'
+            : 'due-date flex items-center gap-1 whitespace-nowrap text-[9px] text-[#818a97]'
+        "
+      >
+        <span
+          [class]="
+            overdue
+              ? 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#d34f4b]'
+              : task.status === 'in_progress'
+                ? 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#2778d0]'
+                : task.status === 'done'
+                  ? 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#28834a]'
+                  : 'material-icons due-date-icon h-[10px] w-[10px] text-[10px] leading-none text-[#818a97]'
+          "
+          aria-hidden="true"
+          >{{ dateStatusIcon }}</span
+        >
         {{ dueLabel }}
       </span>
       @if (task.tags.length) {
-        <div class="task-labels" role="group" aria-label="Task labels">
+        <div
+          class="task-labels grid gap-[3px] pl-2.5 text-[9px] text-[#818a97]"
+          role="group"
+          aria-label="Task labels"
+        >
           @for (tag of task.tags; track tag) {
             <span>{{ tag }}</span>
           }
@@ -47,9 +83,18 @@
       }
     </div>
   </mat-card-content>
-  <mat-card-actions>
-    <span class="assignee-chip" [attr.aria-label]="'Assigned to ' + task.assignee.name">
-      <span class="assignee-avatar" aria-hidden="true">{{ task.assignee.initials }}</span>
+  <mat-card-actions
+    class="mt-[7px] flex min-h-6 items-center justify-start gap-1.5 border-t border-[#e9ebef] !px-0 !pt-1.5 !pb-0"
+  >
+    <span
+      class="inline-flex min-h-[18px] items-center gap-[5px] box-border whitespace-nowrap text-[9px] leading-none text-[#626d7c]"
+      [attr.aria-label]="'Assigned to ' + task.assignee.name"
+    >
+      <span
+        class="inline-grid h-4 w-4 flex-[0_0_16px] box-border place-items-center rounded-full bg-[#1976d2] text-[7px] font-semibold leading-none text-white"
+        aria-hidden="true"
+        >{{ task.assignee.initials }}</span
+      >
       <span>{{ task.assignee.name }}</span>
     </span>
   </mat-card-actions>

@@ -1,8 +1,14 @@
-<div class="editor-heading">
+<div
+  class="editor-heading flex items-start justify-between gap-4 px-6 pt-[22px] pb-3 max-xs:px-[18px] max-xs:pt-[18px] max-xs:pb-2.5"
+>
   <div>
-    <span class="editor-eyebrow">{{ task ? 'TASK DETAILS' : 'NEW TASK' }}</span>
-    <h2 mat-dialog-title>{{ task ? 'Edit task' : 'Create a task' }}</h2>
-    <p>
+    <span class="editor-eyebrow text-[9px] font-bold tracking-[0.12em] text-[#6d8bb7]">{{
+      task ? 'TASK DETAILS' : 'NEW TASK'
+    }}</span>
+    <h2 mat-dialog-title class="mt-[5px] text-[22px] font-semibold leading-[1.25] text-[#202b3c]">
+      {{ task ? 'Edit task' : 'Create a task' }}
+    </h2>
+    <p class="mb-0 mt-1.5 text-[12px] leading-[1.5] text-[#778397]">
       {{
         task
           ? 'Update the details and keep your team in sync.'
@@ -10,18 +16,31 @@
       }}
     </p>
   </div>
-  <button mat-icon-button type="button" mat-dialog-close aria-label="Close task form">×</button>
+  <button
+    mat-icon-button
+    type="button"
+    class="shrink-0 text-[22px] text-[#718096]"
+    mat-dialog-close
+    aria-label="Close task form"
+  >
+    ×
+  </button>
 </div>
-<mat-dialog-content>
-  <form id="task-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    <div class="form-section-heading">
-      <span class="section-number">01</span>
+<mat-dialog-content class="max-h-[min(68vh,640px)] px-6 pt-2 pb-3 max-xs:px-[18px]">
+  <form id="task-form" class="grid gap-1" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="form-section-heading mb-2 mt-1 flex items-center gap-2.5">
+      <span
+        class="section-number grid h-7 w-7 flex-[0_0_28px] place-items-center rounded-lg bg-[#edf4ff] text-[10px] font-bold text-[#286fc5]"
+        >01</span
+      >
       <div>
-        <h3>Task information</h3>
-        <p>Give this task a clear name and context.</p>
+        <h3 class="m-0 text-[12px] font-semibold text-[#303b4b]">Task information</h3>
+        <p class="mb-0 mt-[3px] text-[10px] text-[#8a95a5]">
+          Give this task a clear name and context.
+        </p>
       </div>
     </div>
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>Task name</mat-label>
       <input
         matInput
@@ -40,8 +59,11 @@
       >
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Description <span class="optional-label">Optional</span></mat-label>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label
+        >Description
+        <span class="ml-[5px] text-[10px] font-normal text-[#8b95a4]">Optional</span></mat-label
+      >
       <textarea
         matInput
         formControlName="description"
@@ -57,21 +79,33 @@
       >
     </mat-form-field>
 
-    <div class="form-section-heading planning-heading">
-      <span class="section-number">02</span>
+    <div class="form-section-heading mb-2 mt-[10px] flex items-center gap-2.5">
+      <span
+        class="section-number grid h-7 w-7 flex-[0_0_28px] place-items-center rounded-lg bg-[#edf4ff] text-[10px] font-bold text-[#286fc5]"
+        >02</span
+      >
       <div>
-        <h3>Planning</h3>
-        <p>Set ownership, timing, and priority.</p>
+        <h3 class="m-0 text-[12px] font-semibold text-[#303b4b]">Planning</h3>
+        <p class="mb-0 mt-[3px] text-[10px] text-[#8a95a5]">Set ownership, timing, and priority.</p>
       </div>
     </div>
-    <div class="field-grid">
+    <div class="field-grid grid grid-cols-2 gap-3 max-xs:grid-cols-1 max-xs:gap-0">
       <mat-form-field appearance="outline">
         <mat-label>Priority</mat-label>
         <mat-select formControlName="priority">
           @for (priority of priorities; track priority) {
             <mat-option [value]="priority">
-              <span class="priority-option" [class]="'priority-option priority-' + priority">
-                <span class="priority-dot"></span>{{ priority | titlecase }}
+              <span class="inline-flex items-center gap-2">
+                <span
+                  [class]="
+                    priority === 'high'
+                      ? 'h-2 w-2 rounded-full bg-[#e76672]'
+                      : priority === 'medium'
+                        ? 'h-2 w-2 rounded-full bg-[#e6a936]'
+                        : 'h-2 w-2 rounded-full bg-[#46ad8b]'
+                  "
+                ></span
+                >{{ priority | titlecase }}
               </span>
             </mat-option>
           }
@@ -87,7 +121,7 @@
       </mat-form-field>
     </div>
 
-    <div class="field-grid">
+    <div class="field-grid grid grid-cols-2 gap-3 max-xs:grid-cols-1 max-xs:gap-0">
       <mat-form-field appearance="outline">
         <mat-label>Due date</mat-label>
         <input matInput type="date" formControlName="dueDate" />
@@ -100,8 +134,10 @@
         <mat-select formControlName="assigneeId">
           @for (user of users; track user.id) {
             <mat-option [value]="user.id">
-              <span class="assignee-option"
-                ><span class="assignee-avatar">{{ user.initials }}</span
+              <span class="inline-flex items-center gap-2"
+                ><span
+                  class="inline-grid h-[22px] w-[22px] place-items-center rounded-full bg-[#edf2fb] text-[9px] font-bold text-[#536d97]"
+                  >{{ user.initials }}</span
                 >{{ user.name }}</span
               >
             </mat-option>
@@ -113,25 +149,28 @@
       </mat-form-field>
     </div>
 
-    <div class="tags-field">
-      <div class="tags-heading">
-        <div>
-          <strong>Labels</strong><small>Optional · {{ tags.length }}/{{ maxTaskTags }}</small>
+    <div class="tags-field mt-0.5 border-t border-[#edf0f4] pt-3">
+      <div class="tags-heading mb-2 flex items-center justify-between">
+        <div class="flex items-baseline gap-2">
+          <strong class="text-[11px] text-[#303b4b]">Labels</strong
+          ><small class="text-[9px] text-[#929cac]"
+            >Optional · {{ tags.length }}/{{ maxTaskTags }}</small
+          >
         </div>
         <button
           mat-button
           type="button"
-          class="add-label"
+          class="add-label min-h-7 text-[10px] text-[#286fc5]"
           [disabled]="tags.length >= maxTaskTags"
           (click)="addTag()"
         >
           ＋ Add label
         </button>
       </div>
-      <div class="tag-input-list" formArrayName="tags">
+      <div class="tag-input-list grid gap-0.5" formArrayName="tags">
         @for (control of tags.controls; track $index; let index = $index) {
-          <div class="tag-input-row">
-            <mat-form-field appearance="outline" class="full-width tag-input">
+          <div class="tag-input-row flex items-start gap-2">
+            <mat-form-field appearance="outline" class="w-full flex-1">
               <mat-label>Label {{ index + 1 }}</mat-label>
               <input
                 matInput
@@ -146,7 +185,7 @@
             <button
               mat-icon-button
               type="button"
-              class="remove-label"
+              class="mt-1 text-[#7b8797]"
               [disabled]="tags.length === 1"
               [attr.aria-label]="'Remove label ' + (index + 1)"
               (click)="removeTag(index)"
@@ -159,7 +198,10 @@
     </div>
   </form>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
+<mat-dialog-actions
+  align="end"
+  class="gap-2 border-t border-[#edf0f4] px-6 pt-3 pb-[18px] max-xs:px-[18px]"
+>
   <button mat-button type="button" mat-dialog-close>Cancel</button>
   <button mat-flat-button color="primary" type="submit" form="task-form">
     {{ task ? 'Save changes' : 'Create task' }}

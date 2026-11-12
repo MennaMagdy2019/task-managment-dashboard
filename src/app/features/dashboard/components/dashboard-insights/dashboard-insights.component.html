@@ -1,10 +1,13 @@
-<section class="insights-page" aria-labelledby="analytics-title">
-  <header class="insights-header">
-    <h1 id="analytics-title">Analytics</h1>
-    <p>Team workload and recent activity</p>
+<section class="insights-page block" aria-labelledby="analytics-title">
+  <header class="insights-header mb-4">
+    <h1 id="analytics-title" class="m-0 text-[20px] font-semibold text-[#252b36]">Analytics</h1>
+    <p class="mb-0 mt-[5px] text-[12px] text-[#7b8490]">Team workload and recent activity</p>
   </header>
-  <section class="insights-content" aria-label="Team overview">
-    <app-task-analytics [tasks]="tasks"></app-task-analytics>
+  <section
+    class="insights-content grid grid-cols-[minmax(0,1.4fr)_minmax(280px,1fr)] gap-[14px] max-lg:grid-cols-1"
+    aria-label="Team overview"
+  >
+    <app-task-analytics class="block min-w-0" [tasks]="tasks"></app-task-analytics>
     <mat-card appearance="outlined">
       <mat-card-header>
         <mat-card-title>Recent activity</mat-card-title>
@@ -14,7 +17,11 @@
         <mat-list>
           @for (activity of activities.slice(0, 4); track activity.id) {
             <mat-list-item>
-              <span matListItemAvatar class="activity-avatar">{{ activity.actor.initials }}</span>
+              <span
+                matListItemAvatar
+                class="activity-avatar box-border grid h-12 w-12 flex-[0_0_48px] place-items-center rounded-full bg-[#dce7ff] text-[14px] font-semibold leading-none text-[#365b9d] text-center"
+                >{{ activity.actor.initials }}</span
+              >
               <span matListItemTitle>{{ activity.actor.name }} {{ activity.message }}</span>
               <span matListItemLine
                 >{{ activity.taskTitle }} · {{ timeAgo(activity.occurredAt) }}</span

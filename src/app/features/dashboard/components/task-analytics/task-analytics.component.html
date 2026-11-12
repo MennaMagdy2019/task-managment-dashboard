@@ -1,55 +1,92 @@
-<section aria-label="Task analytics">
-  <mat-card appearance="outlined">
-    <div class="card-heading">
+<section class="grid min-w-0 grid-cols-2 gap-[14px] max-xl:grid-cols-1" aria-label="Task analytics">
+  <mat-card appearance="outlined" class="min-w-0 rounded-lg border-[#e6e9ef] p-4 shadow-none">
+    <div class="card-heading flex items-start justify-between gap-3">
       <div>
-        <h2>Tasks by priority</h2>
-        <p>Workload across the team</p>
+        <h2 class="m-0 text-[15px] font-semibold text-[#243047]">Tasks by priority</h2>
+        <p class="mb-0 mt-[5px] text-[12px] text-[#788396]">Workload across the team</p>
       </div>
-      <span class="chart-badge" aria-hidden="true">↗</span>
+      <span
+        class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[#4a7fe8]"
+        aria-hidden="true"
+        >↗</span
+      >
     </div>
-    <div class="priority-chart">
+    <div class="priority-chart relative mx-auto mt-3 h-[190px] w-full max-w-[230px]">
       <canvas
         #priorityCanvas
+        class="relative z-[1] block !h-full !w-full"
         role="img"
         aria-label="Doughnut chart showing tasks by priority"
       ></canvas>
       @if (!tasks.length) {
-        <p class="chart-empty-state" role="status">No task data to chart yet.</p>
+        <p
+          class="chart-empty-state absolute inset-x-0 top-1/2 z-[2] m-0 -translate-y-1/2 text-center text-[12px] text-[#788396]"
+          role="status"
+        >
+          No task data to chart yet.
+        </p>
       }
-      <div class="chart-center">
-        <strong>{{ tasks.length }}</strong>
-        <span>tasks</span>
+      <div
+        class="chart-center pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
+      >
+        <strong class="text-[25px] leading-[1.15] text-[#243047]">{{ tasks.length }}</strong>
+        <span class="text-[11px] text-[#8490a2]">tasks</span>
       </div>
     </div>
-    <mat-chip-set class="legend" aria-label="Task counts by priority">
-      <mat-chip class="legend-high">{{ priorityLabels.high }} · {{ priorityCounts[0] }}</mat-chip>
-      <mat-chip class="legend-medium"
+    <mat-chip-set class="legend mt-2.5 flex flex-wrap gap-1" aria-label="Task counts by priority">
+      <mat-chip class="legend-high min-h-[27px] text-[11px]"
+        >{{ priorityLabels.high }} · {{ priorityCounts[0] }}</mat-chip
+      >
+      <mat-chip class="legend-medium min-h-[27px] text-[11px]"
         >{{ priorityLabels.medium }} · {{ priorityCounts[1] }}</mat-chip
       >
-      <mat-chip class="legend-low">{{ priorityLabels.low }} · {{ priorityCounts[2] }}</mat-chip>
+      <mat-chip class="legend-low min-h-[27px] text-[11px]"
+        >{{ priorityLabels.low }} · {{ priorityCounts[2] }}</mat-chip
+      >
     </mat-chip-set>
   </mat-card>
 
-  <mat-card appearance="outlined">
-    <div class="card-heading">
+  <mat-card appearance="outlined" class="min-w-0 rounded-lg border-[#e6e9ef] p-4 shadow-none">
+    <div class="card-heading flex items-start justify-between gap-3">
       <div>
-        <h2>Task status</h2>
-        <p>Progress at a glance</p>
+        <h2 class="m-0 text-[15px] font-semibold text-[#243047]">Task status</h2>
+        <p class="mb-0 mt-[5px] text-[12px] text-[#788396]">Progress at a glance</p>
       </div>
-      <span class="chart-badge" aria-hidden="true">⌁</span>
+      <span
+        class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[#4a7fe8]"
+        aria-hidden="true"
+        >⌁</span
+      >
     </div>
-    <div class="status-chart">
-      <canvas #statusCanvas role="img" aria-label="Bar chart showing tasks by status"></canvas>
+    <div class="status-chart relative mt-3 h-[190px] w-full">
+      <canvas
+        #statusCanvas
+        class="relative z-[1] block !h-full !w-full"
+        role="img"
+        aria-label="Bar chart showing tasks by status"
+      ></canvas>
       @if (!tasks.length) {
-        <p class="chart-empty-state" role="status">No task data to chart yet.</p>
+        <p
+          class="chart-empty-state absolute inset-x-0 top-1/2 z-[2] m-0 -translate-y-1/2 text-center text-[12px] text-[#788396]"
+          role="status"
+        >
+          No task data to chart yet.
+        </p>
       }
     </div>
-    <mat-chip-set class="status-summary" aria-label="Task counts by status">
-      <mat-chip class="status-todo">{{ statusLabels.todo }} · {{ statusCounts[0] }}</mat-chip>
-      <mat-chip class="status-progress"
+    <mat-chip-set
+      class="status-summary mt-2.5 flex flex-wrap gap-1"
+      aria-label="Task counts by status"
+    >
+      <mat-chip class="status-todo min-h-[27px] text-[11px]"
+        >{{ statusLabels.todo }} · {{ statusCounts[0] }}</mat-chip
+      >
+      <mat-chip class="status-progress min-h-[27px] text-[11px]"
         >{{ statusLabels.in_progress }} · {{ statusCounts[1] }}</mat-chip
       >
-      <mat-chip class="status-done">{{ statusLabels.done }} · {{ statusCounts[2] }}</mat-chip>
+      <mat-chip class="status-done min-h-[27px] text-[11px]"
+        >{{ statusLabels.done }} · {{ statusCounts[2] }}</mat-chip
+      >
     </mat-chip-set>
   </mat-card>
 </section>

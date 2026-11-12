@@ -12,7 +12,6 @@ import type { DashboardNavigationAction, DashboardView } from '../../models/dash
   standalone: true,
   imports: [MatButtonModule, MatListModule, RouterLink, RouterLinkActive],
   templateUrl: './dashboard-sidebar.component.html',
-  styleUrl: './dashboard-sidebar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardSidebarComponent {

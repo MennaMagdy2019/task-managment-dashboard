@@ -11,7 +11,6 @@ import { APP_ROUTE_PATHS } from '../../../../shared/constants/app.constants';
   standalone: true,
   imports: [MatButtonModule, MatFormFieldModule, MatInputModule, MatToolbarModule, RouterLink],
   templateUrl: './dashboard-header.component.html',
-  styleUrl: './dashboard-header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardHeaderComponent {

@@ -32,6 +32,7 @@ const nonWhitespace: ValidatorFn = (control) =>
 @Component({
   selector: 'app-task-editor',
   standalone: true,
+  host: { class: 'block text-[#202b3c]' },
   imports: [
     MatDialogModule,
     ReactiveFormsModule,
@@ -42,7 +43,6 @@ const nonWhitespace: ValidatorFn = (control) =>
     TitleCasePipe,
   ],
   templateUrl: './task-editor.component.html',
-  styleUrl: './task-editor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskEditorComponent {

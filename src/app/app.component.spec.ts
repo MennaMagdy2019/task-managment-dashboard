@@ -102,8 +102,8 @@ describe('AppComponent', () => {
     teamButton?.click();
     await fixture.whenStable();
     fixture.detectChanges();
-    expect(router.url).toBe('/dashboard');
-    expect(fixture.componentInstance.view()).toBe('dashboard');
+    expect(router.url).toBe('/analytics');
+    expect(fixture.componentInstance.view()).toBe('analytics');
     expect(fixture.componentInstance.teamExpanded()).toBeTrue();
     expect(fixture.nativeElement.querySelectorAll('.primary-nav a.active').length).toBe(1);
 

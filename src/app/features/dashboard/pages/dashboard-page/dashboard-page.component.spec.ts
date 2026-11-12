@@ -159,7 +159,7 @@ describe('DashboardPageComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(router.url).toBe('/dashboard');
+    expect(router.url).toBe('/team/u2');
     expect(component.view()).toBe('dashboard');
     expect(component.teamExpanded()).toBeTrue();
     expect(component.assigneeFilter()).toBe('u2');

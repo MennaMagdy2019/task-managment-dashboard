@@ -1,34 +1,69 @@
-<mat-toolbar class="topbar">
+<mat-toolbar
+  class="topbar relative z-[3] grid h-11 min-h-11 grid-cols-[180px_minmax(0,1fr)_120px] gap-3 border-b border-[#e6e9ee] bg-white px-4 max-md:h-[50px] max-md:min-h-[50px] max-md:grid-cols-[36px_minmax(0,1fr)_72px] max-md:gap-1 max-md:pl-2 max-md:pr-4"
+>
   <button
     mat-icon-button
     type="button"
-    class="mobile-menu"
+    class="mobile-menu hidden focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 max-md:col-start-1 max-md:inline-flex"
     aria-label="Open navigation"
     [attr.aria-expanded]="sidebarOpen"
     (click)="menuToggle.emit()"
   >
     ☰
   </button>
-  <a class="topbar-brand" [routerLink]="routePaths.dashboard.url">
-    <span class="brand-mark" aria-hidden="true">✓</span><span>Task Manager</span>
+  <a
+    class="topbar-brand group flex h-full items-center gap-[6px] self-stretch text-[12px] font-semibold leading-none text-[#1769d2] no-underline hover:text-[#125bad] focus-visible:rounded-[4px] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-[3px] max-md:hidden"
+    [routerLink]="routePaths.dashboard.url"
+  >
+    <span
+      class="brand-mark grid h-5 w-5 flex-[0_0_20px] place-items-center rounded-[5px] bg-[#1769d2] text-[12px] leading-none text-white transition-colors duration-[140ms] group-hover:bg-[#125bad] motion-reduce:transition-none"
+      aria-hidden="true"
+      >✓</span
+    ><span>Task Manager</span>
   </a>
-  <mat-form-field appearance="outline" class="global-search">
-    <span matTextPrefix aria-hidden="true">⌕</span>
+  <mat-form-field
+    appearance="outline"
+    class="global-search h-7 w-[375px] translate-x-3 justify-self-center text-[10px] max-md:col-start-2 max-md:h-8 max-md:translate-x-0 max-md:w-full"
+  >
+    <svg
+      matTextPrefix
+      class="ml-2 h-3.5 w-3.5 translate-y-1 text-[#667085]"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle cx="7" cy="7" r="4.25" stroke="currentColor" stroke-width="1.5" />
+      <path d="m10.25 10.25 3 3" stroke="currentColor" stroke-width="1.5" />
+    </svg>
     <input
       matInput
       type="search"
+      class="!text-[10px] placeholder:!text-[#98a2b3]"
       placeholder="Search tasks..."
       aria-label="Search tasks"
       [value]="query"
       (input)="onSearchInput($event)"
     />
   </mat-form-field>
-  <div class="topbar-actions">
-    <button mat-icon-button type="button" class="notification-button" aria-label="Notifications">
-      <span aria-hidden="true">♧</span><i></i>
+  <div class="topbar-actions flex items-center justify-end gap-2 max-md:col-start-3 max-md:gap-px">
+    <button
+      mat-icon-button
+      type="button"
+      class="notification-button relative focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 hover:bg-[#f1f1f1] max-md:hidden"
+      aria-label="Notifications"
+    >
+      <span aria-hidden="true">♧</span
+      ><i class="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[#e3a321]"></i>
     </button>
-    <button mat-icon-button type="button" class="profile-avatar" aria-label="Current user profile">
-      {{ userInitials }}
+    <button
+      mat-icon-button
+      type="button"
+      class="profile-avatar h-[30px] w-[30px] rounded-full bg-[#1976d2] text-[10px] font-semibold text-white transition-[background-color,box-shadow] duration-[140ms] hover:bg-[#125bad] hover:shadow-[0_2px_6px_rgb(23_105_210_/_24%)] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 motion-reduce:transition-none"
+      aria-label="Current user profile"
+    >
+      <span class="grid h-full w-full place-items-center leading-none" aria-hidden="true">{{
+        userInitials
+      }}</span>
     </button>
   </div>
 </mat-toolbar>

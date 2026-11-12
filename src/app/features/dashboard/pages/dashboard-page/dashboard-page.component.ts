@@ -71,7 +71,6 @@ import { DashboardPageActionsService } from './dashboard-page-actions.service';
     TaskBoardComponent,
   ],
   templateUrl: './dashboard-page.component.html',
-  styleUrl: './dashboard-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DashboardPageActionsService],
 })

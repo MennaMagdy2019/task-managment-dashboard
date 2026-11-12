@@ -1,5 +1,8 @@
-<div class="dashboard-layout">
+<div
+  class="dashboard-layout flex min-h-screen flex-col overflow-x-clip bg-[#f4f6f9] text-[#252b36]"
+>
   <app-dashboard-header
+    class="block"
     [query]="query()"
     [userInitials]="currentUser.initials"
     [sidebarOpen]="sidebarOpen()"
@@ -8,15 +11,18 @@
   >
   </app-dashboard-header>
 
-  <mat-sidenav-container class="app-shell">
+  <mat-sidenav-container
+    class="app-shell h-[calc(100vh_-_44px)] min-h-[420px] overflow-x-hidden bg-[#f4f6f9] max-md:h-[calc(100vh_-_50px)]"
+  >
     <mat-sidenav
-      class="sidebar"
+      class="sidebar box-border w-[152px] border-r border-[#e4e8ee] bg-white px-3 py-1 max-md:w-[min(270px,85vw)]"
       [mode]="isMobile() ? 'over' : 'side'"
       [opened]="!isMobile() || sidebarOpen()"
       (closedStart)="sidebarOpen.set(false)"
       aria-label="Main navigation"
     >
       <app-dashboard-sidebar
+        class="block h-full"
         [users]="users"
         [assigneeFilter]="assigneeFilter()"
         [teamExpanded]="teamExpanded()"
@@ -28,8 +34,10 @@
       </app-dashboard-sidebar>
     </mat-sidenav>
 
-    <mat-sidenav-content class="main-shell">
-      <main class="page-content">
+    <mat-sidenav-content class="main-shell min-w-0 overflow-x-hidden bg-[#f4f6f9]">
+      <main
+        class="page-content mx-auto w-full max-w-[1600px] px-4 pb-6 pt-2 max-lg:px-3 max-md:px-2.5 max-md:pb-5"
+      >
         @if (store.error()) {
           <mat-card role="alert">
             <mat-card-content>
@@ -41,11 +49,13 @@
 
         @if (view() === 'analytics') {
           <app-dashboard-insights
+            class="block"
             [tasks]="tasks()"
             [activities]="activities()"
           ></app-dashboard-insights>
         } @else {
           <app-dashboard-summary
+            class="block"
             [stats]="stats()"
             [completionRate]="completionRate()"
             [isLoading]="store.isLoading()"
@@ -54,6 +64,7 @@
           </app-dashboard-summary>
 
           <app-task-board
+            class="block"
             [columns]="columns"
             [tasks]="filteredTasks()"
             [loading]="store.isLoading()"

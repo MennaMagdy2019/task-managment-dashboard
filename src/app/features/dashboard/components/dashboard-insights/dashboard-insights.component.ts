@@ -10,7 +10,6 @@ import { TaskAnalyticsComponent } from '../task-analytics/task-analytics.compone
   standalone: true,
   imports: [MatCardModule, MatListModule, TaskAnalyticsComponent],
   templateUrl: './dashboard-insights.component.html',
-  styleUrl: './dashboard-insights.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardInsightsComponent {

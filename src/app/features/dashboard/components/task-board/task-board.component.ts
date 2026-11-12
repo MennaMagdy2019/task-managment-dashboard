@@ -40,7 +40,6 @@ export type { TaskBoardColumn, TaskDropEvent } from '../../models/task-board.mod
     TaskCardComponent,
   ],
   templateUrl: './task-board.component.html',
-  styleUrl: './task-board.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskBoardComponent {

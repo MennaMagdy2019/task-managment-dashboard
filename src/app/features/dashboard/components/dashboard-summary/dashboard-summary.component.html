@@ -1,46 +1,105 @@
-<section class="summary-grid" aria-label="Task summary">
+<section
+  class="summary-grid mb-2 block h-[112px] -mx-[3px] max-lg:h-auto"
+  aria-label="Task summary"
+>
   @if (isLoading) {
-    <div class="summary-loading">
+    <div
+      class="summary-loading grid h-full grid-cols-4 gap-3 max-lg:grid-cols-2 max-2xs:grid-cols-1"
+    >
       @for (card of [1, 2, 3, 4]; track card) {
-        <mat-card appearance="outlined" aria-label="Loading task summary">
-          <mat-card-content
+        <mat-card
+          appearance="outlined"
+          class="h-[calc(100%_-_8px)] rounded-[6px] border-[#e3e7ed] bg-white max-lg:min-h-[92px]"
+          aria-label="Loading task summary"
+        >
+          <mat-card-content class="flex h-full items-center p-3"
             ><mat-progress-bar mode="indeterminate"></mat-progress-bar
           ></mat-card-content>
         </mat-card>
       }
     </div>
   } @else {
-    <div class="summary-cards">
-      <mat-card appearance="outlined"
-        ><mat-card-content>
-          <span class="material-icons" aria-hidden="true">assignment</span>
-          <p>Total Tasks</p>
-          <h2>{{ stats.total }}</h2>
-          <p>+12 this week</p>
+    <div
+      class="summary-cards grid h-full grid-cols-4 gap-3 max-lg:h-auto max-lg:grid-cols-2 max-2xs:grid-cols-1"
+    >
+      <mat-card
+        appearance="outlined"
+        class="h-[calc(100%_-_8px)] min-w-0 rounded-[6px] border-[#e3e7ed] bg-white shadow-[0_2px_5px_rgb(34_48_69_/_8%)] max-lg:min-h-[92px]"
+        ><mat-card-content
+          class="grid h-full grid-cols-[auto_1fr] content-center items-center gap-x-2 p-2 box-border max-md:gap-x-1.5 max-md:p-[7px]"
+        >
+          <span
+            class="material-icons row-span-2 grid h-[18px] w-[18px] place-items-center rounded-[4px] bg-[#eff5ff] text-[13px] text-[#1769d2]"
+            aria-hidden="true"
+            >assignment</span
+          >
+          <p class="m-0 text-[9px] text-[#7e8793] max-md:text-[8px]">Total Tasks</p>
+          <h2
+            class="my-[4px] mb-[2px] text-[19px] font-semibold leading-none text-[#202734] max-md:text-[17px]"
+          >
+            {{ stats.total }}
+          </h2>
+          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#89929e]">+12 this week</p>
         </mat-card-content></mat-card
       >
-      <mat-card appearance="outlined"
-        ><mat-card-content>
-          <span class="material-icons" aria-hidden="true">check_box</span>
-          <p>Completed</p>
-          <h2>{{ stats.done }}</h2>
-          <p>+8 today</p>
+      <mat-card
+        appearance="outlined"
+        class="h-[calc(100%_-_8px)] min-w-0 rounded-[6px] border-[#e3e7ed] bg-white shadow-[0_2px_5px_rgb(34_48_69_/_8%)] max-lg:min-h-[92px]"
+        ><mat-card-content
+          class="grid h-full grid-cols-[auto_1fr] content-center items-center gap-x-2 p-2 box-border max-md:gap-x-1.5 max-md:p-[7px]"
+        >
+          <span
+            class="material-icons row-span-2 grid h-[18px] w-[18px] place-items-center rounded-[4px] bg-[#e5f6e8] text-[13px] text-[#239c43]"
+            aria-hidden="true"
+            >check_box</span
+          >
+          <p class="m-0 text-[9px] text-[#7e8793] max-md:text-[8px]">Completed</p>
+          <h2
+            class="my-[4px] mb-[2px] text-[19px] font-semibold leading-none text-[#202734] max-md:text-[17px]"
+          >
+            {{ stats.done }}
+          </h2>
+          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#89929e]">+8 today</p>
         </mat-card-content></mat-card
       >
-      <mat-card appearance="outlined"
-        ><mat-card-content>
-          <span class="material-icons" aria-hidden="true">schedule</span>
-          <p>In Progress</p>
-          <h2>{{ stats.inProgress }}</h2>
-          <p>Same as yesterday</p>
+      <mat-card
+        appearance="outlined"
+        class="h-[calc(100%_-_8px)] min-w-0 rounded-[6px] border-[#e3e7ed] bg-white shadow-[0_2px_5px_rgb(34_48_69_/_8%)] max-lg:min-h-[92px]"
+        ><mat-card-content
+          class="grid h-full grid-cols-[auto_1fr] content-center items-center gap-x-2 p-2 box-border max-md:gap-x-1.5 max-md:p-[7px]"
+        >
+          <span
+            class="material-icons row-span-2 grid h-[18px] w-[18px] place-items-center rounded-[4px] bg-[#edf3fa] text-[13px] text-[#3c658d]"
+            aria-hidden="true"
+            >schedule</span
+          >
+          <p class="m-0 text-[9px] text-[#7e8793] max-md:text-[8px]">In Progress</p>
+          <h2
+            class="my-[4px] mb-[2px] text-[19px] font-semibold leading-none text-[#202734] max-md:text-[17px]"
+          >
+            {{ stats.inProgress }}
+          </h2>
+          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#89929e]">Same as yesterday</p>
         </mat-card-content></mat-card
       >
-      <mat-card appearance="outlined"
-        ><mat-card-content>
-          <span class="material-icons" aria-hidden="true">warning</span>
-          <p>Overdue</p>
-          <h2>{{ stats.overdue }}</h2>
-          <p>+3 today</p>
+      <mat-card
+        appearance="outlined"
+        class="h-[calc(100%_-_8px)] min-w-0 rounded-[6px] border-[#e3e7ed] bg-white shadow-[0_2px_5px_rgb(34_48_69_/_8%)] max-lg:min-h-[92px]"
+        ><mat-card-content
+          class="grid h-full grid-cols-[auto_1fr] content-center items-center gap-x-2 p-2 box-border max-md:gap-x-1.5 max-md:p-[7px]"
+        >
+          <span
+            class="material-icons row-span-2 grid h-[18px] w-[18px] place-items-center rounded-[4px] bg-[#fff0ef] text-[13px] text-[#e36a62]"
+            aria-hidden="true"
+            >warning</span
+          >
+          <p class="m-0 text-[9px] text-[#7e8793] max-md:text-[8px]">Overdue</p>
+          <h2
+            class="my-[4px] mb-[2px] text-[19px] font-semibold leading-none text-[#202734] max-md:text-[17px]"
+          >
+            {{ stats.overdue }}
+          </h2>
+          <p class="col-start-2 mb-0 mt-[2px] text-[8px] text-[#89929e]">+3 today</p>
         </mat-card-content></mat-card
       >
     </div>
