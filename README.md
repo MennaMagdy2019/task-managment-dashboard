@@ -5,7 +5,7 @@ README documents the features, structure, and verification results implemented i
 
 ## Live demo
 
-[Open the TaskFlow dashboard](https://mennamagdy2019.github.io/task-managment-dashboard/dashboard).
+[Task Management Dashboard](https://mennamagdy2019.github.io/task-managment-dashboard/dashboard).
 
 ## Implemented features
 
