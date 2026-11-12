@@ -40,7 +40,6 @@ import {
   sortTasksByOrder,
 } from '../../utils/task-dashboard-helpers/task-dashboard.helpers';
 import {
-  countUpcomingTasks,
   dashboardUrlForView,
   dashboardViewFromUrl,
   DASHBOARD_COLUMNS,
@@ -78,7 +77,6 @@ import { TranslatePipe } from '../../../../shared/i18n/translate.pipe';
   providers: [DashboardPageActionsService],
 })
 export class DashboardPageComponent {
-  readonly title = 'TaskFlow';
   readonly store = inject(TaskService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
@@ -111,11 +109,6 @@ export class DashboardPageComponent {
   readonly tasks = computed(() => {
     return sortTasksByOrder(this.store.tasks(), this.taskOrder());
   });
-  readonly myTasksCount = computed(
-    () => this.store.tasks().filter((task) => task.assignee.id === this.currentUser.id).length,
-  );
-  readonly overdueCount = computed(() => this.stats().overdue);
-  readonly upcomingCount = computed(() => countUpcomingTasks(this.store.tasks()));
 
   readonly filteredTasks = computed(() => {
     return filterTasks(this.tasks(), {

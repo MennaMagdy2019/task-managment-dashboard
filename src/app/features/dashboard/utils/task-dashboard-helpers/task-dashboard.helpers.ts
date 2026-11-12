@@ -15,8 +15,6 @@ import type { AppLanguage } from '../../../../shared/i18n/i18n.defines';
  */
 export function filterTasks(tasks: Task[], options: TaskFilterOptions): Task[] {
   const search = options.search.trim().toLowerCase();
-  const today = options.today ?? new Date().toISOString().slice(0, 10);
-  const upcomingThrough = options.upcomingThrough ?? dateAfter(today, 7);
   return tasks.filter((task) => {
     const matchesText =
       !search || `${task.title} ${task.description}`.toLowerCase().includes(search);
@@ -25,30 +23,9 @@ export function filterTasks(tasks: Task[], options: TaskFilterOptions): Task[] {
     const matchesStatus = options.status === ALL_TASK_FILTER || task.status === options.status;
     const matchesAssignee =
       options.assigneeId === ALL_TASK_FILTER || task.assignee.id === options.assigneeId;
-    const matchesView =
-      options.view === 'my-tasks'
-        ? task.assignee.id === options.currentUserId
-        : options.view === 'upcoming'
-          ? task.status !== TASK_STATUS.done &&
-            task.dueDate >= today &&
-            task.dueDate <= upcomingThrough
-          : options.view === 'overdue'
-            ? task.status !== TASK_STATUS.done && task.dueDate < today
-            : true;
+    const matchesView = options.view !== 'my-tasks' || task.assignee.id === options.currentUserId;
     return matchesText && matchesPriority && matchesStatus && matchesAssignee && matchesView;
   });
-}
-
-/**
- * Returns a YYYY-MM-DD date the specified number of calendar days after the input.
- * @param date The input date.
- * @param days The number of calendar days to add.
- * @returns The resulting date.
- */
-export function dateAfter(date: string, days: number): string {
-  const result = new Date(`${date}T00:00:00.000Z`);
-  result.setUTCDate(result.getUTCDate() + days);
-  return result.toISOString().slice(0, 10);
 }
 
 /**

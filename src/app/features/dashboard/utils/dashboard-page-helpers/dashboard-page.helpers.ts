@@ -9,7 +9,7 @@ import {
 } from '../../../../shared/constants/task.constants';
 import { CURRENT_USER, TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
 import type { ApiErrorResponse } from '../../../../shared/models/api-error.model';
-import type { Task, TaskActivity, TaskStatus } from '../../../../shared/models/task.model';
+import type { TaskActivity, TaskStatus } from '../../../../shared/models/task.model';
 import type { TaskErrorSuffix } from '../../../../shared/i18n/i18n.defines';
 
 const ENGLISH_ERROR_SUFFIXES: Record<TaskErrorSuffix, string> = {
@@ -99,12 +99,9 @@ export function dashboardUrlForView(view: DashboardView): string {
   switch (view) {
     case 'my-tasks':
       return APP_ROUTE_PATHS.tasks.url;
-    case 'upcoming':
-      return APP_ROUTE_PATHS.dashboard.url;
     case 'analytics':
       return APP_ROUTE_PATHS.analytics.url;
     case 'dashboard':
-    case 'overdue':
       return APP_ROUTE_PATHS.dashboard.url;
   }
 }
@@ -176,24 +173,6 @@ export function taskMoveActivity(status: TaskStatus): Pick<TaskActivity, 'kind' 
     kind: status === TASK_STATUS.done ? 'completed' : 'updated',
     message: `${TASK_ACTIVITY_MESSAGES.movedToStatus} ${TASK_STATUS_LABELS[status]}`,
   };
-}
-
-/**
- * Counts unfinished tasks due within the next seven calendar days.
- * @param tasks The list of tasks to evaluate.
- * @param today The current date in YYYY-MM-DD format.
- * @returns The number of upcoming tasks.
- */
-export function countUpcomingTasks(
-  tasks: Task[],
-  today = new Date().toISOString().slice(0, 10),
-): number {
-  const through = new Date(`${today}T00:00:00.000Z`);
-  through.setUTCDate(through.getUTCDate() + 7);
-  const throughDate = through.toISOString().slice(0, 10);
-  return tasks.filter(
-    (task) => task.status !== 'done' && task.dueDate >= today && task.dueDate <= throughDate,
-  ).length;
 }
 
 /**

@@ -3,11 +3,16 @@
 TaskFlow is a responsive task-management dashboard built with Angular 21 and TypeScript 5.9. This
 README documents the features, structure, and verification results implemented in this repository.
 
+## Live demo
+
+[Open the TaskFlow dashboard](https://mennamagdy2019.github.io/task-managment-dashboard/dashboard).
+
 ## Implemented features
 
 - Create, edit, and delete tasks, with confirmation before deletion.
 - Set task title, description, priority, status, due date, assignee, and optional labels.
-- Search task titles and descriptions; filter by status, priority, assignee, and dashboard view.
+- Search task titles and descriptions; filter by status, priority, and assignee; use the Dashboard,
+  My Tasks, and Analytics views.
 - Drag tasks between status columns and reorder them within a column.
 - Show task totals, completion, in-progress, and overdue summary counts.
 - Visualize task counts by priority and status with Chart.js, alongside a recent activity feed.
@@ -149,16 +154,17 @@ staged JavaScript, CommonJS, JSON, Markdown, and SCSS files are formatted.
 
 Checks were run using Node.js 22.13.0.
 
-| Check                                    | Result            |
-| ---------------------------------------- | ----------------- |
-| `npm run lint`                           | Passed.           |
-| `npm run test:coverage`                  | Passed: 83 tests. |
-| Statement coverage                       | 94.10% (702/746). |
-| Branch coverage                          | 87.36% (318/364). |
-| Function coverage                        | 92.00% (207/225). |
-| Line coverage                            | 95.59% (608/636). |
-| `npx tsc --noEmit -p tsconfig.spec.json` | Passed.           |
-| `npm run format:check`                   | Passed.           |
+| Check                                    | Result                                |
+| ---------------------------------------- | ------------------------------------- |
+| `npm run lint`                           | Passed.                               |
+| `npm run test:coverage`                  | Passed: 80 tests.                     |
+| Statement coverage                       | 94.63% (688/727).                     |
+| Branch coverage                          | 87.24% (301/345).                     |
+| Function coverage                        | 93.57% (204/218).                     |
+| Line coverage                            | 95.64% (593/620).                     |
+| `npm run build`                          | Passed; initial bundle 389.36 kB raw. |
+| `npx tsc --noEmit -p tsconfig.spec.json` | Passed.                               |
+| `npm run format:check`                   | Passed.                               |
 
 Coverage exceeds the configured 80% minimum for statements, branches, functions, and lines. The
 HTML report is generated under `coverage/task-managment-dashboard/`.

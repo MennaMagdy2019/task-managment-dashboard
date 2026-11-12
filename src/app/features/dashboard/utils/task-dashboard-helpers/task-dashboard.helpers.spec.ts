@@ -50,35 +50,6 @@ describe('task dashboard helpers', () => {
     expect(filtered.map((task) => task.id)).toEqual(['one']);
   });
 
-  it('filters upcoming tasks due within the next week and excludes completed tasks', () => {
-    const filtered = filterTasks(sampleTasks, {
-      search: '',
-      priority: 'all',
-      status: 'all',
-      assigneeId: 'all',
-      view: 'upcoming',
-      currentUserId: 'u1',
-      today: '2026-11-09',
-      upcomingThrough: '2026-11-16',
-    });
-
-    expect(filtered.map((task) => task.id)).toEqual(['one']);
-  });
-
-  it('filters overdue unfinished tasks', () => {
-    const filtered = filterTasks(sampleTasks, {
-      search: '',
-      priority: 'all',
-      status: 'all',
-      assigneeId: 'all',
-      view: 'overdue',
-      currentUserId: 'u1',
-      today: '2026-11-11',
-    });
-
-    expect(filtered.map((task) => task.id)).toEqual(['one']);
-  });
-
   it('calculates task counts and excludes completed overdue tasks', () => {
     expect(calculateTaskStatistics(sampleTasks, '2026-11-11')).toEqual({
       total: 2,

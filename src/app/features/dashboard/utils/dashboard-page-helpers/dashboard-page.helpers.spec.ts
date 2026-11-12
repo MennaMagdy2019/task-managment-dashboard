@@ -1,7 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Task } from '../../../../shared/models/task.model';
 import {
-  countUpcomingTasks,
   createInitialActivities,
   createTaskActivity,
   dashboardUrlForView,
@@ -12,27 +10,6 @@ import {
   taskMoveActivity,
   teamMemberUrl,
 } from './dashboard-page.helpers';
-
-/** Creates a task fixture with the supplied due date and workflow status. */
-function createTask(id: string, dueDate: string, status: Task['status'] = 'todo'): Task {
-  return {
-    id,
-    title: `Task ${id}`,
-    description: '',
-    status,
-    priority: 'medium',
-    dueDate,
-    assignee: {
-      id: 'u1',
-      name: 'Olivia Rhye',
-      email: 'olivia@acme.com',
-      initials: 'OR',
-    },
-    tags: [],
-    createdAt: '2024-01-01T00:00:00.000Z',
-    updatedAt: '2024-01-01T00:00:00.000Z',
-  };
-}
 
 describe('dashboard page helpers', () => {
   it('creates stable sample activities relative to the supplied date', () => {
@@ -50,10 +27,8 @@ describe('dashboard page helpers', () => {
     expect(dashboardViewFromUrl('/dashboard?team=u1')).toBe('dashboard');
     expect(dashboardViewFromUrl('/team/u2')).toBe('dashboard');
     expect(dashboardUrlForView('my-tasks')).toBe('/tasks');
-    expect(dashboardUrlForView('upcoming')).toBe('/dashboard');
     expect(dashboardUrlForView('analytics')).toBe('/analytics');
     expect(dashboardUrlForView('dashboard')).toBe('/dashboard');
-    expect(dashboardUrlForView('overdue')).toBe('/dashboard');
     expect(teamMemberUrl('u2')).toBe('/team/u2');
   });
 
@@ -117,18 +92,6 @@ describe('dashboard page helpers', () => {
       kind: 'completed',
       message: 'moved a task to Done',
     });
-  });
-
-  it('counts unfinished tasks due today through seven days from today inclusively', () => {
-    const tasks = [
-      createTask('today', '2024-12-29'),
-      createTask('last-day', '2025-01-05'),
-      createTask('past', '2024-12-28'),
-      createTask('outside', '2025-01-06'),
-      createTask('completed', '2024-12-29', 'done'),
-    ];
-
-    expect(countUpcomingTasks(tasks, '2024-12-29')).toBe(2);
   });
 
   it('selects responsive breakpoints at their exact edges', () => {

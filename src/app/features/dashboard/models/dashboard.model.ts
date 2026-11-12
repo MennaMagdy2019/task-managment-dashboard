@@ -1,8 +1,8 @@
 import type { TaskPriority, TaskStatus } from '../../../shared/models/task.model';
 import { ALL_TASK_FILTER } from '../../../shared/constants/task.constants';
 
-/** Dashboard route-backed and filter-specific views. */
-export type DashboardView = 'dashboard' | 'my-tasks' | 'upcoming' | 'overdue' | 'analytics';
+/** Views available through dashboard routes. */
+export type DashboardView = 'dashboard' | 'my-tasks' | 'analytics';
 
 /** Navigation actions emitted by the dashboard sidebar. */
 export type DashboardNavigationAction = 'team' | 'settings';
@@ -24,8 +24,6 @@ export interface TaskFilterOptions {
   assigneeId: string;
   view: DashboardView;
   currentUserId: string;
-  today?: string;
-  upcomingThrough?: string;
 }
 
 /** Aggregate task totals displayed in the dashboard summary. */
