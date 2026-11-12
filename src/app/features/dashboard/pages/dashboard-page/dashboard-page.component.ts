@@ -158,7 +158,8 @@ export class DashboardPageComponent {
     return dashboardViewFromUrl(this.router.url);
   }
 
-  /** Applies a route's dashboard view and any team member encoded in its URL. */
+  /**
+   * Applies a route's dashboard view and any team member encoded in its URL. */
   private applyRouteState(): void {
     const assigneeId = this.teamMemberIdFromUrl();
     const isKnownAssignee = this.users.some((user) => user.id === assigneeId);
@@ -171,14 +172,20 @@ export class DashboardPageComponent {
     this.applyViewState(this.viewFromUrl());
   }
 
-  /** Reads the team member ID from a `/team/:id` route. */
+  /**
+   * Reads the team member ID from a `/team/:id` route.
+   * @returns The team member ID or null if the route is not a team member route.
+   */
   private teamMemberIdFromUrl(): string | null {
     const segments = this.router.parseUrl(this.router.url).root.children['primary']?.segments ?? [];
     if (segments.length !== 2 || segments[0].path !== APP_ROUTE_PATHS.team.segment) return null;
     return segments[1].path;
   }
 
-  /** Opens Team with the first assigned member selected or shows the Settings notice. */
+  /**
+   * Opens Team with the first assigned member selected or shows the Settings notice.
+   * @param item The navigation item to select.
+   */
   selectNavigationItem(item: DashboardNavigationAction): void {
     if (item === 'team') {
       const shouldExpand = !this.teamExpanded();
@@ -207,14 +214,21 @@ export class DashboardPageComponent {
     }
   }
 
-  /** Closes the sidebar menu and reapplies state when selecting the current route. */
+  /**
+   * Closes the sidebar menu and reapplies state when selecting the current route.
+   * @param view The dashboard view to select.
+   */
   onRouteSelected(view: DashboardView): void {
     this.teamExpanded.set(false);
     this.sidebarOpen.set(false);
     if (this.viewFromUrl() === view) this.applyViewState(view);
   }
 
-  /** Applies view-specific filters without performing navigation. */
+  /**
+   * Applies view-specific filters without performing navigation.
+   * @param view The dashboard view to select.
+   * @param preserveAssignee Whether to preserve the current assignee filter.
+   */
   private applyViewState(view: DashboardView, preserveAssignee = false): void {
     this.view.set(view);
     this.teamExpanded.set(preserveAssignee);

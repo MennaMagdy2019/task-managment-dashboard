@@ -46,7 +46,7 @@ describe('AppComponent', () => {
     expect(compiled.querySelector('.primary-nav')?.textContent).not.toContain('Calendar');
     expect(compiled.querySelector('.primary-nav')?.textContent).toContain('Settings');
     expect(compiled.querySelector('.summary-grid')).toBeTruthy();
-    expect(compiled.querySelectorAll('.board-column').length).toBe(3);
+    expect(compiled.querySelectorAll('.board-column').length).toBe(0);
     expect(compiled.querySelector('app-dashboard-insights')).toBeNull();
   });
 

@@ -11,6 +11,12 @@ export class TranslatePipe implements PipeTransform {
   private readonly changeDetector = inject(ChangeDetectorRef);
   private lastLanguage = this.i18n.language();
 
+  /**
+   * Transforms a translation key into the corresponding localized string.
+   * @param key The translation key.
+   * @param params The interpolation parameters.
+   * @returns The localized string.
+   */
   transform(key: TranslationKey, params?: TranslationParams): string {
     const language = this.i18n.language();
     if (language !== this.lastLanguage) {

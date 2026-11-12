@@ -28,6 +28,7 @@ import type { Task } from '../../../../shared/models/task.model';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import {
+  TASK_ANALYTICS_CHART_COLORS,
   TASK_PRIORITY_CHART_ORDER,
   TASK_STATUS_OPTIONS,
 } from '../../../../shared/constants/task.constants';
@@ -124,9 +125,6 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
 
   /** Creates the priority and status charts with dashboard-specific styling. */
   private createCharts(): void {
-    const textColor = '#5f6b7a';
-    const gridColor = '#eef1f5';
-
     if (this.priorityCanvas) {
       this.priorityChart = new Chart(this.priorityCanvas.nativeElement, {
         type: 'doughnut',
@@ -137,7 +135,7 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
           datasets: [
             {
               data: [0, 0, 0],
-              backgroundColor: ['#eb6471', '#f4b545', '#5dc2a0'],
+              backgroundColor: [...TASK_ANALYTICS_CHART_COLORS.priority],
               borderWidth: 0,
               hoverOffset: 4,
             },
@@ -149,7 +147,11 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
           cutout: '72%',
           plugins: {
             legend: { display: false },
-            tooltip: { backgroundColor: '#1e293b', padding: 10, cornerRadius: 8 },
+            tooltip: {
+              backgroundColor: TASK_ANALYTICS_CHART_COLORS.tooltip,
+              padding: 10,
+              cornerRadius: 8,
+            },
           },
         },
       });
@@ -167,7 +169,7 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
           datasets: [
             {
               data: [0, 0, 0],
-              backgroundColor: ['#8aabff', '#4b7df0', '#58c5a1'],
+              backgroundColor: [...TASK_ANALYTICS_CHART_COLORS.status],
               borderRadius: 6,
               barThickness: 15,
             },
@@ -179,17 +181,25 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
-            tooltip: { backgroundColor: '#1e293b', padding: 10, cornerRadius: 8 },
+            tooltip: {
+              backgroundColor: TASK_ANALYTICS_CHART_COLORS.tooltip,
+              padding: 10,
+              cornerRadius: 8,
+            },
           },
           scales: {
             x: {
               beginAtZero: true,
-              ticks: { precision: 0, color: textColor, font: { size: 10 } },
-              grid: { color: gridColor },
+              ticks: {
+                precision: 0,
+                color: TASK_ANALYTICS_CHART_COLORS.text,
+                font: { size: 10 },
+              },
+              grid: { color: TASK_ANALYTICS_CHART_COLORS.grid },
               border: { display: false },
             },
             y: {
-              ticks: { color: textColor, font: { size: 10 } },
+              ticks: { color: TASK_ANALYTICS_CHART_COLORS.text, font: { size: 10 } },
               grid: { display: false },
               border: { display: false },
             },

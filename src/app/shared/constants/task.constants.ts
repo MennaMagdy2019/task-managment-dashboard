@@ -36,6 +36,15 @@ export const TASK_PRIORITY_CHART_ORDER = [
   TASK_PRIORITY.low,
 ] as const;
 
+/** Colors used by the task analytics charts. */
+export const TASK_ANALYTICS_CHART_COLORS = {
+  priority: ['#eb6471', '#f4b545', '#5dc2a0'],
+  status: ['#8aabff', '#4b7df0', '#58c5a1'],
+  text: '#5f6b7a',
+  grid: '#eef1f5',
+  tooltip: '#1e293b',
+} as const;
+
 /** User-facing labels for task workflow states. */
 export const TASK_STATUS_LABELS = {
   [TASK_STATUS.todo]: 'To do',

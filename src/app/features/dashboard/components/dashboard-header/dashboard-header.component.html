@@ -59,8 +59,11 @@
     </button>
     <button
       type="button"
-      class="language-switch h-7 min-w-8 rounded px-1 text-[9px] font-semibold text-[#475467] transition-colors hover:bg-[#f1f1f1] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 max-md:h-7 max-md:min-w-8"
+      class="language-switch h-7 min-w-8 cursor-pointer rounded px-1 text-[9px] font-semibold text-[#475467] transition-[background-color,transform] hover:bg-[#f1f1f1] active:scale-95 active:bg-[#e4e7ec] focus-visible:outline-2 focus-visible:outline-[#1769d2] focus-visible:outline-offset-2 motion-reduce:transition-none max-md:h-7 max-md:min-w-8"
       [attr.aria-label]="
+        (i18n.language() === 'en' ? 'header.switchToGerman' : 'header.switchToEnglish') | translate
+      "
+      [attr.title]="
         (i18n.language() === 'en' ? 'header.switchToGerman' : 'header.switchToEnglish') | translate
       "
       (click)="i18n.toggleLanguage()"
