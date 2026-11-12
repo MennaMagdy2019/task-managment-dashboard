@@ -22,9 +22,15 @@ import {
   LinearScale,
   Tooltip,
 } from 'chart.js';
-import { Task } from '../../../../shared/models/task.model';
+import type { Task } from '../../../../shared/models/task.model';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import {
+  TASK_PRIORITY_CHART_ORDER,
+  TASK_PRIORITY_LABELS,
+  TASK_STATUS_LABELS,
+  TASK_STATUS_OPTIONS,
+} from '../../../../shared/constants/task.constants';
 
 let chartsRegistered = false;
 
@@ -38,6 +44,8 @@ let chartsRegistered = false;
 })
 export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input({ required: true }) tasks: Task[] = [];
+  readonly priorityLabels = TASK_PRIORITY_LABELS;
+  readonly statusLabels = TASK_STATUS_LABELS;
   @ViewChild('priorityCanvas') private priorityCanvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('statusCanvas') private statusCanvas?: ElementRef<HTMLCanvasElement>;
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -48,20 +56,16 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
 
   /** Returns task counts in the priority chart's High, Medium, Low order. */
   get priorityCounts(): number[] {
-    return [
-      this.tasks.filter((task) => task.priority === 'high').length,
-      this.tasks.filter((task) => task.priority === 'medium').length,
-      this.tasks.filter((task) => task.priority === 'low').length,
-    ];
+    return TASK_PRIORITY_CHART_ORDER.map(
+      (priority) => this.tasks.filter((task) => task.priority === priority).length,
+    );
   }
 
   /** Returns task counts in the status chart's To do, In progress, Done order. */
   get statusCounts(): number[] {
-    return [
-      this.tasks.filter((task) => task.status === 'todo').length,
-      this.tasks.filter((task) => task.status === 'in_progress').length,
-      this.tasks.filter((task) => task.status === 'done').length,
-    ];
+    return TASK_STATUS_OPTIONS.map(
+      (status) => this.tasks.filter((task) => task.status === status).length,
+    );
   }
 
   /** Creates the charts after their canvas elements are available. */
@@ -118,7 +122,7 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
       this.priorityChart = new Chart(this.priorityCanvas.nativeElement, {
         type: 'doughnut',
         data: {
-          labels: ['High', 'Medium', 'Low'],
+          labels: TASK_PRIORITY_CHART_ORDER.map((priority) => TASK_PRIORITY_LABELS[priority]),
           datasets: [
             {
               data: [0, 0, 0],
@@ -144,7 +148,7 @@ export class TaskAnalyticsComponent implements AfterViewInit, OnChanges, OnDestr
       this.statusChart = new Chart(this.statusCanvas.nativeElement, {
         type: 'bar',
         data: {
-          labels: ['To do', 'In progress', 'Done'],
+          labels: TASK_STATUS_OPTIONS.map((status) => TASK_STATUS_LABELS[status]),
           datasets: [
             {
               data: [0, 0, 0],

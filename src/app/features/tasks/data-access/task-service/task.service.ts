@@ -1,7 +1,8 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { Task, TaskDraft } from '../../../../shared/models/task.model';
+import type { Task, TaskDraft, TaskPatch } from '../../../../shared/models/task.model';
+import { API_ENDPOINTS } from '../../../../shared/constants/api.constants';
 
 /**
  * Provides the task read resource and task mutation operations.
@@ -19,7 +20,7 @@ export class TaskService {
   readonly resource = httpResource<Task[]>(
     () => {
       this.refreshKey();
-      return '/api/tasks';
+      return API_ENDPOINTS.tasks;
     },
     { defaultValue: [] },
   );
@@ -38,7 +39,7 @@ export class TaskService {
    */
   createTask(draft: TaskDraft): Observable<Task> {
     return this.http
-      .post<Task>('/api/tasks', draft)
+      .post<Task>(API_ENDPOINTS.tasks, draft)
       .pipe(tap(() => this.refreshKey.update((value) => value + 1)));
   }
 
@@ -48,9 +49,9 @@ export class TaskService {
    * @param changes The partial task data to apply as updates.
    * @returns An observable of the updated task.
    */
-  updateTask(id: string, changes: Partial<Task>): Observable<Task> {
+  updateTask(id: string, changes: TaskPatch): Observable<Task> {
     return this.http
-      .patch<Task>(`/api/tasks/${encodeURIComponent(id)}`, changes)
+      .patch<Task>(`${API_ENDPOINTS.tasks}/${encodeURIComponent(id)}`, changes)
       .pipe(tap(() => this.refreshKey.update((value) => value + 1)));
   }
 
@@ -61,7 +62,7 @@ export class TaskService {
    */
   deleteTask(id: string): Observable<Task> {
     return this.http
-      .delete<Task>(`/api/tasks/${encodeURIComponent(id)}`)
+      .delete<Task>(`${API_ENDPOINTS.tasks}/${encodeURIComponent(id)}`)
       .pipe(tap(() => this.refreshKey.update((value) => value + 1)));
   }
 }

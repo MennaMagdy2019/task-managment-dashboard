@@ -1,0 +1,7 @@
+[
+  { "id": "u1", "name": "Olivia Rhye", "email": "olivia@acme.com", "initials": "OR" },
+  { "id": "u2", "name": "Phoenix Baker", "email": "phoenix@acme.com", "initials": "PB" },
+  { "id": "u3", "name": "Lana Steiner", "email": "lana@acme.com", "initials": "LS" },
+  { "id": "u4", "name": "Demi Wilkinson", "email": "demi@acme.com", "initials": "DW" },
+  { "id": "u5", "name": "Candice Wu", "email": "candice@acme.com", "initials": "CW" }
+]

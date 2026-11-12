@@ -1,14 +1,10 @@
 import { HttpEvent, HttpHandlerFn, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, catchError, map, shareReplay, tap, throwError } from 'rxjs';
+import type { ApiCacheEntry } from '../models/api-cache-entry.model';
 
 const CACHE_DURATION_MS = 60_000;
 
-interface CacheEntry {
-  response$: Observable<HttpEvent<unknown>>;
-  expiresAt: number | null;
-}
-
-const cache = new Map<string, CacheEntry>();
+const cache = new Map<string, ApiCacheEntry>();
 let cacheEpoch = 0;
 
 /** Clears cached API responses and prevents older in-flight reads from repopulating them. */
@@ -32,7 +28,7 @@ export function cacheGetResponse(
   const requestEpoch = cacheEpoch;
   // The observable closes over this entry before its single assignment below.
   // eslint-disable-next-line prefer-const
-  let entry: CacheEntry;
+  let entry: ApiCacheEntry;
   const response$ = next(request).pipe(
     tap((event) => {
       if (event instanceof HttpResponse) {

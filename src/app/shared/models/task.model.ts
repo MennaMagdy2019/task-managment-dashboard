@@ -1,6 +1,12 @@
-export type TaskStatus = 'todo' | 'in_progress' | 'done';
-export type TaskPriority = 'high' | 'medium' | 'low';
+import { TASK_PRIORITY, TASK_STATUS } from '../constants/task.constants';
 
+/** Supported task workflow states. */
+export type TaskStatus = (typeof TASK_STATUS)[keyof typeof TASK_STATUS];
+
+/** Supported task priority levels. */
+export type TaskPriority = (typeof TASK_PRIORITY)[keyof typeof TASK_PRIORITY];
+
+/** A team member who may own a task. */
 export interface Assignee {
   id: string;
   name: string;
@@ -9,6 +15,7 @@ export interface Assignee {
   avatar?: string;
 }
 
+/** A persisted task shown on the dashboard and task board. */
 export interface Task {
   id: string;
   title: string;
@@ -24,8 +31,15 @@ export interface Task {
   completedAt?: string;
 }
 
+/** Fields a user must provide when creating a task. */
 export type TaskDraft = Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'isOverdue' | 'completedAt'>;
 
+/** Editable fields accepted by the task update API. */
+export type TaskPatch = Partial<
+  Pick<Task, 'title' | 'description' | 'status' | 'priority' | 'dueDate' | 'assignee' | 'tags'>
+>;
+
+/** A recent task-related action shown in the activity feed. */
 export interface TaskActivity {
   id: string;
   message: string;
@@ -34,13 +48,3 @@ export interface TaskActivity {
   occurredAt: string;
   kind: 'created' | 'updated' | 'completed' | 'deleted';
 }
-
-export const TEAM_MEMBERS: Assignee[] = [
-  { id: 'u1', name: 'Olivia Rhye', email: 'olivia@acme.com', initials: 'OR' },
-  { id: 'u2', name: 'Phoenix Baker', email: 'phoenix@acme.com', initials: 'PB' },
-  { id: 'u3', name: 'Lana Steiner', email: 'lana@acme.com', initials: 'LS' },
-  { id: 'u4', name: 'Demi Wilkinson', email: 'demi@acme.com', initials: 'DW' },
-  { id: 'u5', name: 'Candice Wu', email: 'candice@acme.com', initials: 'CW' },
-];
-
-export const CURRENT_USER = TEAM_MEMBERS[0];

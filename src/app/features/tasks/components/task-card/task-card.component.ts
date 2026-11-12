@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { Task } from '../../../../shared/models/task.model';
+import { TASK_STATUS } from '../../../../shared/constants/task.constants';
 
 @Component({
   selector: 'app-task-card',
@@ -21,7 +22,10 @@ export class TaskCardComponent {
 
   /** Indicates whether an unfinished task has a due date before today. */
   get overdue(): boolean {
-    return this.task.status !== 'done' && this.task.dueDate < new Date().toISOString().slice(0, 10);
+    return (
+      this.task.status !== TASK_STATUS.done &&
+      this.task.dueDate < new Date().toISOString().slice(0, 10)
+    );
   }
 
   /** Formats the due date as Today, Tomorrow, or a short calendar date. */

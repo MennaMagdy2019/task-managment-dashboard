@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { DashboardStatistics } from '../../models/dashboard.model';
+import type { DashboardStatistics } from '../../models/dashboard.model';
 
 @Component({
   selector: 'app-dashboard-summary',

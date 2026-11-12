@@ -84,6 +84,7 @@ describe('DashboardPageComponent', () => {
     await TestBed.compileComponents();
   });
 
+  /** Creates and renders a dashboard page fixture with the configured test providers. */
   function createFixture() {
     const fixture = TestBed.createComponent(DashboardPageComponent);
     fixture.detectChanges();
@@ -213,6 +214,7 @@ describe('DashboardPageComponent', () => {
   });
 });
 
+/** Builds a CDK drop event for same-column reordering or cross-column movement. */
 function createDropEvent(
   previousTasks: Task[],
   destinationTasks: Task[],

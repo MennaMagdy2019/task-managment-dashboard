@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { TEAM_MEMBERS } from '../../../../shared/models/task.model';
+import { TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
 import type { TaskDraft } from '../../../../shared/models/task.model';
 import { InMemoryTaskApiService, MockApiError } from './in-memory-task-api.service';
 

@@ -12,6 +12,7 @@ import {
   taskMoveActivity,
 } from './dashboard-page.helpers';
 
+/** Creates a task fixture with the supplied due date and workflow status. */
 function createTask(id: string, dueDate: string, status: Task['status'] = 'todo'): Task {
   return {
     id,

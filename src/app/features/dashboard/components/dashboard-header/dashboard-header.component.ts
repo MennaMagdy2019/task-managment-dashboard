@@ -4,6 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
+import { APP_ROUTE_PATHS } from '../../../../shared/constants/app.constants';
 
 @Component({
   selector: 'app-dashboard-header',
@@ -14,6 +15,7 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardHeaderComponent {
+  readonly routePaths = APP_ROUTE_PATHS;
   @Input() query = '';
   @Input() userInitials = '';
   @Input() sidebarOpen = false;

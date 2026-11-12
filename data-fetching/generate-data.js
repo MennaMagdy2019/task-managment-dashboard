@@ -21,13 +21,7 @@ const statisticsOutputDirectory = path.join(
   'statistics',
   'data-access',
 );
-const users = [
-  { id: 'u1', name: 'Olivia Rhye', avatar: 'OR', email: 'olivia@acme.com' },
-  { id: 'u2', name: 'Phoenix Baker', avatar: 'PB', email: 'phoenix@acme.com' },
-  { id: 'u3', name: 'Lana Steiner', avatar: 'LS', email: 'lana@acme.com' },
-  { id: 'u4', name: 'Demi Wilkinson', avatar: 'DW', email: 'demi@acme.com' },
-  { id: 'u5', name: 'Candice Wu', avatar: 'CW', email: 'candice@acme.com' },
-];
+const users = require('../src/app/shared/data/team-members.json');
 
 const taskDefinitions = [
   [
@@ -164,16 +158,32 @@ const taskDefinitions = [
   ],
 ];
 
+/**
+ * Returns a copy of the supplied date shifted by a calendar-day offset.
+ * @param {Date} date The starting date.
+ * @param {number} days Number of days to add or subtract.
+ * @returns {Date} The shifted date.
+ */
 function addDays(date, days) {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
   return result;
 }
 
+/**
+ * Formats a date as a UTC YYYY-MM-DD string.
+ * @param {Date} date The date to format.
+ * @returns {string} The date without its time component.
+ */
 function dateOnly(date) {
   return date.toISOString().slice(0, 10);
 }
 
+/**
+ * Builds the task seed response using relative dates from the supplied time.
+ * @param {Date} now Reference time used to generate all task timestamps.
+ * @returns {{ tasks: object[], meta: { totalCount: number, lastUpdated: string } }} Task data and metadata.
+ */
 function generateTasks(now) {
   const tasks = taskDefinitions.map(
     ([id, title, description, status, priority, dueOffset, userId, tags, createdOffset]) => {
@@ -186,7 +196,7 @@ function generateTasks(now) {
         priority,
         dueDate,
         isOverdue: status !== 'done' && dueDate < dateOnly(now),
-        assignee: users.find((user) => user.id === userId),
+        assignee: getGeneratedAssignee(userId),
         tags,
         createdAt: addDays(now, -createdOffset).toISOString(),
         updatedAt: addDays(now, -Math.max(0, createdOffset - 1)).toISOString(),
@@ -200,6 +210,28 @@ function generateTasks(now) {
   return { tasks, meta: { totalCount: tasks.length, lastUpdated: now.toISOString() } };
 }
 
+/**
+ * Resolves a task assignee from the shared team data or throws if it is missing.
+ * @param {string} userId ID declared in a task definition.
+ * @returns {{ id: string, name: string, email: string, avatar: string }} Serialized assignee.
+ */
+function getGeneratedAssignee(userId) {
+  const user = users.find((candidate) => candidate.id === userId);
+  if (!user) throw new Error(`Unknown task assignee "${userId}".`);
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    avatar: user.initials,
+  };
+}
+
+/**
+ * Creates statistic metadata and counts from a generated task response.
+ * @param {{ tasks: object[] }} tasksResponse Generated tasks to summarize.
+ * @param {Date} now Reference timestamp for the statistics response.
+ * @returns {{ statistics: object[], lastUpdated: string }} The generated statistics response.
+ */
 function generateStatistics(tasksResponse, now) {
   const tasks = tasksResponse.tasks;
   const counts = {
@@ -241,6 +273,13 @@ function generateStatistics(tasksResponse, now) {
   };
 }
 
+/**
+ * Writes formatted JSON to the requested feature data directory.
+ * @param {string} outputDirectory Directory receiving the generated file.
+ * @param {string} fileName Name of the JSON file.
+ * @param {unknown} data Data to serialize.
+ * @returns {void}
+ */
 function writeJsonFile(outputDirectory, fileName, data) {
   fs.mkdirSync(outputDirectory, { recursive: true });
   fs.writeFileSync(
@@ -248,9 +287,9 @@ function writeJsonFile(outputDirectory, fileName, data) {
     `${JSON.stringify(data, null, 2)}\n`,
     'utf8',
   );
-  console.log(`Generated ${fileName}`);
 }
 
+/** Generates the task and statistics seed files with one shared timestamp. */
 function main() {
   const now = new Date();
   const tasks = generateTasks(now);

@@ -1,3 +1,4 @@
+/** A dashboard metric and its display metadata. */
 export interface Statistic {
   id: string;
   title: string;
@@ -9,6 +10,7 @@ export interface Statistic {
   color: string;
 }
 
+/** Complete API response for the statistics dashboard. */
 export interface StatisticsResponse {
   statistics: Statistic[];
   lastUpdated: string;

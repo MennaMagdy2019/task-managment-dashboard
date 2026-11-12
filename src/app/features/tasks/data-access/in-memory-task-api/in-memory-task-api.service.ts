@@ -1,12 +1,19 @@
 import { Injectable } from '@angular/core';
-import {
+import type {
   Assignee,
   Task,
   TaskDraft,
+  TaskPatch,
   TaskPriority,
   TaskStatus,
-  TEAM_MEMBERS,
 } from '../../../../shared/models/task.model';
+import { TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
+import {
+  TASK_PRIORITY_OPTIONS,
+  TASK_STATUS,
+  TASK_STATUS_OPTIONS,
+} from '../../../../shared/constants/task.constants';
+import type { GeneratedTask } from '../../models/generated-task.model';
 import generatedTaskData from '../tasks.json';
 
 const EDITABLE_TASK_FIELDS: ReadonlySet<string> = new Set([
@@ -19,21 +26,6 @@ const EDITABLE_TASK_FIELDS: ReadonlySet<string> = new Set([
   'tags',
 ]);
 const ASSIGNEE_FIELDS: ReadonlySet<string> = new Set(['id', 'name', 'email', 'initials', 'avatar']);
-
-interface GeneratedTask {
-  id: string;
-  title: string;
-  description: string;
-  status: string;
-  priority: string;
-  dueDate: string;
-  isOverdue: boolean;
-  assignee: Omit<Assignee, 'initials'>;
-  tags: string[];
-  createdAt: string;
-  updatedAt: string;
-  completedAt?: string;
-}
 
 /** Expected API error surfaced by the in-memory backend. */
 export class MockApiError extends Error {
@@ -49,17 +41,17 @@ export class MockApiError extends Error {
 
 /** Checks whether an untrusted value is a supported task status. */
 function isTaskStatus(value: unknown): value is TaskStatus {
-  return value === 'todo' || value === 'in_progress' || value === 'done';
+  return typeof value === 'string' && TASK_STATUS_OPTIONS.some((status) => status === value);
 }
 
 /** Checks whether an untrusted value is a supported task priority. */
 function isTaskPriority(value: unknown): value is TaskPriority {
-  return value === 'low' || value === 'medium' || value === 'high';
+  return typeof value === 'string' && TASK_PRIORITY_OPTIONS.some((priority) => priority === value);
 }
 
 /** Determines whether a task is overdue on the supplied UTC date. */
 function isTaskOverdue(status: TaskStatus, dueDate: string, today: string): boolean {
-  return status !== 'done' && dueDate < today;
+  return status !== TASK_STATUS.done && dueDate < today;
 }
 
 /** Validates and converts a generated task record into the application model. */
@@ -124,9 +116,9 @@ function isTaskDraft(body: unknown): body is TaskDraft {
 }
 
 /** Validates the allowed fields and values accepted by the task-update endpoint. */
-function isTaskPatch(body: unknown): body is Partial<Task> {
+function isTaskPatch(body: unknown): body is TaskPatch {
   if (!body || typeof body !== 'object' || Array.isArray(body)) return false;
-  const patch = body as Partial<Task>;
+  const patch = body as TaskPatch;
   const keys = Object.keys(body);
 
   if (keys.length === 0 || !keys.every((key) => EDITABLE_TASK_FIELDS.has(key))) return false;
@@ -186,7 +178,7 @@ export class InMemoryTaskApiService {
       createdAt: now,
       updatedAt: now,
       isOverdue: isTaskOverdue(body.status, body.dueDate, now.slice(0, 10)),
-      ...(body.status === 'done' ? { completedAt: now } : {}),
+      ...(body.status === TASK_STATUS.done ? { completedAt: now } : {}),
     };
     this.tasks = [created, ...this.tasks];
     return cloneTask(created);
@@ -206,8 +198,10 @@ export class InMemoryTaskApiService {
       ...(body.assignee ? { assignee: { ...body.assignee } } : {}),
       ...(body.tags ? { tags: [...body.tags] } : {}),
       updatedAt: now,
-      ...(body.status === 'done' && current.status !== 'done' ? { completedAt: now } : {}),
-      ...(body.status && body.status !== 'done' ? { completedAt: undefined } : {}),
+      ...(body.status === TASK_STATUS.done && current.status !== TASK_STATUS.done
+        ? { completedAt: now }
+        : {}),
+      ...(body.status && body.status !== TASK_STATUS.done ? { completedAt: undefined } : {}),
     };
     updated.isOverdue = isTaskOverdue(updated.status, updated.dueDate, now.slice(0, 10));
     this.tasks = this.tasks.map((task, index) => (index === taskIndex ? updated : task));

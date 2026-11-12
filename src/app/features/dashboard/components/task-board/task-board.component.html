@@ -6,10 +6,12 @@
         [value]="statusFilter"
         (change)="statusFilterChange.emit($event.value)"
       >
-        <mat-button-toggle value="all">All</mat-button-toggle>
-        <mat-button-toggle value="todo">To Do</mat-button-toggle>
-        <mat-button-toggle value="in_progress">In Progress</mat-button-toggle>
-        <mat-button-toggle value="done">Done</mat-button-toggle>
+        <mat-button-toggle [value]="allFilterValue">All</mat-button-toggle>
+        @for (status of statusOptions; track status) {
+          <mat-button-toggle [value]="status">{{
+            statusLabels[status] | titlecase
+          }}</mat-button-toggle>
+        }
       </mat-button-toggle-group>
     </div>
     <div class="board-filters">
@@ -19,10 +21,10 @@
           [value]="priorityFilter"
           (selectionChange)="priorityFilterChange.emit($event.value)"
         >
-          <mat-option value="all">Priority</mat-option>
-          <mat-option value="high">High</mat-option>
-          <mat-option value="medium">Medium</mat-option>
-          <mat-option value="low">Low</mat-option>
+          <mat-option [value]="allFilterValue">Priority</mat-option>
+          @for (priority of priorityOptions; track priority) {
+            <mat-option [value]="priority">{{ priorityLabels[priority] }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <button mat-flat-button type="button" class="filter-new-task" (click)="createTask.emit()">

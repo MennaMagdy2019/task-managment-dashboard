@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { TEAM_MEMBERS } from '../../../../shared/models/task.model';
+import { TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
 import { InMemoryTaskApiService } from '../../../tasks/data-access/in-memory-task-api/in-memory-task-api.service';
 import { InMemoryStatisticsApiService } from './in-memory-statistics-api.service';
 

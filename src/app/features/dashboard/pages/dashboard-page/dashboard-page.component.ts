@@ -21,25 +21,32 @@ import { DashboardHeaderComponent } from '../../components/dashboard-header/dash
 import { DashboardInsightsComponent } from '../../components/dashboard-insights/dashboard-insights.component';
 import { DashboardSidebarComponent } from '../../components/dashboard-sidebar/dashboard-sidebar.component';
 import { DashboardSummaryComponent } from '../../components/dashboard-summary/dashboard-summary.component';
-import {
-  TaskBoardComponent,
-  TaskDropEvent,
-} from '../../components/task-board/task-board.component';
-import {
-  CURRENT_USER,
+import { TaskBoardComponent } from '../../components/task-board/task-board.component';
+import type {
   Task,
   TaskActivity,
   TaskDraft,
   TaskStatus,
-  TEAM_MEMBERS,
 } from '../../../../shared/models/task.model';
+import { CURRENT_USER, TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
 import {
+  ALL_TASK_FILTER,
+  TASK_ACTIVITY_MESSAGES,
+  TASK_STATUS_LABELS,
+} from '../../../../shared/constants/task.constants';
+import { APP_ROUTE_PATHS, UI_ACTION_LABELS } from '../../../../shared/constants/app.constants';
+import type { ConfirmDeleteDialogData } from '../../../../shared/models/confirm-delete-dialog.model';
+import type {
   BoardPriorityFilter,
   BoardStatusFilter,
+  DashboardNavigationAction,
+  DashboardNoticeKind,
   DashboardStatistics,
   DashboardView,
 } from '../../models/dashboard.model';
+import type { TaskDropEvent } from '../../models/task-board.model';
 import { TaskService } from '../../../tasks/data-access/task-service/task.service';
+import type { TaskEditorDialogData } from '../../../tasks/models/task-editor.model';
 import {
   calculateTaskStatistics,
   filterTasks,
@@ -47,7 +54,6 @@ import {
   reorderVisibleTaskIds,
   sortTasksByOrder,
   synchronizeTaskOrder,
-  taskStatusLabel,
 } from '../../utils/task-dashboard-helpers/task-dashboard.helpers';
 import {
   countUpcomingTasks,
@@ -83,8 +89,8 @@ import {
     MatSidenavModule,
     TaskBoardComponent,
   ],
-  templateUrl: '../assets/dashboard-page.component.html',
-  styleUrl: '../assets/dashboard-page.component.scss',
+  templateUrl: './dashboard-page.component.html',
+  styleUrl: './dashboard-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPageComponent {
@@ -105,9 +111,9 @@ export class DashboardPageComponent {
   readonly isMobile = computed(() => isMobileViewport(this.viewportWidth()));
   readonly statColumns = computed(() => statisticColumnCount(this.viewportWidth()));
   readonly query = signal('');
-  readonly priorityFilter = signal<BoardPriorityFilter>('all');
-  readonly statusFilter = signal<BoardStatusFilter>('all');
-  readonly assigneeFilter = signal('all');
+  readonly priorityFilter = signal<BoardPriorityFilter>(ALL_TASK_FILTER);
+  readonly statusFilter = signal<BoardStatusFilter>(ALL_TASK_FILTER);
+  readonly assigneeFilter = signal<string>(ALL_TASK_FILTER);
   readonly sidebarOpen = signal(false);
   readonly taskOrder = signal<string[]>([]);
   private preserveTeamMenuOnNavigation = false;
@@ -174,21 +180,21 @@ export class DashboardPageComponent {
   }
 
   /** Applies the sidebar actions that remain local to the dashboard. */
-  selectNavigationItem(item: 'team' | 'settings'): void {
+  selectNavigationItem(item: DashboardNavigationAction): void {
     if (item === 'team') {
       const shouldExpand = !this.teamExpanded();
       this.teamExpanded.set(shouldExpand);
-      this.assigneeFilter.set('all');
-      this.statusFilter.set('all');
+      this.assigneeFilter.set(ALL_TASK_FILTER);
+      this.statusFilter.set(ALL_TASK_FILTER);
       if (shouldExpand && this.view() !== 'dashboard') {
         this.preserveTeamMenuOnNavigation = true;
-        void this.router.navigateByUrl('/dashboard');
+        void this.router.navigateByUrl(APP_ROUTE_PATHS.dashboard.url);
       }
       this.sidebarOpen.set(false);
     } else {
       this.teamExpanded.set(false);
       this.sidebarOpen.set(false);
-      this.snackBar.open('Settings are coming soon.', 'Dismiss', { duration: 3000 });
+      this.snackBar.open('Settings are coming soon.', UI_ACTION_LABELS.dismiss, { duration: 3000 });
     }
   }
 
@@ -197,18 +203,18 @@ export class DashboardPageComponent {
     this.view.set(view);
     this.teamExpanded.set(keepTeamMenuOpen && view === 'dashboard');
     if (!keepTeamMenuOpen) {
-      this.assigneeFilter.set('all');
+      this.assigneeFilter.set(ALL_TASK_FILTER);
     }
-    this.statusFilter.set('all');
+    this.statusFilter.set(ALL_TASK_FILTER);
     this.sidebarOpen.set(false);
   }
 
   /** Resets search and every task view/filter to the dashboard defaults. */
   clearFilters(): void {
     this.query.set('');
-    this.priorityFilter.set('all');
-    this.statusFilter.set('all');
-    this.assigneeFilter.set('all');
+    this.priorityFilter.set(ALL_TASK_FILTER);
+    this.statusFilter.set(ALL_TASK_FILTER);
+    this.assigneeFilter.set(ALL_TASK_FILTER);
     this.teamExpanded.set(false);
     this.setView('dashboard');
   }
@@ -217,10 +223,10 @@ export class DashboardPageComponent {
   setAssignee(id: string): void {
     if (this.view() !== 'dashboard') {
       this.preserveTeamMenuOnNavigation = true;
-      void this.router.navigateByUrl('/dashboard');
+      void this.router.navigateByUrl(APP_ROUTE_PATHS.dashboard.url);
     }
     this.teamExpanded.set(true);
-    this.assigneeFilter.set(this.assigneeFilter() === id ? 'all' : id);
+    this.assigneeFilter.set(this.assigneeFilter() === id ? ALL_TASK_FILTER : id);
     this.sidebarOpen.set(false);
   }
 
@@ -247,7 +253,7 @@ export class DashboardPageComponent {
       next: (saved) => {
         this.recordActivity(
           task ? 'updated' : 'created',
-          task ? 'updated a task' : 'created a task',
+          task ? TASK_ACTIVITY_MESSAGES.updated : TASK_ACTIVITY_MESSAGES.created,
           saved.title,
         );
         this.setNotice(task ? 'Task changes saved.' : 'Task created successfully.', 'success');
@@ -259,21 +265,24 @@ export class DashboardPageComponent {
 
   /** Opens a confirmation dialog before deleting the selected task. */
   askDelete(task: Task): void {
-    void import('../../../../shared/components/confirm-delete-dialog/confirm-delete-dialog.component').then(
-      ({ ConfirmDeleteDialogComponent }) => {
+    void import('../../../../shared/components/confirm-delete-dialog/confirm-delete-dialog.component')
+      .then(({ ConfirmDeleteDialogComponent }) => {
+        const data: ConfirmDeleteDialogData = { taskTitle: task.title };
         this.dialog
-          .open(ConfirmDeleteDialogComponent, {
-            data: { taskTitle: task.title },
-            width: '420px',
-            maxWidth: '95vw',
-          })
+          .open<
+            InstanceType<typeof ConfirmDeleteDialogComponent>,
+            ConfirmDeleteDialogData,
+            boolean
+          >(ConfirmDeleteDialogComponent, { data, width: '420px', maxWidth: '95vw' })
           .afterClosed()
           .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe((confirmed: boolean) => {
+          .subscribe((confirmed) => {
             if (confirmed) this.deleteTask(task);
           });
-      },
-    );
+      })
+      .catch((error: unknown) => {
+        this.setNotice(taskErrorMessage(error, 'Could not open delete confirmation.'), 'error');
+      });
   }
 
   /** Applies a task-board drop by reordering local display order or persisting a status change. */
@@ -303,7 +312,7 @@ export class DashboardPageComponent {
 
   /** Returns a user-facing label for a task status. */
   statusLabel(status: TaskStatus): string {
-    return taskStatusLabel(status);
+    return TASK_STATUS_LABELS[status];
   }
 
   /** Removes hidden tasks from the stored order and appends newly loaded task IDs. */
@@ -313,21 +322,29 @@ export class DashboardPageComponent {
 
   /** Loads the task editor lazily and handles its submitted task draft. */
   private async openEditor(task: Task | null): Promise<void> {
-    const { TaskEditorComponent } =
-      await import('../../../tasks/components/task-editor/task-editor.component');
-    this.dialog
-      .open(TaskEditorComponent, {
-        data: { task, users: this.users },
-        width: '560px',
-        maxWidth: '95vw',
-        maxHeight: '95vh',
-        autoFocus: 'first-tabbable',
-      })
-      .afterClosed()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((draft: TaskDraft | undefined) => {
-        if (draft) this.saveTask(draft, task);
-      });
+    try {
+      const { TaskEditorComponent } =
+        await import('../../../tasks/components/task-editor/task-editor.component');
+      const data: TaskEditorDialogData = { task, users: this.users };
+      this.dialog
+        .open<InstanceType<typeof TaskEditorComponent>, TaskEditorDialogData, TaskDraft>(
+          TaskEditorComponent,
+          {
+            data,
+            width: '560px',
+            maxWidth: '95vw',
+            maxHeight: '95vh',
+            autoFocus: 'first-tabbable',
+          },
+        )
+        .afterClosed()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((draft) => {
+          if (draft) this.saveTask(draft, task);
+        });
+    } catch (error: unknown) {
+      this.setNotice(taskErrorMessage(error, 'Could not open the task editor.'), 'error');
+    }
   }
 
   /** Deletes a task and reports the success or failure through activity and notifications. */
@@ -337,7 +354,7 @@ export class DashboardPageComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.recordActivity('deleted', 'deleted a task', task.title);
+          this.recordActivity('deleted', TASK_ACTIVITY_MESSAGES.deleted, task.title);
           this.setNotice('Task deleted.', 'success');
         },
         error: (error: unknown) =>
@@ -362,8 +379,10 @@ export class DashboardPageComponent {
   }
 
   /** Shows a success or error snack-bar notification. */
-  private setNotice(text: string, kind: 'success' | 'error'): void {
-    this.snackBar.open(text, 'Dismiss', { duration: kind === 'error' ? 6000 : 3500 });
+  private setNotice(text: string, kind: DashboardNoticeKind): void {
+    this.snackBar.open(text, UI_ACTION_LABELS.dismiss, {
+      duration: kind === 'error' ? 6000 : 3500,
+    });
   }
 
   /** Closes the mobile navigation drawer when the user presses Escape. */

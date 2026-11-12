@@ -1,13 +1,13 @@
 <nav class="primary-nav" aria-label="Main menu">
-  <a routerLink="/dashboard" routerLinkActive="active" ariaCurrentWhenActive="page">
+  <a [routerLink]="routePaths.dashboard.url" routerLinkActive="active" ariaCurrentWhenActive="page">
     <span class="material-icons nav-icon dashboard-icon" aria-hidden="true">dashboard</span
     ><span class="nav-label">Dashboard</span>
   </a>
-  <a routerLink="/tasks" routerLinkActive="active" ariaCurrentWhenActive="page">
+  <a [routerLink]="routePaths.tasks.url" routerLinkActive="active" ariaCurrentWhenActive="page">
     <span class="material-icons nav-icon tasks-icon" aria-hidden="true">task_alt</span
     ><span class="nav-label">Tasks</span>
   </a>
-  <a routerLink="/analytics" routerLinkActive="active" ariaCurrentWhenActive="page">
+  <a [routerLink]="routePaths.analytics.url" routerLinkActive="active" ariaCurrentWhenActive="page">
     <span class="material-icons nav-icon analytics-icon" aria-hidden="true">analytics</span
     ><span class="nav-label">Analytics</span>
   </a>

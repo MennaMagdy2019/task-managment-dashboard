@@ -1,10 +1,10 @@
 import type { Task, TaskStatus } from '../../../../shared/models/task.model';
-import type {
-  BoardPriorityFilter,
-  BoardStatusFilter,
-  DashboardStatistics,
-  DashboardView,
-} from '../../models/dashboard.model';
+import {
+  ALL_TASK_FILTER,
+  TASK_STATUS,
+  TASK_STATUS_LABELS,
+} from '../../../../shared/constants/task.constants';
+import type { DashboardStatistics, TaskFilterOptions } from '../../models/dashboard.model';
 
 /**
  * Filters tasks by search text, priority, status, assignee, and dashboard view.
@@ -12,35 +12,27 @@ import type {
  * @param options The filtering options.
  * @returns The filtered list of tasks.
  */
-export function filterTasks(
-  tasks: Task[],
-  options: {
-    search: string;
-    priority: BoardPriorityFilter;
-    status: BoardStatusFilter;
-    assigneeId: string;
-    view: DashboardView;
-    currentUserId: string;
-    today?: string;
-    upcomingThrough?: string;
-  },
-): Task[] {
+export function filterTasks(tasks: Task[], options: TaskFilterOptions): Task[] {
   const search = options.search.trim().toLowerCase();
   const today = options.today ?? new Date().toISOString().slice(0, 10);
   const upcomingThrough = options.upcomingThrough ?? dateAfter(today, 7);
   return tasks.filter((task) => {
     const matchesText =
       !search || `${task.title} ${task.description}`.toLowerCase().includes(search);
-    const matchesPriority = options.priority === 'all' || task.priority === options.priority;
-    const matchesStatus = options.status === 'all' || task.status === options.status;
-    const matchesAssignee = options.assigneeId === 'all' || task.assignee.id === options.assigneeId;
+    const matchesPriority =
+      options.priority === ALL_TASK_FILTER || task.priority === options.priority;
+    const matchesStatus = options.status === ALL_TASK_FILTER || task.status === options.status;
+    const matchesAssignee =
+      options.assigneeId === ALL_TASK_FILTER || task.assignee.id === options.assigneeId;
     const matchesView =
       options.view === 'my-tasks'
         ? task.assignee.id === options.currentUserId
         : options.view === 'upcoming'
-          ? task.status !== 'done' && task.dueDate >= today && task.dueDate <= upcomingThrough
+          ? task.status !== TASK_STATUS.done &&
+            task.dueDate >= today &&
+            task.dueDate <= upcomingThrough
           : options.view === 'overdue'
-            ? task.status !== 'done' && task.dueDate < today
+            ? task.status !== TASK_STATUS.done && task.dueDate < today
             : true;
     return matchesText && matchesPriority && matchesStatus && matchesAssignee && matchesView;
   });
@@ -59,9 +51,9 @@ export function dateAfter(date: string, days: number): string {
 }
 
 /**
- *  Calculates dashboard task totals, including unfinished tasks that are overdue today.
- * @argument tasks The list of tasks to calculate statistics for.
- * @argument today The current date in YYYY-MM-DD format (defaults to today).
+ * Calculates dashboard task totals, including unfinished tasks that are overdue today.
+ * @param tasks The list of tasks to calculate statistics for.
+ * @param today The current date in YYYY-MM-DD format (defaults to today).
  * @returns An object containing the total, done, inProgress, and overdue task counts.
  */
 export function calculateTaskStatistics(
@@ -70,9 +62,10 @@ export function calculateTaskStatistics(
 ): DashboardStatistics {
   return {
     total: tasks.length,
-    done: tasks.filter((task) => task.status === 'done').length,
-    inProgress: tasks.filter((task) => task.status === 'in_progress').length,
-    overdue: tasks.filter((task) => task.status !== 'done' && task.dueDate < today).length,
+    done: tasks.filter((task) => task.status === TASK_STATUS.done).length,
+    inProgress: tasks.filter((task) => task.status === TASK_STATUS.inProgress).length,
+    overdue: tasks.filter((task) => task.status !== TASK_STATUS.done && task.dueDate < today)
+      .length,
   };
 }
 
@@ -162,7 +155,7 @@ export function placeTaskIdInOrder(
  * @returns The user-facing label.
  */
 export function taskStatusLabel(status: TaskStatus): string {
-  return status === 'todo' ? 'To do' : status === 'in_progress' ? 'In progress' : 'Done';
+  return TASK_STATUS_LABELS[status];
 }
 
 /**

@@ -11,7 +11,9 @@ import {
   MockApiError,
 } from '../../../features/tasks/data-access/in-memory-task-api/in-memory-task-api.service';
 import { InMemoryStatisticsApiService } from '../../../features/statistics/data-access/in-memory-statistics-api/in-memory-statistics-api.service';
-import { isTaskApiRequest } from '../task-api-endpoints';
+import { API_ENDPOINTS } from '../../../shared/constants/api.constants';
+import type { ApiErrorResponse } from '../../../shared/models/api-error.model';
+import { isTaskApiRequest, TASK_ITEM_ENDPOINT_PATTERN } from '../task-api-endpoints';
 
 const RESPONSE_DELAY_MS = 180;
 
@@ -30,7 +32,7 @@ function handleMockRequest(action: () => unknown, status = 200): Observable<Http
         return throwError(
           () =>
             new HttpErrorResponse({
-              error: { message: error.message },
+              error: { message: error.message } satisfies ApiErrorResponse,
               status: error.status,
               statusText: error.status === 400 ? 'Bad Request' : 'Not Found',
             }),
@@ -48,9 +50,9 @@ export function handleMockApiRequest(
 ): Observable<HttpResponse<unknown>> | null {
   if (!isTaskApiRequest(request.url)) return null;
 
-  const isTaskCollection = request.url === '/api/tasks';
-  const isStatistics = request.url === '/api/statistics';
-  const taskMatch = request.url.match(/^\/api\/tasks\/([^/?]+)$/);
+  const isTaskCollection = request.url === API_ENDPOINTS.tasks;
+  const isStatistics = request.url === API_ENDPOINTS.statistics;
+  const taskMatch = request.url.match(TASK_ITEM_ENDPOINT_PATTERN);
   if (!isTaskCollection && !isStatistics && !taskMatch) return null;
 
   if (isStatistics && request.method === 'GET') {

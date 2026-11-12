@@ -1,25 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-
-interface ConfirmDeleteDialogData {
-  taskTitle: string;
-}
+import type { ConfirmDeleteDialogData } from '../../models/confirm-delete-dialog.model';
 
 @Component({
   selector: 'app-confirm-delete-dialog',
   standalone: true,
   imports: [MatButtonModule, MatDialogModule],
-  template: `
-    <h2 mat-dialog-title>Delete this task?</h2>
-    <mat-dialog-content>
-      “{{ data.taskTitle }}” will be permanently removed from your task board.
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button type="button" mat-dialog-close>Cancel</button>
-      <button mat-flat-button type="button" color="warn" (click)="confirm()">Delete task</button>
-    </mat-dialog-actions>
-  `,
+  templateUrl: './confirm-delete-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDeleteDialogComponent {

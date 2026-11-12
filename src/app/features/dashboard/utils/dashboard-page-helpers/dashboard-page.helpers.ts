@@ -1,14 +1,25 @@
 import type { DashboardView } from '../../models/dashboard.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import type { TaskBoardColumn } from '../../components/task-board/task-board.component';
-import { CURRENT_USER, TEAM_MEMBERS } from '../../../../shared/models/task.model';
+import type { TaskBoardColumn } from '../../models/task-board.model';
+import { APP_ROUTE_PATHS } from '../../../../shared/constants/app.constants';
+import {
+  TASK_ACTIVITY_MESSAGES,
+  TASK_STATUS,
+  TASK_STATUS_LABELS,
+} from '../../../../shared/constants/task.constants';
+import { CURRENT_USER, TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
+import type { ApiErrorResponse } from '../../../../shared/models/api-error.model';
 import type { Task, TaskActivity, TaskStatus } from '../../../../shared/models/task.model';
 
 /** Dashboard board columns in their display order. */
 export const DASHBOARD_COLUMNS: TaskBoardColumn[] = [
-  { status: 'todo', label: 'To do', icon: '○' },
-  { status: 'in_progress', label: 'In progress', icon: '◷' },
-  { status: 'done', label: 'Done', icon: '✓' },
+  { status: TASK_STATUS.todo, label: TASK_STATUS_LABELS[TASK_STATUS.todo], icon: '○' },
+  {
+    status: TASK_STATUS.inProgress,
+    label: TASK_STATUS_LABELS[TASK_STATUS.inProgress],
+    icon: '◷',
+  },
+  { status: TASK_STATUS.done, label: TASK_STATUS_LABELS[TASK_STATUS.done], icon: '✓' },
 ];
 
 /**
@@ -26,7 +37,7 @@ export function createInitialActivities(now = new Date()): TaskActivity[] {
   return [
     {
       id: 'a1',
-      message: 'completed a task',
+      message: TASK_ACTIVITY_MESSAGES.completed,
       taskTitle: 'Publish product release notes',
       actor: TEAM_MEMBERS[4],
       occurredAt: daysAgo(0),
@@ -34,7 +45,7 @@ export function createInitialActivities(now = new Date()): TaskActivity[] {
     },
     {
       id: 'a2',
-      message: 'updated the due date for',
+      message: TASK_ACTIVITY_MESSAGES.dueDateUpdated,
       taskTitle: 'Prepare Q3 campaign brief',
       actor: TEAM_MEMBERS[1],
       occurredAt: daysAgo(0),
@@ -42,7 +53,7 @@ export function createInitialActivities(now = new Date()): TaskActivity[] {
     },
     {
       id: 'a3',
-      message: 'created a task',
+      message: TASK_ACTIVITY_MESSAGES.created,
       taskTitle: 'Build the integrations page',
       actor: TEAM_MEMBERS[1],
       occurredAt: daysAgo(1),
@@ -50,7 +61,7 @@ export function createInitialActivities(now = new Date()): TaskActivity[] {
     },
     {
       id: 'a4',
-      message: 'completed a task',
+      message: TASK_ACTIVITY_MESSAGES.completed,
       taskTitle: 'Finalize brand guidelines',
       actor: TEAM_MEMBERS[2],
       occurredAt: daysAgo(1),
@@ -66,8 +77,8 @@ export function createInitialActivities(now = new Date()): TaskActivity[] {
  */
 export function dashboardViewFromUrl(url: string): DashboardView {
   const path = url.split('?')[0];
-  if (path === '/tasks') return 'my-tasks';
-  if (path === '/analytics') return 'analytics';
+  if (path === APP_ROUTE_PATHS.tasks.url) return 'my-tasks';
+  if (path === APP_ROUTE_PATHS.analytics.url) return 'analytics';
   return 'dashboard';
 }
 
@@ -79,14 +90,14 @@ export function dashboardViewFromUrl(url: string): DashboardView {
 export function dashboardUrlForView(view: DashboardView): string {
   switch (view) {
     case 'my-tasks':
-      return '/tasks';
+      return APP_ROUTE_PATHS.tasks.url;
     case 'upcoming':
-      return '/dashboard';
+      return APP_ROUTE_PATHS.dashboard.url;
     case 'analytics':
-      return '/analytics';
+      return APP_ROUTE_PATHS.analytics.url;
     case 'dashboard':
     case 'overdue':
-      return '/dashboard';
+      return APP_ROUTE_PATHS.dashboard.url;
   }
 }
 
@@ -123,7 +134,7 @@ export function createTaskActivity(
 export function taskErrorMessage(error: unknown, fallback: string): string {
   if (error instanceof HttpErrorResponse) {
     const status = error.status;
-    const body = error.error as { message?: unknown } | null;
+    const body = error.error as ApiErrorResponse | null;
     if (body && typeof body.message === 'string') return `${fallback} ${body.message}`;
     if (status === 0) return `${fallback} Check your connection and try again.`;
     if (status === 400) return `${fallback} Check the task details and try again.`;
@@ -141,8 +152,8 @@ export function taskErrorMessage(error: unknown, fallback: string): string {
  */
 export function taskMoveActivity(status: TaskStatus): Pick<TaskActivity, 'kind' | 'message'> {
   return {
-    kind: status === 'done' ? 'completed' : 'updated',
-    message: `moved a task to ${status === 'todo' ? 'To do' : status === 'in_progress' ? 'In progress' : 'Done'}`,
+    kind: status === TASK_STATUS.done ? 'completed' : 'updated',
+    message: `${TASK_ACTIVITY_MESSAGES.movedToStatus} ${TASK_STATUS_LABELS[status]}`,
   };
 }
 

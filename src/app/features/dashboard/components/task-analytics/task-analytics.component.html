@@ -22,9 +22,11 @@
       </div>
     </div>
     <mat-chip-set class="legend" aria-label="Task counts by priority">
-      <mat-chip class="legend-high">High · {{ priorityCounts[0] }}</mat-chip>
-      <mat-chip class="legend-medium">Medium · {{ priorityCounts[1] }}</mat-chip>
-      <mat-chip class="legend-low">Low · {{ priorityCounts[2] }}</mat-chip>
+      <mat-chip class="legend-high">{{ priorityLabels.high }} · {{ priorityCounts[0] }}</mat-chip>
+      <mat-chip class="legend-medium"
+        >{{ priorityLabels.medium }} · {{ priorityCounts[1] }}</mat-chip
+      >
+      <mat-chip class="legend-low">{{ priorityLabels.low }} · {{ priorityCounts[2] }}</mat-chip>
     </mat-chip-set>
   </mat-card>
 
@@ -43,9 +45,11 @@
       }
     </div>
     <mat-chip-set class="status-summary" aria-label="Task counts by status">
-      <mat-chip class="status-todo">To do · {{ statusCounts[0] }}</mat-chip>
-      <mat-chip class="status-progress">In progress · {{ statusCounts[1] }}</mat-chip>
-      <mat-chip class="status-done">Done · {{ statusCounts[2] }}</mat-chip>
+      <mat-chip class="status-todo">{{ statusLabels.todo }} · {{ statusCounts[0] }}</mat-chip>
+      <mat-chip class="status-progress"
+        >{{ statusLabels.in_progress }} · {{ statusCounts[1] }}</mat-chip
+      >
+      <mat-chip class="status-done">{{ statusLabels.done }} · {{ statusCounts[2] }}</mat-chip>
     </mat-chip-set>
   </mat-card>
 </section>

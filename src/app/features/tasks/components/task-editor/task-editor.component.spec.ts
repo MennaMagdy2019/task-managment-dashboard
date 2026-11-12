@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Assignee, Task, TaskDraft, TEAM_MEMBERS } from '../../../../shared/models/task.model';
+import type { Assignee, Task, TaskDraft } from '../../../../shared/models/task.model';
+import { TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
+import type { TaskEditorDialogData } from '../../models/task-editor.model';
 import { TaskEditorComponent } from './task-editor.component';
 
 const task: Task = {
@@ -17,7 +19,7 @@ const task: Task = {
 };
 
 describe('TaskEditorComponent', () => {
-  const dialogData: { task: Task | null; users: Assignee[] } = {
+  const dialogData: TaskEditorDialogData = {
     task: null,
     users: TEAM_MEMBERS,
   };
@@ -36,7 +38,11 @@ describe('TaskEditorComponent', () => {
     }).compileComponents();
   });
 
-  function createComponent(currentTask: Task | null = null, users: Assignee[] = TEAM_MEMBERS) {
+  /** Creates the editor component for the supplied task and available users. */
+  function createComponent(
+    currentTask: Task | null = null,
+    users: readonly Assignee[] = TEAM_MEMBERS,
+  ) {
     dialogData.task = currentTask;
     dialogData.users = users;
     const fixture = TestBed.createComponent(TaskEditorComponent);

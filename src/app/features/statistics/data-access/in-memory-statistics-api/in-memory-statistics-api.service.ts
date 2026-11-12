@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { InMemoryTaskApiService } from '../../../tasks/data-access/in-memory-task-api/in-memory-task-api.service';
+import { TASK_STATUS } from '../../../../shared/constants/task.constants';
 import type { Statistic, StatisticsResponse } from '../../models/statistics.model';
 import generatedStatistics from '../statistics.json';
 
@@ -13,8 +14,8 @@ export class InMemoryStatisticsApiService {
     const tasks = this.taskApi.getTasks();
     const values = new Map<string, number>([
       ['stat-001', tasks.length],
-      ['stat-002', tasks.filter((task) => task.status === 'done').length],
-      ['stat-003', tasks.filter((task) => task.status === 'in_progress').length],
+      ['stat-002', tasks.filter((task) => task.status === TASK_STATUS.done).length],
+      ['stat-003', tasks.filter((task) => task.status === TASK_STATUS.inProgress).length],
       ['stat-004', tasks.filter((task) => task.isOverdue).length],
     ]);
 

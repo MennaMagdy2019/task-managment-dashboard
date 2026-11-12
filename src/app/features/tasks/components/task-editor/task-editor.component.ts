@@ -13,18 +13,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TitleCasePipe } from '@angular/common';
+import type { TaskDraft, TaskPriority, TaskStatus } from '../../../../shared/models/task.model';
 import {
-  Assignee,
-  Task,
-  TaskDraft,
-  TaskPriority,
-  TaskStatus,
-} from '../../../../shared/models/task.model';
-
-interface TaskEditorData {
-  task: Task | null;
-  users: Assignee[];
-}
+  MAX_TASK_TAGS,
+  TASK_PRIORITY,
+  TASK_FIELD_LIMITS,
+  TASK_STATUS,
+  TASK_PRIORITY_OPTIONS,
+  TASK_STATUS_LABELS,
+  TASK_STATUS_OPTIONS,
+} from '../../../../shared/constants/task.constants';
+import type { TaskEditorDialogData } from '../../models/task-editor.model';
 
 /** Rejects string values that contain only whitespace. */
 const nonWhitespace: ValidatorFn = (control) =>
@@ -42,33 +41,35 @@ const nonWhitespace: ValidatorFn = (control) =>
     MatSelectModule,
     TitleCasePipe,
   ],
-  templateUrl: '../assets/task-editor.component.html',
-  styleUrl: '../assets/task-editor.component.scss',
+  templateUrl: './task-editor.component.html',
+  styleUrl: './task-editor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskEditorComponent {
-  readonly data = inject<TaskEditorData>(MAT_DIALOG_DATA);
+  readonly data = inject<TaskEditorDialogData>(MAT_DIALOG_DATA);
   private readonly dialogRef = inject(MatDialogRef<TaskEditorComponent, TaskDraft>);
   readonly task = this.data.task;
   readonly users = this.data.users;
 
-  readonly priorities: TaskPriority[] = ['low', 'medium', 'high'];
-  readonly statuses: TaskStatus[] = ['todo', 'in_progress', 'done'];
+  readonly priorities = TASK_PRIORITY_OPTIONS;
+  readonly statuses = TASK_STATUS_OPTIONS;
+  readonly fieldLimits = TASK_FIELD_LIMITS;
+  readonly maxTaskTags = MAX_TASK_TAGS;
   readonly tags = new FormArray<FormControl<string>>([]);
   readonly form = new FormGroup({
     title: new FormControl('', {
       nonNullable: true,
-      validators: [nonWhitespace, Validators.maxLength(80)],
+      validators: [nonWhitespace, Validators.maxLength(TASK_FIELD_LIMITS.title)],
     }),
     description: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.maxLength(240)],
+      validators: [Validators.maxLength(TASK_FIELD_LIMITS.description)],
     }),
-    priority: new FormControl<TaskPriority>('medium', {
+    priority: new FormControl<TaskPriority>(TASK_PRIORITY.medium, {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    status: new FormControl<TaskStatus>('todo', {
+    status: new FormControl<TaskStatus>(TASK_STATUS.todo, {
       nonNullable: true,
       validators: [Validators.required],
     }),
@@ -81,15 +82,18 @@ export class TaskEditorComponent {
   constructor() {
     for (const tag of this.task?.tags.length ? this.task.tags : ['']) {
       this.tags.push(
-        new FormControl(tag, { nonNullable: true, validators: [Validators.maxLength(24)] }),
+        new FormControl(tag, {
+          nonNullable: true,
+          validators: [Validators.maxLength(TASK_FIELD_LIMITS.tag)],
+        }),
         { emitEvent: false },
       );
     }
     this.form.reset({
       title: this.task?.title ?? '',
       description: this.task?.description ?? '',
-      priority: this.task?.priority ?? 'medium',
-      status: this.task?.status ?? 'todo',
+      priority: this.task?.priority ?? TASK_PRIORITY.medium,
+      status: this.task?.status ?? TASK_STATUS.todo,
       dueDate: this.task?.dueDate ?? new Date().toISOString().slice(0, 10),
       assigneeId: this.task?.assignee.id ?? this.users[0]?.id ?? '',
     });
@@ -118,15 +122,18 @@ export class TaskEditorComponent {
         .getRawValue()
         .map((tag) => tag.trim())
         .filter(Boolean)
-        .slice(0, 4),
+        .slice(0, MAX_TASK_TAGS),
     });
   }
 
   /** Adds an empty tag control while respecting the maximum number of tags. */
   addTag(): void {
-    if (this.tags.length < 4) {
+    if (this.tags.length < MAX_TASK_TAGS) {
       this.tags.push(
-        new FormControl('', { nonNullable: true, validators: [Validators.maxLength(24)] }),
+        new FormControl('', {
+          nonNullable: true,
+          validators: [Validators.maxLength(TASK_FIELD_LIMITS.tag)],
+        }),
       );
     }
   }
@@ -138,6 +145,6 @@ export class TaskEditorComponent {
 
   /** Returns the display label for a task status. */
   statusLabel(status: TaskStatus): string {
-    return status === 'todo' ? 'To do' : status === 'in_progress' ? 'In progress' : 'Done';
+    return TASK_STATUS_LABELS[status];
   }
 }

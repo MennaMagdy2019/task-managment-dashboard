@@ -26,16 +26,18 @@
       <input
         matInput
         formControlName="title"
-        maxlength="80"
+        [maxlength]="fieldLimits.title"
         placeholder="e.g. Prepare product launch"
         cdkFocusInitial
       />
       @if (form.controls.title.touched && form.controls.title.hasError('whitespace')) {
         <mat-error>A task title is required.</mat-error>
       } @else if (form.controls.title.hasError('maxlength')) {
-        <mat-error>Keep the title under 80 characters.</mat-error>
+        <mat-error>Keep the title under {{ fieldLimits.title }} characters.</mat-error>
       }
-      <mat-hint align="end">{{ form.controls.title.value.length }}/80</mat-hint>
+      <mat-hint align="end"
+        >{{ form.controls.title.value.length }}/{{ fieldLimits.title }}</mat-hint
+      >
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
@@ -44,13 +46,15 @@
         matInput
         formControlName="description"
         rows="3"
-        maxlength="240"
+        [maxlength]="fieldLimits.description"
         placeholder="Add context, links, or a definition of done"
       ></textarea>
       @if (form.controls.description.hasError('maxlength')) {
-        <mat-error>Keep the description under 240 characters.</mat-error>
+        <mat-error>Keep the description under {{ fieldLimits.description }} characters.</mat-error>
       }
-      <mat-hint align="end">{{ form.controls.description.value.length }}/240</mat-hint>
+      <mat-hint align="end"
+        >{{ form.controls.description.value.length }}/{{ fieldLimits.description }}</mat-hint
+      >
     </mat-form-field>
 
     <div class="form-section-heading planning-heading">
@@ -112,13 +116,13 @@
     <div class="tags-field">
       <div class="tags-heading">
         <div>
-          <strong>Labels</strong><small>Optional · {{ tags.length }}/4</small>
+          <strong>Labels</strong><small>Optional · {{ tags.length }}/{{ maxTaskTags }}</small>
         </div>
         <button
           mat-button
           type="button"
           class="add-label"
-          [disabled]="tags.length >= 4"
+          [disabled]="tags.length >= maxTaskTags"
           (click)="addTag()"
         >
           ＋ Add label
@@ -129,9 +133,14 @@
           <div class="tag-input-row">
             <mat-form-field appearance="outline" class="full-width tag-input">
               <mat-label>Label {{ index + 1 }}</mat-label>
-              <input matInput [formControlName]="index" maxlength="24" placeholder="e.g. Design" />
+              <input
+                matInput
+                [formControlName]="index"
+                [maxlength]="fieldLimits.tag"
+                placeholder="e.g. Design"
+              />
               @if (control.hasError('maxlength')) {
-                <mat-error>Labels must be 24 characters or fewer.</mat-error>
+                <mat-error>Labels must be {{ fieldLimits.tag }} characters or fewer.</mat-error>
               }
             </mat-form-field>
             <button
