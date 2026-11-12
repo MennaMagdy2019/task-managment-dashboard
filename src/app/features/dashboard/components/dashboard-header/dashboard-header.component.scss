@@ -15,22 +15,43 @@
 }
 .topbar-brand {
   display: flex;
+  height: 100%;
+  align-self: stretch;
   align-items: center;
   gap: 6px;
   color: #1769d2;
   font-size: 12px;
   font-weight: 600;
+  line-height: 1;
   text-decoration: none;
 }
+
+.topbar-brand:hover {
+  color: #125bad;
+}
+
+.topbar-brand:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid #1769d2;
+  outline-offset: 3px;
+}
+
 .brand-mark {
   display: grid;
   width: 20px;
   height: 20px;
+  flex: 0 0 20px;
   place-items: center;
   border-radius: 5px;
   background: #1769d2;
   color: #fff;
   font-size: 12px;
+  line-height: 1;
+  transition: background-color 140ms ease;
+}
+
+.topbar-brand:hover .brand-mark {
+  background: #125bad;
 }
 .global-search {
   width: min(320px, 100%);
@@ -46,6 +67,17 @@
 }
 .notification-button {
   position: relative;
+}
+
+.notification-button:hover {
+  background: #f1f1f1;
+}
+
+.notification-button:focus-visible,
+.profile-avatar:focus-visible,
+.mobile-menu:focus-visible {
+  outline: 2px solid #1769d2;
+  outline-offset: 2px;
 }
 .notification-button i {
   position: absolute;
@@ -64,6 +96,14 @@
   color: #fff;
   font-size: 10px;
   font-weight: 600;
+  transition:
+    background-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.profile-avatar:hover {
+  background: #125bad;
+  box-shadow: 0 2px 6px rgb(23 105 210 / 24%);
 }
 .mobile-menu {
   display: none;
@@ -94,5 +134,12 @@
   }
   .topbar-actions > .notification-button {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-mark,
+  .profile-avatar {
+    transition: none;
   }
 }

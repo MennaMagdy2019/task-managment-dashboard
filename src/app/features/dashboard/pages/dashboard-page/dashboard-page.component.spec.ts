@@ -3,7 +3,7 @@ import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { routes } from '../../../../app.routes';
 import { Task, TaskDraft } from '../../../../shared/models/task.model';
@@ -94,6 +94,8 @@ describe('DashboardPageComponent', () => {
   it('updates local filters, team navigation, responsive state, and notices', async () => {
     const fixture = createFixture();
     const component = fixture.componentInstance;
+    await TestBed.inject(Router).navigateByUrl('/dashboard');
+    fixture.detectChanges();
 
     component.query.set('campaign');
     component.priorityFilter.set('high');
@@ -101,13 +103,14 @@ describe('DashboardPageComponent', () => {
     component.assigneeFilter.set('u2');
     component.selectNavigationItem('team');
     expect(component.teamExpanded()).toBeTrue();
-    expect(component.assigneeFilter()).toBe('all');
+    expect(component.assigneeFilter()).toBe('u2');
     expect(component.statusFilter()).toBe('all');
 
     component.setAssignee('u2');
-    expect(component.assigneeFilter()).toBe('u2');
-    component.setAssignee('u2');
     expect(component.assigneeFilter()).toBe('all');
+    component.setAssignee('u2');
+    await fixture.whenStable();
+    expect(component.assigneeFilter()).toBe('u2');
 
     component.toggleSidebar();
     expect(component.sidebarOpen()).toBeTrue();
@@ -132,6 +135,35 @@ describe('DashboardPageComponent', () => {
     expect(component.priorityFilter()).toBe('all');
     expect(component.statusFilter()).toBe('all');
     expect(component.teamExpanded()).toBeFalse();
+  });
+
+  it('selects the first team member with tasks and opens the filtered Dashboard', async () => {
+    const phoenixTask: Task = {
+      ...task,
+      id: 'task-2',
+      assignee: {
+        id: 'u2',
+        name: 'Phoenix Baker',
+        email: 'phoenix@acme.com',
+        initials: 'PB',
+      },
+    };
+    store.tasks.and.returnValue([phoenixTask]);
+    const fixture = createFixture();
+    const component = fixture.componentInstance;
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/analytics');
+    fixture.detectChanges();
+
+    component.selectNavigationItem('team');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(router.url).toBe('/dashboard');
+    expect(component.view()).toBe('dashboard');
+    expect(component.teamExpanded()).toBeTrue();
+    expect(component.assigneeFilter()).toBe('u2');
+    expect(component.filteredTasks()).toEqual([phoenixTask]);
   });
 
   it('saves new and existing tasks and reports API failures', () => {

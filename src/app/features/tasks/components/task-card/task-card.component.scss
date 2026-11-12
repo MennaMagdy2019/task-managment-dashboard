@@ -3,34 +3,40 @@
 }
 
 mat-card {
-  padding: 10px 11px;
+  padding: 9px 10px;
   border-color: #e5e8ed;
-  border-radius: 8px;
+  border-radius: 5px;
   background: #fff;
   box-shadow: 0 1px 2px rgb(26 39 61 / 4%);
   transition:
     border-color 140ms ease,
-    box-shadow 140ms ease,
-    transform 140ms ease;
+    box-shadow 140ms ease;
 }
 
-:host(:hover) mat-card {
-  border-color: #c8d8ee;
-  box-shadow: 0 4px 12px rgb(26 39 61 / 8%);
-  transform: translateY(-1px);
+mat-card.overdue {
+  border-color: #f5c5ca;
+  border-left: 3px solid #ee3f4b;
+  background: #fff0f2;
 }
 
-mat-card.high-priority {
-  border-color: #ffd8d5;
-  background: #fff6f5;
+mat-card.status-todo:not(.overdue):hover {
+  border-color: #2778d0;
+  box-shadow: 0 3px 10px rgb(39 120 208 / 22%);
 }
 
-mat-card.medium-priority {
-  border-color: #f0dfc0;
+mat-card.status-in-progress:not(.overdue):hover {
+  border-color: #ee9b2b;
+  box-shadow: 0 3px 10px rgb(238 155 43 / 22%);
 }
 
-mat-card.low-priority {
-  border-color: #d8eadc;
+mat-card.status-done:not(.overdue):hover {
+  border-color: #31a55a;
+  box-shadow: 0 3px 10px rgb(49 165 90 / 22%);
+}
+
+mat-card.overdue:hover {
+  border-color: #ef3d49;
+  box-shadow: 0 3px 10px rgb(239 61 73 / 24%);
 }
 
 .task-card-toolbar {
@@ -43,7 +49,7 @@ mat-card.low-priority {
 
 mat-card-title {
   display: block;
-  margin: 0 0 4px;
+  margin: 0 0 3px;
   color: #29313e;
   font-size: 12px;
   font-weight: 600;
@@ -55,6 +61,19 @@ mat-card-title {
   height: 30px;
   margin: -3px -6px -3px 0;
   color: #7d8795;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.task-card-toolbar button:hover {
+  background: #f1f1f1;
+  color: #283548;
+}
+
+.task-card-toolbar button:focus-visible {
+  outline: 2px solid #2778d0;
+  outline-offset: 2px;
 }
 
 mat-card-content {
@@ -62,47 +81,62 @@ mat-card-content {
 }
 
 mat-card-content > p {
-  margin: 0 0 7px;
+  margin: 0;
   color: #788291;
   font-size: 10px;
   line-height: 1.5;
 }
 
 .priority-chip {
-  --mat-chip-container-height: 20px;
-  --mat-chip-label-text-size: 9px;
-  --mat-chip-label-text-weight: 600;
+  display: inline-flex;
+  min-height: 16px;
+  align-items: center;
+  padding: 0 6px;
+  border-radius: 3px;
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .priority-chip.high {
-  --mat-chip-elevated-container-color: #ffe9e8;
-  --mat-chip-label-text-color: #d64e49;
+  background: #ffe9e8;
+  color: #d64e49;
 }
 
 .priority-chip.medium {
-  --mat-chip-elevated-container-color: #fff2dc;
-  --mat-chip-label-text-color: #bf7c17;
+  background: #fff2dc;
+  color: #bf7c17;
 }
 
 .priority-chip.low {
-  --mat-chip-elevated-container-color: #e7f5eb;
-  --mat-chip-label-text-color: #28834a;
+  background: #e7f5eb;
+  color: #28834a;
 }
 
-mat-card-content mat-chip-set {
-  --mat-chip-container-height: 22px;
-  --mat-chip-label-text-size: 9px;
+.task-meta {
+  display: grid;
+  gap: 4px;
+  margin-top: 7px;
+}
+
+.task-labels {
+  display: grid;
+  gap: 3px;
+  padding-left: 10px;
+  color: #818a97;
+  font-size: 9px;
 }
 
 mat-card-actions {
   display: flex;
-  min-height: 26px;
+  min-height: 24px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 6px;
-  margin: 6px 0 0;
+  margin: 7px 0 0;
   padding: 6px 0 0;
-  border-top: 1px solid #f0f1f3;
+  border-top: 1px solid #e9ebef;
 }
 
 .assignee-chip {
@@ -110,11 +144,7 @@ mat-card-actions {
   align-items: center;
   gap: 5px;
   box-sizing: border-box;
-  min-height: 22px;
-  padding: 0 8px 0 4px;
-  border: 1px solid #e5e8ed;
-  border-radius: 999px;
-  background: #f3f5f8;
+  min-height: 18px;
   color: #626d7c;
   font-size: 9px;
   line-height: 1;
@@ -123,16 +153,15 @@ mat-card-actions {
 
 .assignee-avatar {
   display: inline-grid;
-  width: 20px;
-  height: 20px;
-  flex: 0 0 20px;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
   place-items: center;
   box-sizing: border-box;
-  margin: 0 5px 0 0;
   border-radius: 50%;
-  background: #dceaff;
-  color: #1769d2;
-  font-size: 8px;
+  background: #1976d2;
+  color: #fff;
+  font-size: 7px;
   font-weight: 600;
   line-height: 1;
 }
@@ -141,9 +170,29 @@ mat-card-actions {
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #8992a0;
+  color: #818a97;
   font-size: 9px;
   white-space: nowrap;
+}
+
+.due-date-icon {
+  width: 10px;
+  height: 10px;
+  font-size: 10px;
+  line-height: 1;
+  color: #818a97;
+}
+
+mat-card.status-in-progress:not(.overdue) .due-date-icon {
+  color: #2778d0;
+}
+
+mat-card.status-done .due-date-icon {
+  color: #28834a;
+}
+
+mat-card.overdue .due-date-icon {
+  color: #d34f4b;
 }
 
 .due-date.overdue {
@@ -153,5 +202,12 @@ mat-card-actions {
 @media (max-width: 700px) {
   mat-card {
     padding: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  mat-card,
+  .task-card-toolbar button {
+    transition: none;
   }
 }

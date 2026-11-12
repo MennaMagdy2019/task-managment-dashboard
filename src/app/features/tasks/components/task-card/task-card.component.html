@@ -1,25 +1,23 @@
 <mat-card
   appearance="outlined"
   class="task-card"
-  [class.high-priority]="task.priority === 'high'"
-  [class.medium-priority]="task.priority === 'medium'"
-  [class.low-priority]="task.priority === 'low'"
+  [class.overdue]="overdue"
+  [class.status-todo]="task.status === 'todo'"
+  [class.status-in-progress]="task.status === 'in_progress'"
+  [class.status-done]="task.status === 'done'"
 >
   <mat-card-content>
     <div class="task-card-toolbar">
-      <mat-chip-set aria-label="Task priority">
-        <mat-chip
+      <div class="task-priority" role="group" aria-label="Task priority">
+        <span
           class="priority-chip"
           [class.high]="task.priority === 'high'"
           [class.medium]="task.priority === 'medium'"
           [class.low]="task.priority === 'low'"
-          [color]="
-            task.priority === 'high' ? 'warn' : task.priority === 'medium' ? 'accent' : 'primary'
-          "
         >
-          {{ task.priority | titlecase }}
-        </mat-chip>
-      </mat-chip-set>
+          {{ task.priority }}
+        </span>
+      </div>
       <button
         mat-icon-button
         type="button"
@@ -35,25 +33,24 @@
     </div>
     <mat-card-title>{{ task.title }}</mat-card-title>
     <p>{{ task.description }}</p>
-    @if (task.tags.length) {
-      <mat-chip-set aria-label="Task labels">
-        @for (tag of task.tags; track tag) {
-          <mat-chip>{{ tag }}</mat-chip>
-        }
-      </mat-chip-set>
-    }
+    <div class="task-meta">
+      <span class="due-date" [class.overdue]="overdue">
+        <span class="material-icons due-date-icon" aria-hidden="true">{{ dateStatusIcon }}</span>
+        {{ dueLabel }}
+      </span>
+      @if (task.tags.length) {
+        <div class="task-labels" role="group" aria-label="Task labels">
+          @for (tag of task.tags; track tag) {
+            <span>{{ tag }}</span>
+          }
+        </div>
+      }
+    </div>
   </mat-card-content>
   <mat-card-actions>
     <span class="assignee-chip" [attr.aria-label]="'Assigned to ' + task.assignee.name">
       <span class="assignee-avatar" aria-hidden="true">{{ task.assignee.initials }}</span>
       <span>{{ task.assignee.name }}</span>
-    </span>
-    <span class="due-date" [class.overdue]="overdue">
-      <span aria-hidden="true">◷</span>
-      {{ dueLabel }}
-      @if (overdue) {
-        · Overdue
-      }
     </span>
   </mat-card-actions>
 </mat-card>

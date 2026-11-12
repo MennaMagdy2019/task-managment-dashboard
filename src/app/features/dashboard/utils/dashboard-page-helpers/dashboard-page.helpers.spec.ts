@@ -10,6 +10,7 @@ import {
   statisticColumnCount,
   taskErrorMessage,
   taskMoveActivity,
+  teamMemberUrl,
 } from './dashboard-page.helpers';
 
 /** Creates a task fixture with the supplied due date and workflow status. */
@@ -47,11 +48,13 @@ describe('dashboard page helpers', () => {
     expect(dashboardViewFromUrl('/tasks?filter=mine')).toBe('my-tasks');
     expect(dashboardViewFromUrl('/analytics')).toBe('analytics');
     expect(dashboardViewFromUrl('/dashboard?team=u1')).toBe('dashboard');
+    expect(dashboardViewFromUrl('/team/u2')).toBe('dashboard');
     expect(dashboardUrlForView('my-tasks')).toBe('/tasks');
     expect(dashboardUrlForView('upcoming')).toBe('/dashboard');
     expect(dashboardUrlForView('analytics')).toBe('/analytics');
     expect(dashboardUrlForView('dashboard')).toBe('/dashboard');
     expect(dashboardUrlForView('overdue')).toBe('/dashboard');
+    expect(teamMemberUrl('u2')).toBe('/team/u2');
   });
 
   it('creates a current-user activity entry with a unique ID', () => {

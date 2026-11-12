@@ -102,6 +102,15 @@ export function dashboardUrlForView(view: DashboardView): string {
 }
 
 /**
+ * Builds the URL for the dashboard filtered to a team member.
+ * @param assigneeId The selected team member ID.
+ * @returns The canonical URL for the selected team member.
+ */
+export function teamMemberUrl(assigneeId: string): string {
+  return `${APP_ROUTE_PATHS.team.url}/${encodeURIComponent(assigneeId)}`;
+}
+
+/**
  * Creates a bounded activity entry for an action made by the current user.
  * @param kind The type of activity.
  * @param message The activity message.

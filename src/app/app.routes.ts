@@ -26,5 +26,9 @@ export const routes: Routes = [
     path: APP_ROUTE_PATHS.analytics.segment,
     loadComponent: loadDashboardPage,
   },
+  {
+    path: `${APP_ROUTE_PATHS.team.segment}/:id`,
+    loadComponent: loadDashboardPage,
+  },
   { path: '**', redirectTo: 'dashboard' },
 ];

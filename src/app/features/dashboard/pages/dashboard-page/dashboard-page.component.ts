@@ -4,7 +4,6 @@ import {
   DestroyRef,
   HostListener,
   computed,
-  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -15,63 +14,45 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DashboardHeaderComponent } from '../../components/dashboard-header/dashboard-header.component';
 import { DashboardInsightsComponent } from '../../components/dashboard-insights/dashboard-insights.component';
 import { DashboardSidebarComponent } from '../../components/dashboard-sidebar/dashboard-sidebar.component';
 import { DashboardSummaryComponent } from '../../components/dashboard-summary/dashboard-summary.component';
 import { TaskBoardComponent } from '../../components/task-board/task-board.component';
-import type {
-  Task,
-  TaskActivity,
-  TaskDraft,
-  TaskStatus,
-} from '../../../../shared/models/task.model';
+import type { Task, TaskDraft } from '../../../../shared/models/task.model';
 import { CURRENT_USER, TEAM_MEMBERS } from '../../../../shared/constants/team.constants';
-import {
-  ALL_TASK_FILTER,
-  TASK_ACTIVITY_MESSAGES,
-  TASK_STATUS_LABELS,
-} from '../../../../shared/constants/task.constants';
+import { ALL_TASK_FILTER } from '../../../../shared/constants/task.constants';
 import { APP_ROUTE_PATHS, UI_ACTION_LABELS } from '../../../../shared/constants/app.constants';
-import type { ConfirmDeleteDialogData } from '../../../../shared/models/confirm-delete-dialog.model';
 import type {
   BoardPriorityFilter,
   BoardStatusFilter,
   DashboardNavigationAction,
-  DashboardNoticeKind,
   DashboardStatistics,
   DashboardView,
 } from '../../models/dashboard.model';
 import type { TaskDropEvent } from '../../models/task-board.model';
 import { TaskService } from '../../../tasks/data-access/task-service/task.service';
-import type { TaskEditorDialogData } from '../../../tasks/models/task-editor.model';
 import {
   calculateTaskStatistics,
   filterTasks,
-  placeTaskIdInOrder,
-  reorderVisibleTaskIds,
   sortTasksByOrder,
-  synchronizeTaskOrder,
 } from '../../utils/task-dashboard-helpers/task-dashboard.helpers';
 import {
   countUpcomingTasks,
-  createInitialActivities,
-  createTaskActivity,
   dashboardUrlForView,
   dashboardViewFromUrl,
   DASHBOARD_COLUMNS,
   isMobileViewport,
   statisticColumnCount,
-  taskErrorMessage,
-  taskMoveActivity,
+  teamMemberUrl,
 } from '../../utils/dashboard-page-helpers/dashboard-page.helpers';
+import { DashboardPageActionsService } from './dashboard-page-actions.service';
 
 /**
- * Coordinates dashboard state, task operations, dialogs, and notifications.
- * The layout and individual dashboard regions are delegated to standalone
- * presentational components.
+ * Coordinates dashboard view state, navigation, and responsive layout.
+ * Task operations and their feedback are handled by a page-scoped action service.
  */
 @Component({
   selector: 'app-dashboard-page',
@@ -92,18 +73,21 @@ import {
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DashboardPageActionsService],
 })
 export class DashboardPageComponent {
   readonly title = 'TaskFlow';
   readonly store = inject(TaskService);
-  private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly actions = inject(DashboardPageActionsService);
   readonly users = TEAM_MEMBERS;
   readonly currentUser = CURRENT_USER;
   readonly columns = DASHBOARD_COLUMNS;
   readonly dropListIds = DASHBOARD_COLUMNS.map((column) => `list-${column.status}`);
+  readonly taskOrder = this.actions.taskOrder;
+  readonly activities = this.actions.activities;
 
   readonly view = signal<DashboardView>('dashboard');
   readonly teamExpanded = signal(false);
@@ -115,8 +99,6 @@ export class DashboardPageComponent {
   readonly statusFilter = signal<BoardStatusFilter>(ALL_TASK_FILTER);
   readonly assigneeFilter = signal<string>(ALL_TASK_FILTER);
   readonly sidebarOpen = signal(false);
-  readonly taskOrder = signal<string[]>([]);
-  private preserveTeamMenuOnNavigation = false;
 
   readonly tasks = computed(() => {
     return sortTasksByOrder(this.store.tasks(), this.taskOrder());
@@ -147,26 +129,15 @@ export class DashboardPageComponent {
     return total ? Math.round((this.stats().done / total) * 100) : 0;
   });
 
-  readonly activities = signal<TaskActivity[]>(createInitialActivities());
-
-  /** Keeps user-controlled task ordering aligned with the latest resource data. */
+  /** Synchronizes the active dashboard view with router navigation. */
   constructor() {
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => {
-        const keepTeamMenuOpen = this.preserveTeamMenuOnNavigation;
-        this.preserveTeamMenuOnNavigation = false;
-        this.applyViewState(this.viewFromUrl(), keepTeamMenuOpen);
-      });
-    this.applyViewState(this.viewFromUrl());
-
-    effect(() => {
-      const taskIds = this.store.tasks().map((task) => task.id);
-      this.synchronizeTaskOrder(taskIds);
-    });
+      .subscribe(() => this.applyRouteState());
+    this.applyRouteState();
   }
 
   /** Selects a dashboard view and clears incompatible assignee and status filters. */
@@ -179,18 +150,44 @@ export class DashboardPageComponent {
     return dashboardViewFromUrl(this.router.url);
   }
 
-  /** Applies the sidebar actions that remain local to the dashboard. */
+  /** Applies a route's dashboard view and any team member encoded in its URL. */
+  private applyRouteState(): void {
+    const assigneeId = this.teamMemberIdFromUrl();
+    const isKnownAssignee = this.users.some((user) => user.id === assigneeId);
+    if (assigneeId && isKnownAssignee) {
+      this.assigneeFilter.set(assigneeId);
+      this.applyViewState('dashboard', true);
+      return;
+    }
+
+    this.applyViewState(this.viewFromUrl());
+  }
+
+  /** Reads the team member ID from a `/team/:id` route. */
+  private teamMemberIdFromUrl(): string | null {
+    const segments = this.router.parseUrl(this.router.url).root.children['primary']?.segments ?? [];
+    if (segments.length !== 2 || segments[0].path !== APP_ROUTE_PATHS.team.segment) return null;
+    return segments[1].path;
+  }
+
+  /** Opens Team with the first assigned member selected or shows the Settings notice. */
   selectNavigationItem(item: DashboardNavigationAction): void {
     if (item === 'team') {
       const shouldExpand = !this.teamExpanded();
       this.teamExpanded.set(shouldExpand);
-      this.assigneeFilter.set(ALL_TASK_FILTER);
+      if (!shouldExpand) return;
+
       this.statusFilter.set(ALL_TASK_FILTER);
-      if (shouldExpand && this.view() !== 'dashboard') {
-        this.preserveTeamMenuOnNavigation = true;
-        void this.router.navigateByUrl(APP_ROUTE_PATHS.dashboard.url);
+      if (this.assigneeFilter() !== ALL_TASK_FILTER) return;
+
+      const firstAssignedMember = this.users.find((user) =>
+        this.tasks().some((task) => task.assignee.id === user.id),
+      );
+      if (firstAssignedMember) {
+        this.applyAssigneeFilter(firstAssignedMember.id, false);
+      } else {
+        this.assigneeFilter.set(ALL_TASK_FILTER);
       }
-      this.sidebarOpen.set(false);
     } else {
       this.teamExpanded.set(false);
       this.sidebarOpen.set(false);
@@ -198,13 +195,18 @@ export class DashboardPageComponent {
     }
   }
 
+  /** Closes the sidebar menu and reapplies state when selecting the current route. */
+  onRouteSelected(view: DashboardView): void {
+    this.teamExpanded.set(false);
+    this.sidebarOpen.set(false);
+    if (this.viewFromUrl() === view) this.applyViewState(view);
+  }
+
   /** Applies view-specific filters without performing navigation. */
-  private applyViewState(view: DashboardView, keepTeamMenuOpen = false): void {
+  private applyViewState(view: DashboardView, preserveAssignee = false): void {
     this.view.set(view);
-    this.teamExpanded.set(keepTeamMenuOpen && view === 'dashboard');
-    if (!keepTeamMenuOpen) {
-      this.assigneeFilter.set(ALL_TASK_FILTER);
-    }
+    this.teamExpanded.set(preserveAssignee);
+    if (!preserveAssignee) this.assigneeFilter.set(ALL_TASK_FILTER);
     this.statusFilter.set(ALL_TASK_FILTER);
     this.sidebarOpen.set(false);
   }
@@ -219,170 +221,25 @@ export class DashboardPageComponent {
     this.setView('dashboard');
   }
 
-  /** Toggles a team-member filter and returns to the dashboard task view. */
+  /** Toggles a team-member filter and updates the team route. */
   setAssignee(id: string): void {
-    if (this.view() !== 'dashboard') {
-      this.preserveTeamMenuOnNavigation = true;
-      void this.router.navigateByUrl(APP_ROUTE_PATHS.dashboard.url);
-    }
+    const assigneeId = this.assigneeFilter() === id ? ALL_TASK_FILTER : id;
+    this.applyAssigneeFilter(assigneeId);
+  }
+
+  /** Applies a member filter and navigates to its canonical team URL. */
+  private applyAssigneeFilter(assigneeId: string, closeSidebar = true): void {
     this.teamExpanded.set(true);
-    this.assigneeFilter.set(this.assigneeFilter() === id ? ALL_TASK_FILTER : id);
-    this.sidebarOpen.set(false);
+    this.assigneeFilter.set(assigneeId);
+    if (closeSidebar) this.sidebarOpen.set(false);
+    const destination =
+      assigneeId === ALL_TASK_FILTER ? APP_ROUTE_PATHS.dashboard.url : teamMemberUrl(assigneeId);
+    if (this.router.url !== destination) void this.router.navigateByUrl(destination);
   }
 
   /** Opens or closes the responsive navigation drawer. */
   toggleSidebar(): void {
     this.sidebarOpen.update((open) => !open);
-  }
-
-  /** Opens the task editor in create mode. */
-  openCreate(): void {
-    void this.openEditor(null);
-  }
-
-  /** Opens the task editor with the selected task. */
-  openEdit(task: Task): void {
-    void this.openEditor(task);
-  }
-
-  /** Persists a task draft, updates activity, and reports the result to the user. */
-  saveTask(draft: TaskDraft, task: Task | null): void {
-    const request = task ? this.store.updateTask(task.id, draft) : this.store.createTask(draft);
-
-    request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (saved) => {
-        this.recordActivity(
-          task ? 'updated' : 'created',
-          task ? TASK_ACTIVITY_MESSAGES.updated : TASK_ACTIVITY_MESSAGES.created,
-          saved.title,
-        );
-        this.setNotice(task ? 'Task changes saved.' : 'Task created successfully.', 'success');
-      },
-      error: (error: unknown) =>
-        this.setNotice(taskErrorMessage(error, 'Could not save this task.'), 'error'),
-    });
-  }
-
-  /** Opens a confirmation dialog before deleting the selected task. */
-  askDelete(task: Task): void {
-    void import('../../../../shared/components/confirm-delete-dialog/confirm-delete-dialog.component')
-      .then(({ ConfirmDeleteDialogComponent }) => {
-        const data: ConfirmDeleteDialogData = { taskTitle: task.title };
-        this.dialog
-          .open<
-            InstanceType<typeof ConfirmDeleteDialogComponent>,
-            ConfirmDeleteDialogData,
-            boolean
-          >(ConfirmDeleteDialogComponent, { data, width: '420px', maxWidth: '95vw' })
-          .afterClosed()
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe((confirmed) => {
-            if (confirmed) this.deleteTask(task);
-          });
-      })
-      .catch((error: unknown) => {
-        this.setNotice(taskErrorMessage(error, 'Could not open delete confirmation.'), 'error');
-      });
-  }
-
-  /** Applies a task-board drop by reordering local display order or persisting a status change. */
-  onDrop({ event, status }: TaskDropEvent): void {
-    const task = event.item.data;
-    if (event.previousContainer === event.container) {
-      if (event.previousIndex !== event.currentIndex) {
-        this.reorderVisibleTasks(event.container.data, event.previousIndex, event.currentIndex);
-      }
-      return;
-    }
-
-    this.placeTaskInColumn(task.id, event.container.data, event.currentIndex);
-    this.store
-      .updateTask(task.id, { status })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (updated) => {
-          const activity = taskMoveActivity(status);
-          this.recordActivity(activity.kind, activity.message, updated.title);
-          this.setNotice(`Task moved to ${this.statusLabel(status)}.`, 'success');
-        },
-        error: (error: unknown) =>
-          this.setNotice(taskErrorMessage(error, 'Could not move this task.'), 'error'),
-      });
-  }
-
-  /** Returns a user-facing label for a task status. */
-  statusLabel(status: TaskStatus): string {
-    return TASK_STATUS_LABELS[status];
-  }
-
-  /** Removes hidden tasks from the stored order and appends newly loaded task IDs. */
-  private synchronizeTaskOrder(taskIds: string[]): void {
-    this.taskOrder.update((order) => synchronizeTaskOrder(order, taskIds));
-  }
-
-  /** Loads the task editor lazily and handles its submitted task draft. */
-  private async openEditor(task: Task | null): Promise<void> {
-    try {
-      const { TaskEditorComponent } =
-        await import('../../../tasks/components/task-editor/task-editor.component');
-      const data: TaskEditorDialogData = { task, users: this.users };
-      this.dialog
-        .open<InstanceType<typeof TaskEditorComponent>, TaskEditorDialogData, TaskDraft>(
-          TaskEditorComponent,
-          {
-            data,
-            width: '560px',
-            maxWidth: '95vw',
-            maxHeight: '95vh',
-            autoFocus: 'first-tabbable',
-          },
-        )
-        .afterClosed()
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe((draft) => {
-          if (draft) this.saveTask(draft, task);
-        });
-    } catch (error: unknown) {
-      this.setNotice(taskErrorMessage(error, 'Could not open the task editor.'), 'error');
-    }
-  }
-
-  /** Deletes a task and reports the success or failure through activity and notifications. */
-  private deleteTask(task: Task): void {
-    this.store
-      .deleteTask(task.id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.recordActivity('deleted', TASK_ACTIVITY_MESSAGES.deleted, task.title);
-          this.setNotice('Task deleted.', 'success');
-        },
-        error: (error: unknown) =>
-          this.setNotice(taskErrorMessage(error, 'Could not delete this task.'), 'error'),
-      });
-  }
-
-  /** Converts the visible task IDs into their new local order after a same-column drop. */
-  private reorderVisibleTasks(visibleTasks: Task[], from: number, to: number): void {
-    this.taskOrder.update((order) => reorderVisibleTaskIds(order, visibleTasks, from, to));
-  }
-
-  /** Inserts a moved task next to its drop target in the local display order. */
-  private placeTaskInColumn(taskId: string, destination: Task[], index: number): void {
-    this.taskOrder.update((order) => placeTaskIdInOrder(order, taskId, destination, index));
-  }
-
-  /** Adds a task-related event to the bounded recent-activity feed. */
-  private recordActivity(kind: TaskActivity['kind'], message: string, taskTitle: string): void {
-    const activity = createTaskActivity(kind, message, taskTitle);
-    this.activities.update((items) => [activity, ...items].slice(0, 8));
-  }
-
-  /** Shows a success or error snack-bar notification. */
-  private setNotice(text: string, kind: DashboardNoticeKind): void {
-    this.snackBar.open(text, UI_ACTION_LABELS.dismiss, {
-      duration: kind === 'error' ? 6000 : 3500,
-    });
   }
 
   /** Closes the mobile navigation drawer when the user presses Escape. */
@@ -395,5 +252,30 @@ export class DashboardPageComponent {
   @HostListener('window:resize')
   onResize(): void {
     this.viewportWidth.set(window.innerWidth);
+  }
+
+  /** Opens the task editor in create mode. */
+  openCreate(): void {
+    this.actions.openCreate();
+  }
+
+  /** Opens the task editor with the selected task. */
+  openEdit(task: Task): void {
+    this.actions.openEdit(task);
+  }
+
+  /** Persists the submitted task draft through the dashboard action service. */
+  saveTask(draft: TaskDraft, task: Task | null): void {
+    this.actions.saveTask(draft, task);
+  }
+
+  /** Opens a confirmation dialog before deleting the selected task. */
+  askDelete(task: Task): void {
+    this.actions.askDelete(task);
+  }
+
+  /** Applies a task-board drop through the dashboard action service. */
+  onDrop(event: TaskDropEvent): void {
+    this.actions.onDrop(event);
   }
 }

@@ -41,6 +41,19 @@
   min-height: 28px;
   border-radius: 4px;
   font-size: 9px;
+  transition:
+    background-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.filter-new-task:hover {
+  background: #1769c2;
+  box-shadow: 0 3px 8px rgb(25 118 210 / 22%);
+}
+
+.filter-new-task:focus-visible {
+  outline: 2px solid #1769d2;
+  outline-offset: 2px;
 }
 .board-columns {
   display: grid;
@@ -123,5 +136,11 @@
   .board-columns {
     grid-template-columns: 1fr;
     min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-new-task {
+    transition: none;
   }
 }

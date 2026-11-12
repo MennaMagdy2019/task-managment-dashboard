@@ -5,7 +5,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { APP_ROUTE_PATHS } from '../../../../shared/constants/app.constants';
 import { ALL_TASK_FILTER } from '../../../../shared/constants/task.constants';
 import type { Assignee } from '../../../../shared/models/task.model';
-import type { DashboardNavigationAction } from '../../models/dashboard.model';
+import type { DashboardNavigationAction, DashboardView } from '../../models/dashboard.model';
 
 @Component({
   selector: 'app-dashboard-sidebar',
@@ -21,6 +21,7 @@ export class DashboardSidebarComponent {
   @Input() assigneeFilter: string = ALL_TASK_FILTER;
   @Input() teamExpanded = false;
   @Output() readonly navigationSelected = new EventEmitter<DashboardNavigationAction>();
+  @Output() readonly routeSelected = new EventEmitter<DashboardView>();
   @Output() readonly assigneeSelected = new EventEmitter<string>();
   @Output() readonly createTask = new EventEmitter<void>();
 

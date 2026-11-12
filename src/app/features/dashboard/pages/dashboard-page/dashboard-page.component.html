@@ -21,6 +21,7 @@
         [assigneeFilter]="assigneeFilter()"
         [teamExpanded]="teamExpanded()"
         (navigationSelected)="selectNavigationItem($event)"
+        (routeSelected)="onRouteSelected($event)"
         (assigneeSelected)="setAssignee($event)"
         (createTask)="openCreate()"
       >

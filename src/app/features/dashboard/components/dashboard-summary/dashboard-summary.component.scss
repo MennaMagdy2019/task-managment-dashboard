@@ -128,3 +128,10 @@ mat-card-content h2 + p {
     min-height: 92px;
   }
 }
+
+@media (max-width: 360px) {
+  .summary-cards,
+  .summary-loading {
+    grid-template-columns: 1fr;
+  }
+}
