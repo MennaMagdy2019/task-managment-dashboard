@@ -1,11 +1,11 @@
-# TaskFlow
+# Task Management Dashboard
 
-TaskFlow is a responsive task-management dashboard built with Angular 21 and TypeScript 5.9. This
-README documents the features, structure, and verification results implemented in this repository.
+A responsive task-management dashboard built with Angular 21 and TypeScript 5.9. This README
+documents the features, structure, and verification results implemented in this repository.
 
 ## Live demo
 
-[TaskFlow](https://mennamagdy2019.github.io/task-managment-dashboard/dashboard).
+[Task Management Dashboard](https://mennamagdy2019.github.io/task-managment-dashboard/dashboard).
 
 ## Implemented features
 
@@ -162,7 +162,7 @@ Checks were run using Node.js 22.13.0.
 | Branch coverage                          | 87.24% (301/345).                     |
 | Function coverage                        | 93.57% (204/218).                     |
 | Line coverage                            | 95.64% (593/620).                     |
-| `npm run build`                          | Passed; initial bundle 389.36 kB raw. |
+| `npm run build`                          | Passed; initial bundle 389.40 kB raw. |
 | `npx tsc --noEmit -p tsconfig.spec.json` | Passed.                               |
 | `npm run format:check`                   | Passed.                               |
 

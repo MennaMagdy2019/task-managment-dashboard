@@ -26,7 +26,7 @@ describe('I18nService', () => {
     expect(service.language()).toBe('de');
     expect(localStorage.getItem('taskflow.language')).toBe('de');
     expect(document.documentElement.lang).toBe('de');
-    expect(document.title).toBe('TaskFlow — Aufgabenverwaltung im Team');
+    expect(document.title).toBe('Task Management Dashboard');
     expect(descriptionMeta.content).toContain('Planen');
   });
 

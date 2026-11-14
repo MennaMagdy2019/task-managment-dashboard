@@ -1,9 +1,9 @@
 export const ENGLISH = {
-  'document.title': 'TaskFlow — Team task management',
-  'document.description': "Plan, prioritize, and track your team's work with TaskFlow.",
+  'document.title': 'Task Management Dashboard',
+  'document.description': "Plan, prioritize, and track your team's work in one dashboard.",
   'header.openNavigation': 'Open navigation',
   'header.closeNavigation': 'Close navigation',
-  'header.brand': 'Task Manager',
+  'header.brand': 'Task Management Dashboard',
   'header.searchTasks': 'Search tasks',
   'header.searchPlaceholder': 'Search tasks...',
   'header.notifications': 'Notifications',
@@ -145,12 +145,12 @@ export const ENGLISH = {
 } as const;
 
 const GERMAN: Record<keyof typeof ENGLISH, string> = {
-  'document.title': 'TaskFlow — Aufgabenverwaltung im Team',
+  'document.title': 'Task Management Dashboard',
   'document.description':
-    'Planen, priorisieren und verfolgen Sie die Arbeit Ihres Teams mit TaskFlow.',
+    'Planen, priorisieren und verfolgen Sie die Arbeit Ihres Teams in einem Dashboard.',
   'header.openNavigation': 'Navigation öffnen',
   'header.closeNavigation': 'Navigation schließen',
-  'header.brand': 'Aufgabenmanager',
+  'header.brand': 'Task Management Dashboard',
   'header.searchTasks': 'Aufgaben suchen',
   'header.searchPlaceholder': 'Aufgaben suchen...',
   'header.notifications': 'Benachrichtigungen',

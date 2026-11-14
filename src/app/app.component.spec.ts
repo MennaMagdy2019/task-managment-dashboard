@@ -40,7 +40,9 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.topbar-brand')?.textContent).toContain('Task Manager');
+    expect(compiled.querySelector('.topbar-brand')?.textContent).toContain(
+      'Task Management Dashboard',
+    );
     expect(compiled.querySelector('.primary-nav')?.textContent).toContain('Dashboard');
     expect(compiled.querySelector('.primary-nav')?.textContent).toContain('Analytics');
     expect(compiled.querySelector('.primary-nav')?.textContent).not.toContain('Calendar');
