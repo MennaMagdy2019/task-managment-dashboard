@@ -102,7 +102,7 @@ export class DashboardPageActionsService {
       });
   }
 
-  /** Applies a task-board drop by reordering local display order or persisting a status change. */
+  /** Applies a task-board drop, committing the local order only after a status change succeeds. */
   onDrop({ event, status }: TaskDropEvent): void {
     const task = event.item.data;
     if (event.previousContainer === event.container) {
@@ -112,12 +112,12 @@ export class DashboardPageActionsService {
       return;
     }
 
-    this.placeTaskInColumn(task.id, event.container.data, event.currentIndex);
     this.store
       .updateTask(task.id, { status })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (updated) => {
+          this.placeTaskInColumn(task.id, event.container.data, event.currentIndex);
           const activity = taskMoveActivity(status);
           this.recordActivity(activity.kind, activity.message, updated.title);
           this.setNotice(

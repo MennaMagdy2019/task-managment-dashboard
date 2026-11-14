@@ -200,18 +200,22 @@ describe('DashboardPageComponent', () => {
     expect(component.taskOrder()).toEqual(['task-2', 'task-1']);
     expect(store.updateTask).not.toHaveBeenCalled();
 
+    component.taskOrder.set(['task-2', 'task-1']);
     store.updateTask.and.returnValue(of({ ...task, status: 'done' }));
-    const crossColumn = createDropEvent([secondTask], [task], 0, 0, task);
+    const crossColumn = createDropEvent([task], [secondTask], 0, 0, task);
     component.onDrop({ event: crossColumn, status: 'done' });
     expect(store.updateTask).toHaveBeenCalledOnceWith(task.id, { status: 'done' });
+    expect(component.taskOrder()).toEqual(['task-1', 'task-2']);
     expect(snackBar.open).toHaveBeenCalledWith(
       'Task moved to Done.',
       'Dismiss',
       jasmine.objectContaining({ duration: 3500 }),
     );
 
+    component.taskOrder.set(['task-2', 'task-1']);
     store.updateTask.and.returnValue(throwError(() => new HttpErrorResponse({ status: 503 })));
     component.onDrop({ event: crossColumn, status: 'in_progress' });
+    expect(component.taskOrder()).toEqual(['task-2', 'task-1']);
     expect(snackBar.open).toHaveBeenCalledWith(
       'Could not move this task. The service is temporarily unavailable.',
       'Dismiss',

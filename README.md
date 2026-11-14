@@ -121,6 +121,13 @@ and SCSS style the desktop, tablet, and mobile layouts.
 - Chart.js for priority and status analytics
 - ESLint, Prettier, Husky, and lint-staged for code quality
 
+## Testing strategy
+
+Unit and component tests use Jasmine and Karma in Chrome. The suite covers dashboard routing and
+interactions, form validation, task and statistics services, HTTP interceptors, and pure filtering,
+ordering, and statistics helpers. `npm run test:coverage` enforces 80% minimum global coverage for
+statements, branches, functions, and lines.
+
 ## Run locally
 
 Use Node.js supported by `package.json`: `^20.19.0`, `^22.13.0`, or `^24.0.0`. The `.nvmrc` file
