@@ -95,9 +95,7 @@ document language, title, and description.
 The UI includes semantic landmarks, accessible names for controls, visible keyboard-focus styles,
 dialog focus management, and reduced-motion-aware transitions. Charts have accessible labels and
 visible text summaries; loading, error, and empty states expose status, alert, or descriptive labels
-where appropriate. These are implemented
-accessibility practices, not a claim of formal WCAG 2.1 AA compliance; no formal audit has been
-performed.
+where appropriate.
 
 ### Performance
 
